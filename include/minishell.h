@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/05 16:39:10 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/05 22:54:33 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@
 #include <sys/types.h>
 #include <string.h>
 #include <stdbool.h>
-#include "../libft/libft.h"
+#include <signal.h>
+
+char **ft_split(char const *s, char c);
 
 #endif
 
