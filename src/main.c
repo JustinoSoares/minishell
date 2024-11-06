@@ -3,14 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/06 00:04:48 by justinosoar      ###   ########.fr       */
+/*   Updated: 2024/11/06 16:40:10 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+#include "../libft/libft.h"
+
+int is_in(char *str, char c, int index)
+{
+    int i = 0;
+    int last = 0;
+    while (i < index)
+    {
+        if (str[i] == c)
+            last++;
+        i++;
+    }
+    if (last % 2 != 0)
+        return (1);
+    return (0);
+}
 
 int index_of(char *str, char *word)
 {
@@ -18,8 +34,8 @@ int index_of(char *str, char *word)
     i = 0;
     while (str[i])
     {
-        if (strncmp(str + i, word, strlen(word)) == 0)
-            return (i + strlen(word) -1);
+        if (ft_strncmp(str + i, word, ft_strlen(word)) == 0)
+            return (i + ft_strlen(word) - 1);
         i++;
     }
     return (-1);
@@ -53,32 +69,65 @@ void ctrl_c(int sig)
     rl_replace_line("", 0);
     rl_redisplay();
 }
+char *get_word(char *str, int start)
+{
+    char *new;
+    int i = 0;
+    int size = start;
+
+    while (str[size] && str[size] != 32 && str[size] != '"' && str[size] != '\'')
+        size++;
+    new = malloc(sizeof(char) * (size) + 1);
+    while (str[start] && str[start] != 32 && str[start] != '"' && str[start] != '\'')
+        new[i++] = str[start++];
+    new[i] = '\0';
+    return (new);
+}
 
 void ft_echo(char *str)
 {
-    if (count_elements(str, '"') % 2 != 0 || count_elements(str, 92) % 2 != 0)
+    int i = 0;
+    char *macro;
+    if (count_elements(str, '"') % 2 != 0 || count_elements(str, '\'') % 2 != 0 || count_elements(str, 92) % 2 != 0)
     {
         write(1, "Error: invalid number of quotes\n", 32);
         return;
     }
-	while (*str && *str != '|' && *str != ';' && *str != '>' && *str != '<')
-	{
-		if (*str == 92 && *(str + 1) == '"')
-			str++;
-        else if (*str == '"' && *(str - 1) != 92)
-            str++;
-		else
-			write(1, str++, 1);
-	}
+    while (str[i] && str[i] != '|' && (str[i] != ';' || (str[i] == ';' && is_in(str, '"', i) == 1)) && str[i] != '>' && str[i] != '<')
+    {
+        if (str[i] == '$')
+        {
+            macro = getenv(get_word(str, i + 1));
+            //printf("%s ", get_word(str, i + 1));
+            if (macro && (((is_in(str, '"', i)) || is_in(str, '\'', i) == 0) || count_elements(str, '\'') == 0 ))
+            {
+                write(1, macro, ft_strlen(macro));
+                i += ft_strlen(get_word(str, i));
+            }
+            else
+                write(1, &str[i++], 1);
+        }
+        else if ((str[i] == '\'' && is_in(str, '"', i) == 1))
+             write(1, &str[i++], 1);
+        else if ((str[i] == 92 && str[i + 1] == '"') || (str[i] == 92 && str[i + 1] == '\''))
+            i++;
+        else if ((str[i] == '"' && str[i - 1] != 92) || (str[i] == '\'' && str[i - 1] != 92))
+            i++;
+        else
+            write(1, &str[i++], 1);
+    }
     write(1, "\n", 1);
 }
 
-void ft_get_terminal(void)
+void ft_get_terminal(char **envp)
 {
     char *line;
     char **args;
-    signal(SIGINT, ctrl_c); //quando o usuário aperta ctrl+c
-    signal(SIGQUIT, ctrl_c); //quando o usuário aperta ctrl+
+    char **env;
+
+    env = envp;
+    signal(SIGINT, ctrl_c);  // quando o usuário aperta ctrl+c
+    signal(SIGQUIT, ctrl_c); // quando o usuário aperta ctrl+
     while (true)
     {
         line = readline("\033[1;32mroot@minishell\033[m:~$ ");
@@ -95,6 +144,6 @@ void ft_get_terminal(void)
 
 int main(int argc, char **argv, char **envp)
 {
-    ft_get_terminal();
+    ft_get_terminal(envp);
     return (0);
 }
