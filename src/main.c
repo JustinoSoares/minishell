@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/06 16:40:10 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/07 18:39:22 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,11 +119,26 @@ void ft_echo(char *str)
     write(1, "\n", 1);
 }
 
+void ft_cd(char *path)
+{
+    if (path == NULL || ft_strlen(path) == 0)
+    {
+        printf("cd: no such file or directory:\n");
+        return ;
+    }
+    if (chdir(path) == -1)
+    {
+        printf("cd: no such file or directory: %s\n", path);
+        return;
+    }
+}
+
 void ft_get_terminal(char **envp)
 {
     char *line;
     char **args;
     char **env;
+    char pwd[1024];
 
     env = envp;
     signal(SIGINT, ctrl_c);  // quando o usuário aperta ctrl+c
@@ -136,6 +151,13 @@ void ft_get_terminal(char **envp)
         args = ft_split(line, ' ');
         if (args[0] && strcmp(args[0], "echo") == 0)
             ft_echo(line + start_write(line, "echo"));
+        else if (args[0] && strcmp(args[0], "cd") == 0)
+            ft_cd(args[1]);
+        else if (args[0] && strcmp(args[0], "pwd") == 0)
+        {
+            if (getcwd(pwd, sizeof(pwd)) != NULL)
+                printf("%s\n", pwd);
+        }
         add_history(line);
         write_history("history");
         free(line);
