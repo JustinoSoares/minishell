@@ -1,1 +1,38 @@
-echo $USER$HOME
+echo $USER
+echo $USE
+make
+pwd
+ls
+echo
+echo abc
+echo abc def
+echo "abc def"
+echo "abc 'def"
+echo "abc" "def"
+echo "abc" 'def'
+echo "abc" 'def''
+clear
+echo $$
+echo $?
+echo $HOME
+echo "$HOME"
+echo '$HOME'
+echo $HOME$PATH
+echo $HOME $PATH
+
+echo $HOME $$USER
+echo $HOME $_$USER
+echo $HOME _$USER
+echo $HOME $$$$USER
+echo $HOME $$$$USER
+echo $HOME $
+echo $
+echo "$"
+echo $
+echo $$
+echo "$$"
+echo '$$'
+echo $HOME $_$USER
+echo $HOME $$$$USER
+echo $HOME $_ $USER
+echo "abc" 'def''

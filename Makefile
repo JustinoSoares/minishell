@@ -6,11 +6,11 @@ SRC = src/main.c src/utils.c
 LIBFT_PATH=libft/
 LIBFT=libft.a
 OBJ = $(SRC:.c=.o)
-all: $(NAME)
+all: $(LIBFT) $(NAME)
 $(LIBFT): 
 		@make -C $(LIBFT_PATH)
 $(NAME): $(LIBFT) $(OBJ)
-	$(CC) $(FLAGS) $(OBJ) $(READLINE_FLAG) $(LIBFT_PATH)/libft.a -o $(NAME)
+	$(CC) $(FLAGS) $(OBJ) $(READLINE_FLAG) $(LIBFT_PATH)libft.a -o $(NAME)
 
 clean : 
 		@make clean -C $(LIBFT_PATH)
