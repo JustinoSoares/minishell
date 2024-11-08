@@ -1,5 +1,3 @@
-cd libft
-pwd
-cd ..
-pwd
-git checkout
+export
+export USER
+clear

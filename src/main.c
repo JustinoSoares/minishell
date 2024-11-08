@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/07 18:39:22 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/08 12:51:18 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,12 +133,61 @@ void ft_cd(char *path)
     }
 }
 
+void    ft_pwd(char *arg)
+{
+    char pwd[1024];
+
+    if (!arg)
+    {
+        if (getcwd(pwd, sizeof(pwd)) != NULL)
+            printf("%s\n", pwd);
+    }
+    else
+        printf("pwd: can't have argument\n"); 
+}
+
+char    *find_key(char   **env, char *key)
+{
+    char    *tmp;
+    int i;
+    int j;
+
+    tmp = malloc(sizeof(char) * ft_strlen(key));
+    while (env[i] != NULL)
+    {   
+        j = 0;
+        while (i < ft_strlen(key) && env[i][j] != '=')
+        {
+            tmp = env[i][j];
+            i++;
+        }
+        if (tmp == key)
+        {
+            
+        }
+        
+    }
+    
+}
+
+/*void    export(char **env, char *key, char *value)
+{
+    int i;
+
+    i = 0;
+    while (env[i] != NULL)
+    {
+        printf("%s\n", env[i]);
+        i++;
+    }
+    
+}*/
+
 void ft_get_terminal(char **envp)
 {
     char *line;
     char **args;
     char **env;
-    char pwd[1024];
 
     env = envp;
     signal(SIGINT, ctrl_c);  // quando o usuário aperta ctrl+c
@@ -154,10 +203,9 @@ void ft_get_terminal(char **envp)
         else if (args[0] && strcmp(args[0], "cd") == 0)
             ft_cd(args[1]);
         else if (args[0] && strcmp(args[0], "pwd") == 0)
-        {
-            if (getcwd(pwd, sizeof(pwd)) != NULL)
-                printf("%s\n", pwd);
-        }
+            ft_pwd(args[1]);
+        else if (args[0] && strcmp(args[0], "export") == 0)
+            export(env);
         add_history(line);
         write_history("history");
         free(line);
