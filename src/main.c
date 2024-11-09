@@ -6,12 +6,11 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/08 12:51:18 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/09 18:19:04 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-#include "../libft/libft.h"
 
 int is_in(char *str, char c, int index)
 {
@@ -146,50 +145,11 @@ void    ft_pwd(char *arg)
         printf("pwd: can't have argument\n"); 
 }
 
-char    *find_key(char   **env, char *key)
-{
-    char    *tmp;
-    int i;
-    int j;
-
-    tmp = malloc(sizeof(char) * ft_strlen(key));
-    while (env[i] != NULL)
-    {   
-        j = 0;
-        while (i < ft_strlen(key) && env[i][j] != '=')
-        {
-            tmp = env[i][j];
-            i++;
-        }
-        if (tmp == key)
-        {
-            
-        }
-        
-    }
-    
-}
-
-/*void    export(char **env, char *key, char *value)
-{
-    int i;
-
-    i = 0;
-    while (env[i] != NULL)
-    {
-        printf("%s\n", env[i]);
-        i++;
-    }
-    
-}*/
-
-void ft_get_terminal(char **envp)
+void ft_get_terminal(t_env *ev)
 {
     char *line;
     char **args;
-    char **env;
 
-    env = envp;
     signal(SIGINT, ctrl_c);  // quando o usuário aperta ctrl+c
     signal(SIGQUIT, ctrl_c); // quando o usuário aperta ctrl+
     while (true)
@@ -205,7 +165,7 @@ void ft_get_terminal(char **envp)
         else if (args[0] && strcmp(args[0], "pwd") == 0)
             ft_pwd(args[1]);
         else if (args[0] && strcmp(args[0], "export") == 0)
-            export(env);
+            export(ev, args[1]);
         add_history(line);
         write_history("history");
         free(line);
@@ -214,6 +174,24 @@ void ft_get_terminal(char **envp)
 
 int main(int argc, char **argv, char **envp)
 {
-    ft_get_terminal(envp);
+    t_env   *ev;
+    int     i;
+    int     j;
+
+    i = 0;
+    j = 0; 
+    ev = malloc(sizeof(t_env));
+    while (envp[i] != NULL)
+        i++;
+    ev->env = malloc((i + 1) * sizeof(char *));
+    if (!ev->env)
+        return (-1);
+    while (j < i)
+    {
+        ev->env[j] = strdup(envp[j]);
+        j++;
+    }
+    ev->env[i] = NULL;
+    ft_get_terminal(ev);
     return (0);
 }

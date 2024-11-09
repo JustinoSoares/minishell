@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/06 10:58:05 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/09 18:01:19 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,16 @@
 #include <stdbool.h>
 #include <signal.h>
 #include "../libft/libft.h"
+
+typedef struct s_env
+{
+    char    *value;
+    char    *key;
+    char    **env;
+}   t_env;
+
+void    export(t_env *ev, char *var);
+
 
 #endif
 
