@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:56:42 by rquilami          #+#    #+#             */
-/*   Updated: 2024/11/09 18:47:16 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/09 19:36:37 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static void    sort_env(char **env)
     int n;
     int j;
     char    *temp;
-    
+
     i = 0;
     n = 0;
     while (env[n] != NULL)
@@ -80,7 +80,7 @@ static void  replace_env(char *key, t_env *ev)
     while (ev->env[i] != NULL)
     {
         j = 0;
-        while (ev->env[i][j] != '=')
+        while (j < ft_strlen(key))
         {
             tmp[j] = ev->env[i][j];
             j++;

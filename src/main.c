@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/09 18:19:04 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/09 19:11:21 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,8 @@ int main(int argc, char **argv, char **envp)
 
     i = 0;
     j = 0; 
+
+    
     ev = malloc(sizeof(t_env));
     while (envp[i] != NULL)
         i++;
@@ -192,6 +194,8 @@ int main(int argc, char **argv, char **envp)
         j++;
     }
     ev->env[i] = NULL;
+
+    
     ft_get_terminal(ev);
     return (0);
 }
