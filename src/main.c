@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/08 15:56:53 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/09 21:44:38 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ void ctrl_c(int sig)
     rl_redisplay();
 }
 
-
 void ft_get_terminal(char **envp)
 {
     char *line;
@@ -57,9 +56,9 @@ void ft_get_terminal(char **envp)
     while (true)
     {
         line = readline("\033[1;32mroot@minishell\033[m:~$ ");
-        if (!line || strcmp(line, "exit") == 0)
-            break;
         args = ft_split(line, ' ');
+        if (!line || strcmp(args[0], "exit") == 0)
+            return (free(line));
         if (args[0] && strcmp(args[0], "echo") == 0)
             ft_echo(line + start_write(line, "echo"));
         add_history(line);

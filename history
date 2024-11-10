@@ -1,9 +1,5 @@
-echo $USER
 echo "$USER"
-echo "$USER" $USER
-echo "'$USER'" $USER
-echo "'$USER'" "$USER"
-echo "'$USER'" ""
-echo "'$USER'" "Justino"
-echo "'$USER'" "'"
-echo "'$USER'" '"'
+echo \"$USER\"
+echo "Mila"
+echo "Mila Janete"
+echo "Mila Janete" "Carla" 
