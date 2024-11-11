@@ -1,5 +1,6 @@
-echo "$USER"
-echo \"$USER\"
-echo "Mila"
-echo "Mila Janete"
-echo "Mila Janete" "Carla" 
+ls
+/bin/ls
+/bin/ls -l
+cat main.c
+/bin/cat main.c
+/bin/cat src/main.c

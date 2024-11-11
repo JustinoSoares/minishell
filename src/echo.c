@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 15:38:25 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/10 17:30:19 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/11 17:06:16 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,24 +95,6 @@ int is_in(char *str, char c, int index)
     return (1);
 }
 
-int is_in_in(char *str, char in, char out, int index)
-{
-    int i = 0;
-    int what = 3;
-    if (count_elements(str, in) && count_elements(str, out))
-    {
-        while (i < index)
-        {
-            if (str[i] == out)
-                what = 0;
-            else if ((str[i] == in))
-                what = 1;
-            i++;
-        }
-    }
-    return (what);
-}
-
 int is_in_aspas(char *str, int index)
 {
     int start;
@@ -159,62 +141,85 @@ int aspas_error(char *str)
         i++;
     }
     if (duplas % 2 != 0 || simples % 2 != 0)
-        return (1);
+        return (write(1, "Error: aspas\n", 13));
     return (0);
 }
 
 int print_var(char *str, int i)
 {
     char *macro;
-    if (str[i] == '$' && str[i + 1] != 32 && str[i + 1] != '"' && str[i + 1] != '\'' && str[i + 1] != '\0')
+    if (str[i] == '$' && str[i + 1] == '?')
+    {
+        printf("0");
+        i += 2;
+    }
+    else if (str[i] == '$' && str[i + 1] != 32 && str[i + 1] != '"' && str[i + 1] != '\'' && str[i + 1] != '\0')
     {
         macro = getenv(get_word(str, i + 1));
         if (macro && ((is_in_aspas(str, i) == 1) || count_elements(str, '\'') == 0))
         {
             printf("%s", macro);
-            i += ft_strlen(get_word(str, i + 1)) + 1;
+            i += ft_strlen(get_word(str, i + 1));
         }
         else if (!macro)
-            i += ft_strlen(get_word(str, i + 1)) + 1;
+            i += ft_strlen(get_word(str, i + 1));
         else
             printf("%c", str[i++]);
     }
     return (i);
 }
 
-void ft_echo(char *str)
+int is_duplas(char *str, int i)
+{
+    int get = 0;
+    while (str[++i] && str[i] != '"')
+    {
+        get = i;
+        i = print_var(str, i);
+        if (i == get)
+            printf("%c", str[i]);
+    }
+    return (i);
+}
+int is_contra_barra(char *str, int i)
+{
+    if (str[i] == 92 && str[i + 1] == '"')
+    {
+        printf("\"");
+        i += 2;
+    }
+    if (str[i] == 92 && str[i + 1] == '\'')
+    {
+        printf("'");
+        i += 2;
+    }
+    return (i);
+}
+
+void ft_echo(t_variables vars)
 {
     int i = 0;
+    int get = 0;
+    char *str;
 
+    str = vars.line + (start_write(vars.line, "echo") + new_line(vars.args[1]));
     if (aspas_error(str))
-    {
-        printf("Error: invalid number of quotes\n");
         return;
-    }
-    while (str[i] && str[i] != '|' && (str[i] != ';' || (str[i] == ';' && is_in(str, '"', i) == 1)))
+    while (str[i] && str[i] != '|')
     {
-        if (str[i++] == '"')
-        {
-            while (str[i] != '"' && str[i])
-            {
-                i = print_var(str, i);
-                if ((str[i] == 92 && str[i + 1] == '"') || (str[i] == 92 && str[i + 1] == '\''))
-                    i++;
-                else
-                    printf("%c", str[i++]);
-            }
-        }
-        /*else if (str[i] == '"' && count_until(str, '"', i + 1) % 2 == 0)
-            i++;
-        else if (str[i] == '"' && (get_last_in(str, '\'', i) != -1))
-            printf("%c", str[i++]);
-        else if ((str[i] == '\'' && get_last_in(str, '"', i) != -1))
-            printf("%c", str[i++]);
-
-        else if ((str[i] == '"' && str[i - 1] != 92) || (str[i] == '\'' && str[i - 1] != 92))
-            i++;*/
+        i = is_contra_barra(str, i);
+        if (str[i] == '"')
+            i = is_duplas(str, i);
+        else if (str[i] == '\'')
+            while (str[++i] && str[i] != '\'')
+                printf("%c", str[i]);
         else
-            printf("%c", str[i++]);
+        {
+            get = i;
+            i = print_var(str, i);
+            if (get == i)
+                printf("%c", str[i]);
+            i++;
+        }
     }
-    printf("\n");
 }

@@ -6,63 +6,37 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 13:37:07 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/08 14:10:22 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/11 16:35:04 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/minishell.h"
 
-int count_elements(char *str, char c)
-{
-    int count = 0;
-    while (*str)
-    {
-        if (*str == c)
-            count++;
-        str++;
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+int main() {
+    int status;
+    pid_t pid = fork();
+
+    if (pid == 0) {
+        // Processo filho: executa o comando
+        execlp("echo", "echo", "/diretorio_nao_existente", NULL);
+        exit(1);  // Saia com erro se o comando falhar
+    } else if (pid > 0) {
+        // Processo pai: espera o comando e pega o status
+        wait(&status);
+        // Verifica e exibe o status de saída
+        if (WIFEXITED(status)) {
+            int exit_status = WEXITSTATUS(status);
+            printf("Código de saída: %d\n", exit_status);
+        }
+    } else {
+        perror("Erro ao criar processo");
+        return 1;
     }
-    return (count);
-}
 
-int count_until(char *str, char c, int index)
-{
-    int count = 0;
-    int i = 0;
-    while (i < index)
-    {
-        if (str[i] == c)
-            count++;
-        i++;
-    }
-    return (count);
-}
-
-int get_last_ocurrenc(char *str, char c, int index)
-{
-    int i = 0;
-    int last = 0;
-    int back = index;
-    while (i < index)
-    {
-        if (str[i] == c)
-            last = i;
-        i++;
-    }
-    back = count_until(str, c, back);
-    if (back % 2 != 0)
-        return (last);
-    return (-1);
-}
-
-int is_in_in(char *str, char in, char out, int index)
-{
-    if (get_last_ocurrenc(str, out, index) != -1)
-        return (1);
-}
-
-int main()
-{
-   char str[100] = "\"hello world \"hello world\" \"hello world\" \"hello world\" \"hello world\"";
-
-    printf("%d\n", get_last_ocurrenc(str, '"', 27));
+    return 0;
 }
