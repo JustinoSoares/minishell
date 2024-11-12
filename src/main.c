@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/11 17:38:45 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/12 15:46:40 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,32 +72,7 @@ void ft_get_terminal(char **envp)
         vars.args = ft_split(vars.line, ' ');
         if (!vars.line || strcmp(vars.args[0], "exit") == 0)
             return (free(vars.line));
-        if (vars.args[0] && strcmp(vars.args[0], "echo") == 0)
-        {
-            ft_echo(vars);
-            if (new_line(vars.args[1]) == 0)
-                printf("\n");
-        }
-        else
-        {
-            vars.pid = fork();
-            if (vars.pid == 0)
-            {
-                execve(vars.args[0], vars.args, NULL);
-                perror("Error");
-                exit(1);
-            }
-            else if (vars.pid > 0)
-            {
-                waitpid(vars.pid, &vars.status_command, 0);
-                if (WIFEXITED(vars.status_command))
-                    printf("Exit status: %d\n", WEXITSTATUS(vars.status_command));
-            }
-            else
-            {
-                perror("Error");
-            }
-        }
+        ft_exec_functions(vars);
         add_history(vars.line);
         write_history("history");
         free(vars.line);

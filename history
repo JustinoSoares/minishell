@@ -1,6 +1,8 @@
+echo "123"
 ls
 /bin/ls
-/bin/ls -l
-cat main.c
-/bin/cat main.c
-/bin/cat src/main.c
+/bin/ls | grep a
+/bin/ls 
+/bin/ls 
+/bin/ls 
+make
