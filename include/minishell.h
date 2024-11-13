@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/11 17:30:41 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/12 12:38:24 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,5 @@ int is_in_aspas(char *str, int index);
 void ft_echo(t_variables vars);
 int start_write(char *str, char *command);
 int new_line(char *str);
+void ft_exec_functions(t_variables vars);
 #endif
