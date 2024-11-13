@@ -1,2 +1,4 @@
-export USER=jsoares
+A=lk
+export A=lk
+export A
 export

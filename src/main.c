@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/09 19:11:21 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/13 11:34:02 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,6 +185,7 @@ int main(int argc, char **argv, char **envp)
     ev = malloc(sizeof(t_env));
     while (envp[i] != NULL)
         i++;
+    ev->len = i;
     ev->env = malloc((i + 1) * sizeof(char *));
     if (!ev->env)
         return (-1);

@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/09 18:01:19 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/13 17:47:27 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,9 @@ typedef struct s_env
     char    *value;
     char    *key;
     char    **env;
+    int     len;
+    int     found;
+    int     just_var;
 }   t_env;
 
 void    export(t_env *ev, char *var);
