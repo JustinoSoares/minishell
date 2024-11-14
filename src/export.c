@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:56:42 by rquilami          #+#    #+#             */
-/*   Updated: 2024/11/13 20:33:40 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/14 11:26:22 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,6 +201,41 @@ static void	set_env(char *key, t_env *ev)
 	ev->found = 0;
 }
 
+static void print_env(t_env *ev)
+{
+	int		i;
+	int		j;
+
+	i = 0;
+	while (ev->env[i] != NULL)
+	{
+		j = 0;
+		printf("declare -x ");
+		while (ev->env[i][j] != '\0')
+		{
+			if (ev->env[i][j] == '=')
+			{
+				printf("%c", ev->env[i][j]);
+				printf("\"");
+				j++;
+				while (ev->env[i][j] != '\0')
+				{
+					printf("%c", ev->env[i][j]);
+					j++;
+				}
+				printf("\"");
+			}
+			else
+			{
+				printf("%c", ev->env[i][j]);
+				j++;
+			}
+		}
+		printf("\n");
+		i++;
+	}
+}
+
 void	export(t_env *ev, char *var)
 {
 	int	i;
@@ -209,12 +244,7 @@ void	export(t_env *ev, char *var)
 	if (var == NULL || ft_strlen(var) == 0)
 	{
 		sort_env(ev->env);
-		while (ev->env[i])
-		{
-			printf("declare -x ");
-			printf("%s\n", ev->env[i]);
-			i++;
-		}
+		print_env(ev);
 	}
 	else
 	{
