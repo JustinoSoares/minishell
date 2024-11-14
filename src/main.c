@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/11/11 21:36:27 by justinosoar      ###   ########.fr       */
-=======
-/*   Updated: 2024/11/12 15:46:40 by jsoares          ###   ########.fr       */
->>>>>>> ca45587c57b3ecaf5ab05d1431ab6e0293c85e3d
+/*   Updated: 2024/11/13 12:15:30 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +71,7 @@ void ft_get_terminal(char **envp)
         vars.args = ft_split(vars.line, ' ');
         if (!vars.line || strcmp(vars.args[0], "exit") == 0)
             return (free(vars.line));
-        ft_exec_functions(vars);
+        function_pipe(vars);
         add_history(vars.line);
         write_history("history");
         free(vars.line);

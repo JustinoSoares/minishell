@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 15:38:25 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/11 17:06:16 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/14 16:15:30 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,8 +204,8 @@ void ft_echo(t_variables vars)
 
     str = vars.line + (start_write(vars.line, "echo") + new_line(vars.args[1]));
     if (aspas_error(str))
-        return;
-    while (str[i] && str[i] != '|')
+        return ;
+    while (str[i])
     {
         i = is_contra_barra(str, i);
         if (str[i] == '"')

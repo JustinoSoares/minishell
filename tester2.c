@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tester2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 11:32:15 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/12 23:07:27 by justinosoar      ###   ########.fr       */
+/*   Updated: 2024/11/13 09:50:15 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,59 +40,68 @@ void only_a(char *str)
 int main(int ac, char **av)
 {
     int fd[2];
-    pid_t pid1, pid2;
+    int prev_fd = -1;
     char **args;
-    int quant = 0, i = 0;
     char **get_args;
+    int quant, i;
 
+    if (ac != 2)
+    {
+        printf("Error: invalid number of arguments\n");
+        return 1;
+    }
     args = ft_split(av[1], '|');
-    quant = count_pipes(av[1]);
-    while (i < quant)
+    quant = count_pipes(av[1]) + 1;
+
+    for (i = 0; i < quant; i++)
     {
         if (pipe(fd) == -1)
         {
             perror("pipe");
             exit(EXIT_FAILURE);
         }
-        pid1 = fork();
-        if (pid1 == -1)
+
+        if (fork() == 0)
         {
-            perror("fork");
-            exit(EXIT_FAILURE);
-        }
-        if (pid1 == 0)
-        {
+            // Para o primeiro comando
+            if (i == 0)
+                dup2(fd[1], STDOUT_FILENO);
+            // Para comandos intermediários
+            else if (i < quant - 1)
+            {
+                dup2(prev_fd, STDIN_FILENO);
+                dup2(fd[1], STDOUT_FILENO);
+            }
+            // Para o último comando
+            else
+                dup2(prev_fd, STDIN_FILENO);
+            // Fechar todos os descritores de pipe
             close(fd[0]);
-            dup2(fd[1], STDOUT_FILENO);
             close(fd[1]);
+            if (prev_fd != -1)
+                close(prev_fd);
+
+            // Executa o comando atual
             get_args = ft_split(args[i], ' ');
-            execve(get_args[0], get_args, NULL);
-            perror("execv");
-            exit(EXIT_FAILURE);
-        }
-        pid2 = fork();
-        if (pid2 == -1)
-        {
-            perror("fork");
-            exit(EXIT_FAILURE);
-        }
-        if (pid2 == 0)
-        {
-            close(fd[1]);
-            dup2(fd[0], STDIN_FILENO);
-            close(fd[0]);
-            dup2(fd[1], STDOUT_FILENO);
-            close(fd[1]);
-            get_args = ft_split(args[i + 1], ' ');
             execve(get_args[0], get_args, NULL);
             perror("execve");
             exit(EXIT_FAILURE);
         }
-        i++;
+        // Fechar o descritor antigo e atualizar `prev_fd`
+        if (prev_fd != -1)
+            close(prev_fd);
+        close(fd[1]);
+        prev_fd = fd[0];
     }
-    close(fd[0]);
-    close(fd[1]);
-    wait(NULL);
-    wait(NULL);
-    return (0);
+
+    // Espera todos os processos filhos
+    for (i = 0; i < quant; i++)
+        wait(NULL);
+
+    // Libera a memória alocada para `args`
+    for (i = 0; i < quant; i++)
+        free(args[i]);
+    free(args);
+
+    return 0;
 }
