@@ -6,36 +6,11 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 15:38:25 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/14 16:15:30 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/15 13:11:55 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-
-int count_elements(char *str, char c)
-{
-    int count = 0;
-    while (*str)
-    {
-        if (*str == c)
-            count++;
-        str++;
-    }
-    return (count);
-}
-
-int count_until(char *str, char c, int index)
-{
-    int count = 0;
-    int i = 0;
-    while (i < index)
-    {
-        if (str[i] == c)
-            count++;
-        i++;
-    }
-    return (count);
-}
 
 int get_last_in(char *str, char c, int index)
 {
@@ -62,7 +37,7 @@ char *get_word(char *str, int start)
 
     while (str[size] && str[size] != 32 && str[size] != '"' && str[size] != '\'')
     {
-        if (ft_isalpha(str[size]))
+        if (ft_isalnum(str[size]))
             size++;
         else
             break;
@@ -70,7 +45,7 @@ char *get_word(char *str, int start)
     new = malloc(sizeof(char) * (size + 1));
     while (str[start] && str[start] != 32 && str[start] != '"' && str[start] != '\'')
     {
-        if (ft_isalpha(str[start]))
+        if (ft_isalnum(str[start]))
             new[i++] = str[start];
         else
             break;
@@ -78,71 +53,6 @@ char *get_word(char *str, int start)
     }
     new[i] = '\0';
     return (new);
-}
-
-int is_in(char *str, char c, int index)
-{
-    int i = 0;
-    int last = 0;
-    while (i < index)
-    {
-        if (str[i] == c)
-            last++;
-        i++;
-    }
-    if (last % 2 == 0)
-        return (0);
-    return (1);
-}
-
-int is_in_aspas(char *str, int index)
-{
-    int start;
-    int dup = get_last_in(str, '"', index);
-    int simple = get_last_in(str, '\'', index);
-    if (dup != -1)
-    {
-        start = get_last_in(str, '\'', dup);
-        if (start != -1)
-            return (0);
-        return (1);
-    }
-    if (simple != -1)
-    {
-        start = get_last_in(str, '"', simple);
-        if (start != -1)
-            return (1);
-        return (0);
-    }
-    return (1);
-}
-
-int aspas_error(char *str)
-{
-    int i = 0;
-    int duplas = 0;
-    int simples = 0;
-    int mutex = 0;
-    while (str[i])
-    {
-        if (is_in_aspas(str, i) == 1)
-        {
-            if (str[i] == '"')
-            {
-                duplas++;
-                if (mutex == 0)
-                    mutex = 1;
-                else
-                    mutex = 0;
-            }
-        }
-        if (str[i] == '\'' && mutex == 0)
-            simples++;
-        i++;
-    }
-    if (duplas % 2 != 0 || simples % 2 != 0)
-        return (write(1, "Error: aspas\n", 13));
-    return (0);
 }
 
 int print_var(char *str, int i)
@@ -172,7 +82,7 @@ int print_var(char *str, int i)
 int is_duplas(char *str, int i)
 {
     int get = 0;
-    while (str[++i] && str[i] != '"')
+    while (str[++i] && (str[i] != '"' || str[i - 1] == '\\') && str[i] != '|')
     {
         get = i;
         i = print_var(str, i);
@@ -181,19 +91,34 @@ int is_duplas(char *str, int i)
     }
     return (i);
 }
-int is_contra_barra(char *str, int i)
+
+int is_simples(char *str, int i)
 {
-    if (str[i] == 92 && str[i + 1] == '"')
-    {
-        printf("\"");
-        i += 2;
-    }
-    if (str[i] == 92 && str[i + 1] == '\'')
-    {
-        printf("'");
-        i += 2;
-    }
+    while (str[++i] && str[i] != '\'' && str[i] != '|')
+        printf("%c", str[i]);
     return (i);
+}
+
+char *str_delimited(char *str)
+{
+    int i = 0;
+    int j = 0;
+    int len = 0;
+    while (str[i])
+    {
+        if (str[i] == '|' && is_in_aspas(str, i) == 1)
+            len = i;
+        i++;
+    }
+    char *new = malloc(sizeof(char) * len);
+    i = 0;
+    while (i < len)
+    {
+        new[i] = str[i];
+        i++;
+    }
+    new[i] = '\0';
+    return (new);
 }
 
 void ft_echo(t_variables vars)
@@ -202,16 +127,16 @@ void ft_echo(t_variables vars)
     int get = 0;
     char *str;
 
-    str = vars.line + (start_write(vars.line, "echo") + new_line(vars.args[1]));
-    if (aspas_error(str))
-        return ;
-    while (str[i])
+    str = vars.line + (start_write(vars.line, vars.args[0]) + new_line(vars.args[1]));
+    if (aspas_error(str, true))
+        return;
+    while (str[i] && str[i] != '|')
     {
         i = is_contra_barra(str, i);
         if (str[i] == '"')
             i = is_duplas(str, i);
         else if (str[i] == '\'')
-            while (str[++i] && str[i] != '\'')
+            while (str[++i] && str[i] != '\'' && str[i] != '|')
                 printf("%c", str[i]);
         else
         {

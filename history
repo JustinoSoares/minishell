@@ -1,2 +1,1 @@
-echo mila
-"echo" mila
+echo "Mila" | echo js

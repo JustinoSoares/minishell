@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/14 16:45:34 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/15 12:55:57 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,23 @@
 
 void function_no_built(t_variables vars)
 {
+    char *command_path;
     vars.pid = fork();
     if (vars.pid == 0)
     {
-        execve(ft_strjoin("/bin/", vars.args[0]), vars.args, NULL);
-        perror("Error");
+        command_path = vars.args[0];
+        if (ft_strchr(vars.args[0], '/') == NULL)
+        {
+            command_path = find_executable(vars.args[0]);
+            if (command_path == NULL)
+            {
+                perror("Comando não encontrado");
+                free_matriz(vars.args);
+                exit(1);
+            }
+        }
+        execve(command_path, vars.args, NULL);
+        perror("\033[31mError\033[m");
         exit(1);
     }
     else if (vars.pid > 0)
@@ -26,6 +38,7 @@ void function_no_built(t_variables vars)
     else
         perror("Error");
 }
+
 char *remove_aspas(char *str)
 {
     int i = 0;
@@ -52,12 +65,11 @@ int ft_strcmp(char *s1, char *s2)
     int i = 0;
     if (!s1 || !s2)
         return (-1);
-    if (aspas_error(s1))
+    if (aspas_error(s1, false))
         return (-1);
+    s1 = remove_aspas(s1);
     while (s1[i] && s2[i] && s1[i] == s2[i])
-    {
-    }
-    printf("s1: %s\n", s1);
+        i++;
     return (s1[i] - s2[i]);
 }
 

@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/14 16:21:56 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/14 18:57:24 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,13 @@
 #include <string.h>
 #include <stdbool.h>
 #include <signal.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 #include "../libft/libft.h"
+
+#define MAX_IN 1024
+#define MAX_ARGS 100
+#define MAX_PATH 256
 
 typedef struct s_variables
 {
@@ -43,12 +49,15 @@ int count_until(char *str, char c, int index);
 int get_last_in(char *str, char c, int index);
 int is_in(char *str, char c, int index);
 int is_in_aspas(char *str, int index);
+int is_contra_barra(char *str, int i);
 void ft_echo(t_variables vars);
 int start_write(char *str, char *command);
 int new_line(char *str);
 void ft_exec_functions(t_variables vars);
 void free_matriz(char **matriz);
-void function_pipe (t_variables vars);
+void function_pipe(t_variables vars);
 int count_pipes(char *str);
-int aspas_error(char *str);
+int aspas_error(char *str, int show_error);
+char *find_executable(char *command);
+int print_var(char *str, int i);
 #endif

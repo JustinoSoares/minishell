@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/13 12:15:30 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/14 18:54:07 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ int new_line(char *str)
         return (i + 1);
     return (0);
 }
+
+
 
 void ft_get_terminal(char **envp)
 {
