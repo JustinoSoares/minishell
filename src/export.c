@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:56:42 by rquilami          #+#    #+#             */
-/*   Updated: 2024/11/14 11:26:22 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/15 11:21:09 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,11 @@ static void verfi_arg(t_env *ev)
             printf("export: `%s' not a valid identifier\n", ev->key);
             return;
         }
-        if (ev->key[i] == '(' || ev->key[i] == ')')
+       /* if (ev->key[i] == '(' || ev->key[i] == ')')
         {
             printf("syntax error near unexpected token `%c\'\n", ev->key[i]);
             return;
-        }
+        }*/
         i++;
     }
 }
@@ -85,13 +85,17 @@ static void	get_variable(t_env *ev, char *var)
 		ev->key[i] = var[i];
 		i++;
 	}
+	ev->key[i] = '\0';
     verfi_arg(ev);
 	if (var[i] == '\0')
 		ev->just_var = 1;
-	ev->key[i] = '\0';
 	i++;
+	if (var[i] == '\'')
+			i++;
 	while (var[i] != '\0')
 	{
+		if (var[i] == '\"' || (var[i + 1] == '\0' && var[i] == '\''))
+			i++;
 		ev->value[j++] = var[i];
 		i++;
 	}
