@@ -6,12 +6,33 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:56:42 by rquilami          #+#    #+#             */
-/*   Updated: 2024/11/15 11:21:09 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/17 13:17:25 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
+void	get_variable(t_env *ev, char *var)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	ev->just_var = 0;
+	ev->key = malloc(sizeof(char) * ft_strlen(var) + 1);
+	ev->value = malloc(sizeof(char) * ft_strlen(var) + 1);
+	while (var[i] != '=' && var[i] != 32 && var[i] != '\0' && var[i] != '$')
+	{
+		ev->key[i] = var[i];
+		i++;
+	}
+	ev->key[i] = '\0';
+    verfi_arg(ev);
+	if (var[i] == '\0')
+		ev->just_var = 1;
+	set_values(ev, var, i, j);
+}
 // Esta func pega as env e organiza elas em ordem alfabetica baseadas no valor da tabela ASCII
 static void	sort_env(char **env)
 {
@@ -40,9 +61,8 @@ static void	sort_env(char **env)
 		i++;
 	}
 }
-
 //Essa funcao verifica se o argumento passado no Export é valido
-static void verfi_arg(t_env *ev)
+void	verfi_arg(t_env *ev)
 {
     int i;
 
@@ -58,7 +78,7 @@ static void verfi_arg(t_env *ev)
         ev->key[i] == '^' || ev->key[i] == '~' ||
         ev->key[i] == '/' || ev->key[i] == '-' )
         {
-            printf("export: `%s' not a valid identifier\n", ev->key);
+            printf("export: `%s\' not a valid identifier\n", ev->key);
             return;
         }
        /* if (ev->key[i] == '(' || ev->key[i] == ')')
@@ -70,168 +90,33 @@ static void verfi_arg(t_env *ev)
     }
 }
 
-static void	get_variable(t_env *ev, char *var)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	j = 0;
-	ev->just_var = 0;
-	ev->key = malloc(sizeof(char) * ft_strlen(var) + 1);
-	ev->value = malloc(sizeof(char) * ft_strlen(var) + 1);
-	while (var[i] != '=' && var[i] != '\0' && var[i] != 32 && var[i] != '$')
-	{
-		ev->key[i] = var[i];
-		i++;
-	}
-	ev->key[i] = '\0';
-    verfi_arg(ev);
-	if (var[i] == '\0')
-		ev->just_var = 1;
-	i++;
-	if (var[i] == '\'')
-			i++;
-	while (var[i] != '\0')
-	{
-		if (var[i] == '\"' || (var[i + 1] == '\0' && var[i] == '\''))
-			i++;
-		ev->value[j++] = var[i];
-		i++;
-	}
-	ev->value[j] = '\0';
-}
-
-
-static void	replace_env(int i, int j, int n, char *key, t_env *ev)
-{
-	if (!ev->just_var)
-	{
-		ev->env[i] = realloc(ev->env[i], ft_strlen(ev->key)
-				+ ft_strlen(ev->value) + 2);
-		if (!ev->env[i])
-			return ;
-		j = 0;
-		while (j < ft_strlen(ev->key))
-		{
-			ev->env[i][j] = ev->key[j];
-			j++;
-		}
-		ev->env[i][j] = '=';
-		j++;
-		n = 0;
-		while (n < ft_strlen(ev->value))
-		{
-			ev->env[i][j] = ev->value[n];
-			j++;
-			n++;
-		}
-		ev->env[i][j] = '\0';
-		ev->found = 1;
-	}
-}
-
-//Essa funcao substitui o valor da variavel se no arg for
-//passado uma variavel com o mesmo nome e algum valor ou NULL
-static void	var_value(int i, int j, int n, char *key, t_env *ev)
-{
-	ev->env[i] = malloc(sizeof(char) * (ft_strlen(key) + ft_strlen(ev->value)
-				+ 2));
-	if (!ev->env[i])
-		return ;
-	j = 0;
-	while (j < ft_strlen(key))
-	{
-		ev->env[i][j] = ev->key[j];
-		j++;
-	}
-	ev->env[i][j] = '=';
-	j++;
-	n = 0;
-	while (n < ft_strlen(ev->value))
-	{
-		ev->env[i][j] = ev->value[n];
-		j++;
-		n++;
-	}
-	ev->env[i][j] = '\0';
-}
-
-//Essa funcao cria uma nova var se a var que for passada como par
-//nao existe nas env
-static void	new_env(int i, int j, int n, char *key, t_env *ev)
-{
-	ev->env = realloc(ev->env, sizeof(char *) * (ev->len + 2));
-	if (!ev->env)
-		return ;
-	if (ev->just_var)
-	{
-		j = 0;
-		ev->env[i] = malloc(sizeof(char) * (ft_strlen(key)) + 1);
-		while (j < ft_strlen(key))
-		{
-			ev->env[i][j] = ev->key[j];
-			j++;
-		}
-		ev->env[i][j] = '\0';
-	}
-	else
-		var_value(i, j, n, key, ev);
-	ev->env[i + 1] = NULL;
-	ev->len++;
-}
-
-static void	set_env(char *key, t_env *ev)
-{
-	int	i;
-	int	j;
-	int	n;
-
-	i = 0;
-	j = 0;
-	n = 0;
-	while (ev->env[i] != NULL && !ev->found)
-	{
-		if (strncmp(ev->env[i], key, ft_strlen(key)) == 0)
-        {
-            if (ev->just_var)
-                return;
-			replace_env(i, j, n, key, ev);
-        }
-		i++;
-	}
-	if (!ev->found)
-		new_env(i, j, n, key, ev);
-	ev->found = 0;
-}
-
 static void print_env(t_env *ev)
 {
 	int		i;
 	int		j;
 
 	i = 0;
-	while (ev->env[i] != NULL)
+	while (ev->env_copy[i] != NULL)
 	{
 		j = 0;
 		printf("declare -x ");
-		while (ev->env[i][j] != '\0')
+		while (ev->env_copy[i][j] != '\0')
 		{
-			if (ev->env[i][j] == '=')
+			if (ev->env_copy[i][j] == '=')
 			{
-				printf("%c", ev->env[i][j]);
+				printf("%c", ev->env_copy[i][j]);
 				printf("\"");
 				j++;
-				while (ev->env[i][j] != '\0')
+				while (ev->env_copy[i][j] != '\0')
 				{
-					printf("%c", ev->env[i][j]);
+					printf("%c", ev->env_copy[i][j]);
 					j++;
 				}
 				printf("\"");
 			}
 			else
 			{
-				printf("%c", ev->env[i][j]);
+				printf("%c", ev->env_copy[i][j]);
 				j++;
 			}
 		}
@@ -247,7 +132,8 @@ void	export(t_env *ev, char *var)
 	i = 0;
 	if (var == NULL || ft_strlen(var) == 0)
 	{
-		sort_env(ev->env);
+		copy_env(ev);
+		sort_env(ev->env_copy);
 		print_env(ev);
 	}
 	else

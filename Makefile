@@ -2,7 +2,7 @@ CC = cc
 FLAGS = -Wall -Wextra -Werror
 READLINE_FLAG = -lreadline
 NAME = minishell
-SRC = src/main.c src/utils.c src/export.c
+SRC = src/main.c src/utils.c src/export.c src/export2.c src/env.c 
 LIBFT_PATH=libft/
 LIBFT=libft.a
 OBJ = $(SRC:.c=.o)

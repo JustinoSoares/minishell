@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/13 11:34:02 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/17 13:10:36 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,37 +166,66 @@ void ft_get_terminal(t_env *ev)
             ft_pwd(args[1]);
         else if (args[0] && strcmp(args[0], "export") == 0)
             export(ev, args[1]);
+        else if (args[0] && strcmp(args[0], "env") == 0)
+            env(ev, args[1]);
+        else if (args[0] && strcmp(args[0], "unset") == 0)
+            unset(args[1], ev);
         add_history(line);
         write_history("history");
         free(line);
     }
 }
 
-int main(int argc, char **argv, char **envp)
+
+void    copy_env(t_env *ev)
 {
-    t_env   *ev;
-    int     i;
-    int     j;
+    int i;
+    int j;
 
     i = 0;
-    j = 0; 
+    j = 0;
+    while (ev->env[i] != NULL)
+        i++;
+    ev->len = i;
+    ev->env_copy = malloc((i + 1) * sizeof(char *));
+    if (!ev->env_copy)
+        return;
+    while (j < i)
+    {
+        ev->env_copy[j] = strdup(ev->env[j]);
+        j++;
+    }
+    ev->env_copy[i] = NULL;
+}
 
-    
-    ev = malloc(sizeof(t_env));
+void    fill_env(t_env *ev, char **envp)
+{
+    int i;
+    int j;
+
+
+    i = 0;
+    j = 0;
     while (envp[i] != NULL)
         i++;
     ev->len = i;
     ev->env = malloc((i + 1) * sizeof(char *));
     if (!ev->env)
-        return (-1);
+        return;
     while (j < i)
     {
         ev->env[j] = strdup(envp[j]);
         j++;
     }
     ev->env[i] = NULL;
+}
 
+int main(int argc, char **argv, char **envp)
+{
+    t_env   *ev;
     
+    ev = malloc(sizeof(t_env));
+    fill_env(ev, envp);
     ft_get_terminal(ev);
     return (0);
 }
