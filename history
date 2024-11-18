@@ -1,2 +1,3 @@
+unset USER
 unset HOME
 export
