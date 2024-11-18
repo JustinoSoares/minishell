@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:22:22 by rquilami          #+#    #+#             */
-/*   Updated: 2024/11/18 12:19:39 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/18 12:36:20 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,5 +53,22 @@ void	unset(char *key, t_env *ev)
 	ev->env = realloc(ev->env, sizeof(char *) * i--);
 	if (ev->env == NULL && ev->len > 0)
 		return;
+}
+
+//Será alterada em funcao da neccessidade de free
+//que houver no decorrer do desenvolvimento do projeto
+
+//Precisa também aceitar números como argumento...e sair normalmente
+void    ft_exit(char *str, t_env  *ev)
+{
+	if (str == NULL || ft_strlen(str) == 0)
+	{
+		printf("exit\n");
+		free(ev->env);
+		free(ev->env_copy);
+		exit(1);
+	}
+	else
+		printf("bash: exit: %s: numeric argument required\n", str);
 }
 

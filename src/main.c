@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/17 14:07:45 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/18 12:31:09 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,6 +170,8 @@ void ft_get_terminal(t_env *ev)
             env(ev, args[1]);
         else if (args[0] && strcmp(args[0], "unset") == 0)
             unset(args[1], ev);
+        else if (args[0] && strcmp(args[0], "exit") == 0)
+            ft_exit(args[1], ev);
         add_history(line);
         write_history("history");
         free(line);
