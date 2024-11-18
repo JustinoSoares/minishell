@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/14 18:57:24 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/18 09:53:21 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,18 @@
 #define MAX_ARGS 100
 #define MAX_PATH 256
 
+
+typedef struct s_env
+{
+    char    *value;
+    char    *key;
+    char    **env;
+    char    **env_copy;
+    int     len;
+    int     found;
+    int     just_var;
+}   t_env;
+
 typedef struct s_variables
 {
     int status_command;
@@ -41,8 +53,11 @@ typedef struct s_variables
     char **args;
     char **env;
     pid_t pid;
+    t_env *ev;
     struct s_variables *next;
 } t_variables;
+
+
 
 int count_elements(char *str, char c);
 int count_until(char *str, char c, int index);
@@ -60,4 +75,7 @@ int count_pipes(char *str);
 int aspas_error(char *str, int show_error);
 char *find_executable(char *command);
 int print_var(char *str, int i);
+
+void env(t_env *ev, t_variables vars);
+void	unset(char *key, t_env *ev);
 #endif

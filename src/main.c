@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/14 18:54:07 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/18 09:59:39 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,26 @@ int new_line(char *str)
     return (0);
 }
 
+void    fill_env(t_env *ev, char **envp)
+{
+    int i;
+    int j;
 
+    i = 0;
+    j = 0;
+    while (envp[i] != NULL)
+        i++;
+    ev->len = i;
+    ev->env = malloc((i + 1) * sizeof(char *));
+    if (!ev->env)
+        return;
+    while (j < i)
+    {
+        ev->env[j] = strdup(envp[j]);
+        j++;
+    }
+    ev->env[i] = NULL;
+}
 
 void ft_get_terminal(char **envp)
 {
@@ -66,14 +85,16 @@ void ft_get_terminal(char **envp)
     vars.status_command = 0;
     vars.env = envp;
     signal(SIGINT, ctrl_c);  // quando o usuário aperta ctrl+c
-    signal(SIGQUIT, ctrl_c); // quando o usuário aperta ctrl+
+    signal(SIGQUIT, ctrl_c); // quando o usuário aperta ctrl+d
     while (true)
     {
         vars.line = readline("\033[1;32mroot@minishell\033[m:~$ ");
         vars.args = ft_split(vars.line, ' ');
         if (!vars.line || strcmp(vars.args[0], "exit") == 0)
             return (free(vars.line));
-        function_pipe(vars);
+        vars.ev = malloc(sizeof(t_env));
+        fill_env(vars.ev, envp);
+        ft_exec_functions(vars);
         add_history(vars.line);
         write_history("history");
         free(vars.line);
