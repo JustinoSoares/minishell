@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:22:22 by rquilami          #+#    #+#             */
-/*   Updated: 2024/11/18 10:03:39 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/18 23:43:28 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,12 @@ void env(t_env *ev, t_variables vars)
 
 void	unset(char *key, t_env *ev)
 {
-    int i = 0;
-	int j = 0;
+    int i;
+	int j;
 
+	
+	i = 0;
+	j = 0;
     while (ev->env[i] != NULL)
 	{
         if (strncmp(ev->env[i], key, ft_strlen(key)) == 0 && ev->env[i][ft_strlen(key)] == '=')
@@ -49,7 +52,7 @@ void	unset(char *key, t_env *ev)
 		}
         i++;
     }
-	ev->env = realloc(ev->env, sizeof(char *) * ev->len--);
+	ev->env = realloc(ev->env, sizeof(char *) * i--);
 	if (ev->env == NULL && ev->len > 0)
 		return;
 }

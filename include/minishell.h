@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/18 09:53:21 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/18 23:35:46 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,4 +78,9 @@ int print_var(char *str, int i);
 
 void env(t_env *ev, t_variables vars);
 void	unset(char *key, t_env *ev);
+void    ft_pwd(t_variables vars);
+void    ft_exit(char *str, t_env  *ev);
+
+void ft_cd(t_variables vars);
+void ctrl_c(int sig);
 #endif
