@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 15:38:25 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/15 13:11:55 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/19 08:41:20 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char *get_word(char *str, int start)
 
     while (str[size] && str[size] != 32 && str[size] != '"' && str[size] != '\'')
     {
-        if (ft_isalnum(str[size]))
+        if (ft_isalnum(str[size]) || str[size] == '_')
             size++;
         else
             break;
@@ -45,7 +45,7 @@ char *get_word(char *str, int start)
     new = malloc(sizeof(char) * (size + 1));
     while (str[start] && str[start] != 32 && str[start] != '"' && str[start] != '\'')
     {
-        if (ft_isalnum(str[start]))
+        if (ft_isalnum(str[start]) || str[start] == '_')
             new[i++] = str[start];
         else
             break;

@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/18 09:53:21 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/19 13:37:57 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,17 +31,18 @@
 #define MAX_ARGS 100
 #define MAX_PATH 256
 
-
 typedef struct s_env
 {
-    char    *value;
-    char    *key;
-    char    **env;
-    char    **env_copy;
-    int     len;
-    int     found;
-    int     just_var;
-}   t_env;
+    char *value;
+    char *key;
+    char **env;
+    char **env_copy;
+    int len;
+    int found;
+    int just_var;
+    int i;
+    int j;
+} t_env;
 
 typedef struct s_variables
 {
@@ -56,8 +57,6 @@ typedef struct s_variables
     t_env *ev;
     struct s_variables *next;
 } t_variables;
-
-
 
 int count_elements(char *str, char c);
 int count_until(char *str, char c, int index);
@@ -77,5 +76,18 @@ char *find_executable(char *command);
 int print_var(char *str, int i);
 
 void env(t_env *ev, t_variables vars);
-void	unset(char *key, t_env *ev);
+void unset(char *key, t_env *ev);
+void ft_pwd(t_variables vars);
+void    ft_exit(t_variables vars);
+
+void ft_cd(t_variables vars);
+void ctrl_c(int sig);
+
+void set_values(t_env *ev, char *var, int i, int j);
+void set_env(char *key, t_env *ev);
+void get_variable(t_env *ev, char *var);
+void verfi_arg(t_env *ev);
+void export(t_variables vars);
+void copy_env(t_env *ev);
+void fill_env(t_env *ev, char **envp);
 #endif

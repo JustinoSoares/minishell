@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/18 09:59:39 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/19 13:27:31 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,22 +78,63 @@ void    fill_env(t_env *ev, char **envp)
     ev->env[i] = NULL;
 }
 
-void ft_get_terminal(char **envp)
+char *ft_strcat_index(char *str, char *str2, int index)
 {
-    
-    t_variables vars;
+    char *new;
+    int i = 0;
+    int j = 0;
+    int x = 0;
+    int len = strlen(str) + strlen(str2);
+    new = malloc(sizeof(char) * (strlen(str) + strlen(str2) + 1));
+    while (str[i] && i < index)
+    {
+        new[i] = str[i];
+        i++;
+    }
+    x = i;
+    while (str2[j])
+    {
+        new[i] = str2[j];
+        i++;
+        j++;
+    }
+    while (str[x])
+    {
+        new[i] = str[x];
+        i++;
+        x++;
+    }
+    return (new);
+}
+
+char *last_word(char *str, char limited)
+{
+    int i = 0;
+    char **word;
+
+    word = ft_split(str, limited);
+    if (!word)
+        return (NULL);
+    while (word[i])
+        i++;
+    return (word[i - 1]);
+}
+
+void ft_get_terminal(char **envp, t_variables vars)
+{
+    char *line;
     vars.status_command = 0;
     vars.env = envp;
     signal(SIGINT, ctrl_c);  // quando o usuário aperta ctrl+c
     signal(SIGQUIT, ctrl_c); // quando o usuário aperta ctrl+d
     while (true)
     {
-        vars.line = readline("\033[1;32mroot@minishell\033[m:~$ ");
+        line = ft_strcat_index("\033[1;32mroot@minishell\033[m:~/ $ ",
+            last_word(getcwd(NULL, 0), '/'), 27);
+        vars.line = readline(line);
         vars.args = ft_split(vars.line, ' ');
-        if (!vars.line || strcmp(vars.args[0], "exit") == 0)
+        if (!vars.line)
             return (free(vars.line));
-        vars.ev = malloc(sizeof(t_env));
-        fill_env(vars.ev, envp);
         ft_exec_functions(vars);
         add_history(vars.line);
         write_history("history");
@@ -103,6 +144,9 @@ void ft_get_terminal(char **envp)
 
 int main(int argc, char **argv, char **envp)
 {
-    ft_get_terminal(envp);
+    t_variables vars;
+    vars.ev = malloc(sizeof(t_env));
+    fill_env(vars.ev, envp);
+    ft_get_terminal(envp, vars);
     return (0);
 }
