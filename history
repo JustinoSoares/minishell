@@ -1,3 +1,2 @@
-unset USER
-unset HOME
-export
+export ROMAO=romas
+env

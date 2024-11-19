@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/17 13:09:04 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/19 12:44:13 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ typedef struct s_env
     char    *key;
     char    **env;
     char    **env_copy;
+    int     i;
+    int     j;
     int     len;
     int     found;
     int     just_var;
@@ -46,6 +48,7 @@ void    copy_env(t_env *ev);
 void    set_values(t_env *ev, char *var, int i, int j);
 void    fill_env(t_env *ev, char **envp);
 void	unset(char *key, t_env *ev);
+void    ft_exit(char *str, t_env  *ev);
 
 
 #endif

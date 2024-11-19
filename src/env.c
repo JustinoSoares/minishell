@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:22:22 by rquilami          #+#    #+#             */
-/*   Updated: 2024/11/18 12:36:20 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/19 12:42:41 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,17 +58,37 @@ void	unset(char *key, t_env *ev)
 //Será alterada em funcao da neccessidade de free
 //que houver no decorrer do desenvolvimento do projeto
 
+
+static void clean_all(t_env *ev)
+{
+	free(ev->env);
+	free(ev->env_copy);
+}
 //Precisa também aceitar números como argumento...e sair normalmente
 void    ft_exit(char *str, t_env  *ev)
 {
-	if (str == NULL || ft_strlen(str) == 0)
+	int i;
+
+	i = 0;
+	clean_all(ev);
+	if (str != NULL || ft_strlen(str) != 0)
 	{
+		while (str[i] != '\0')
+		{
+			if (!ft_isdigit(str[i]))
+			{
+				printf("bash: exit: %s: numeric argument required\n", str);
+				exit (2);
+			}
+			i++;
+		}
 		printf("exit\n");
-		free(ev->env);
-		free(ev->env_copy);
-		exit(1);
+		exit(ft_atoi(str));
 	}
 	else
-		printf("bash: exit: %s: numeric argument required\n", str);
+	{
+		printf("exit\n");
+		exit(0);
+	}
 }
 

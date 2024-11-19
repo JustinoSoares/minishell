@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:56:42 by rquilami          #+#    #+#             */
-/*   Updated: 2024/11/17 13:17:25 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/19 12:37:50 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,72 +64,65 @@ static void	sort_env(char **env)
 //Essa funcao verifica se o argumento passado no Export é valido
 void	verfi_arg(t_env *ev)
 {
-    int i;
-
-    i = 0;
-    while (ev->key[i])
+    ev->i = 0;
+    while (ev->key[ev->i])
     {
-        if (ev->key[i] == '%' || ev->key[i] == '#' ||
-        ev->key[i] == '{' || ev->key[i] == '}' ||
-        ev->key[i] == ':' || ev->key[i] == '?' ||
-        ev->key[i] == ';' || ev->key[i] == '@' ||
-        ev->key[i] == '+' || ev->key[i] == '*' ||
-        ev->key[i] == ',' || ev->key[i] == '.' ||
-        ev->key[i] == '^' || ev->key[i] == '~' ||
-        ev->key[i] == '/' || ev->key[i] == '-' )
+        if (ev->key[ev->i] == '%' || ev->key[ev->i] == '#' ||
+        ev->key[ev->i] == '{' || ev->key[ev->i] == '}' ||
+        ev->key[ev->i] == ':' || ev->key[ev->i] == '?' ||
+        ev->key[ev->i] == ';' || ev->key[ev->i] == '@' ||
+        ev->key[ev->i] == ';' || ev->key[ev->i] == '@' ||
+        ev->key[ev->i] == '+' || ev->key[ev->i] == '*' ||
+        ev->key[ev->i] == ',' || ev->key[ev->i] == '.' ||
+        ev->key[ev->i] == '^' || ev->key[ev->i] == '~' ||
+        ev->key[ev->i] == '/' || ev->key[ev->i] == '-' )
         {
             printf("export: `%s\' not a valid identifier\n", ev->key);
             return;
         }
-       /* if (ev->key[i] == '(' || ev->key[i] == ')')
+        if (ev->key[ev->i] == '(' || ev->key[ev->i] == ')')
         {
-            printf("syntax error near unexpected token `%c\'\n", ev->key[i]);
+            printf("syntax error near unexpected token `%c\'\n", ev->key[ev->i]);
             return;
-        }*/
-        i++;
+        }
+        ev->i++;
     }
 }
 
 static void print_env(t_env *ev)
 {
-	int		i;
-	int		j;
-
-	i = 0;
-	while (ev->env_copy[i] != NULL)
+	ev->i = 0;
+	while (ev->env_copy[ev->i] != NULL)
 	{
-		j = 0;
+		ev->j = 0;
 		printf("declare -x ");
-		while (ev->env_copy[i][j] != '\0')
+		while (ev->env_copy[ev->i][ev->j] != '\0')
 		{
-			if (ev->env_copy[i][j] == '=')
+			if (ev->env_copy[ev->i][ev->j] == '=')
 			{
-				printf("%c", ev->env_copy[i][j]);
+				printf("%c", ev->env_copy[ev->i][ev->j]);
 				printf("\"");
-				j++;
-				while (ev->env_copy[i][j] != '\0')
+				ev->j++;
+				while (ev->env_copy[ev->i][ev->j] != '\0')
 				{
-					printf("%c", ev->env_copy[i][j]);
-					j++;
+					printf("%c", ev->env_copy[ev->i][ev->j]);
+					ev->j++;
 				}
 				printf("\"");
 			}
 			else
 			{
-				printf("%c", ev->env_copy[i][j]);
-				j++;
+				printf("%c", ev->env_copy[ev->i][ev->j]);
+				ev->j++;
 			}
 		}
 		printf("\n");
-		i++;
+		ev->i++;
 	}
 }
 
 void	export(t_env *ev, char *var)
 {
-	int	i;
-
-	i = 0;
 	if (var == NULL || ft_strlen(var) == 0)
 	{
 		copy_env(ev);
