@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/18 12:31:09 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/20 12:23:49 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,8 +118,12 @@ void ft_echo(char *str)
     write(1, "\n", 1);
 }
 
-void ft_cd(char *path)
+void    ft_cd(t_env *ev, char *path)
 {
+    char oldpwd[1024];
+    char pwd[1024];
+
+    getcwd(oldpwd, 1024);
     if (path == NULL || ft_strlen(path) == 0)
     {
         printf("cd: no such file or directory:\n");
@@ -130,6 +134,9 @@ void ft_cd(char *path)
         printf("cd: no such file or directory: %s\n", path);
         return;
     }
+    getcwd(pwd, 1024);
+    export(ev, "OLDPWD", oldpwd);
+    export(ev, "PWD", pwd);
 }
 
 void    ft_pwd(char *arg)
@@ -161,11 +168,11 @@ void ft_get_terminal(t_env *ev)
         if (args[0] && strcmp(args[0], "echo") == 0)
             ft_echo(line + start_write(line, "echo"));
         else if (args[0] && strcmp(args[0], "cd") == 0)
-            ft_cd(args[1]);
+            ft_cd(ev, args[1]);
         else if (args[0] && strcmp(args[0], "pwd") == 0)
             ft_pwd(args[1]);
         else if (args[0] && strcmp(args[0], "export") == 0)
-            export(ev, args[1]);
+            get_variable(ev, args[1]);
         else if (args[0] && strcmp(args[0], "env") == 0)
             env(ev, args[1]);
         else if (args[0] && strcmp(args[0], "unset") == 0)

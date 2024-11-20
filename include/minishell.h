@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/19 12:44:13 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/20 11:26:52 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ typedef struct s_env
 }   t_env;
 
 void    env(t_env *ev, char *str);
-void    export(t_env *ev, char *var);
+void    export(t_env *ev, char *var, char *values);
 void	get_variable(t_env *ev, char *var);
 void	set_env(char *key, t_env *ev);
 void    verfi_arg(t_env *ev);

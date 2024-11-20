@@ -6,33 +6,13 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:56:42 by rquilami          #+#    #+#             */
-/*   Updated: 2024/11/19 12:37:50 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/20 12:21:00 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	get_variable(t_env *ev, char *var)
-{
-	int	i;
-	int	j;
 
-	i = 0;
-	j = 0;
-	ev->just_var = 0;
-	ev->key = malloc(sizeof(char) * ft_strlen(var) + 1);
-	ev->value = malloc(sizeof(char) * ft_strlen(var) + 1);
-	while (var[i] != '=' && var[i] != 32 && var[i] != '\0' && var[i] != '$')
-	{
-		ev->key[i] = var[i];
-		i++;
-	}
-	ev->key[i] = '\0';
-    verfi_arg(ev);
-	if (var[i] == '\0')
-		ev->just_var = 1;
-	set_values(ev, var, i, j);
-}
 // Esta func pega as env e organiza elas em ordem alfabetica baseadas no valor da tabela ASCII
 static void	sort_env(char **env)
 {
@@ -121,7 +101,7 @@ static void print_env(t_env *ev)
 	}
 }
 
-void	export(t_env *ev, char *var)
+void	export(t_env *ev, char *var, char *value)
 {
 	if (var == NULL || ft_strlen(var) == 0)
 	{
@@ -131,7 +111,34 @@ void	export(t_env *ev, char *var)
 	}
 	else
 	{
-		get_variable(ev, var);
-		set_env(ev->key, ev);
+		 ev->key = var;
+		 ev->value = value;
+		 set_env(ev->key, ev);
+	}
+}
+
+void	get_variable(t_env *ev, char *var)
+{ 
+	if (var == NULL || ft_strlen(var) == 0)
+	{
+		export(ev, NULL, NULL);
+	}
+	else
+	{
+		ev->i = 0;
+		ev->just_var = 0;
+		ev->key = malloc(sizeof(char) * ft_strlen(var) + 1);
+		ev->value = malloc(sizeof(char) * ft_strlen(var) + 1);
+		while (var[ev->i] != '=' && var[ev->i] != 32 && var[ev->i] != '\0' && var[ev->i] != '$')
+		{
+			ev->key[ev->i] = var[ev->i];
+			ev->i++;
+		}
+		ev->key[ev->i] = '\0';
+		verfi_arg(ev);
+		if (var[ev->i] == '\0')
+			ev->just_var = 1;
+		set_values(ev, var, ev->i, ev->j);
+		export(ev, ev->key, ev->value);
 	}
 }

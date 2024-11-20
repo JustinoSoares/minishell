@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:22:00 by rquilami          #+#    #+#             */
-/*   Updated: 2024/11/17 12:57:53 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/20 12:21:13 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void set_values(t_env *ev, char *var, int i, int j)
 {
+	j = 0;
     i++;
     if (var[i] == '\'')
 			i++;
