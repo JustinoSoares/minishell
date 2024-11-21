@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/19 13:37:57 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/21 07:36:06 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ int count_pipes(char *str);
 int aspas_error(char *str, int show_error);
 char *find_executable(char *command);
 int print_var(char *str, int i);
+char **ft_split_aspa(char const *s, char c);
 
 void env(t_env *ev, t_variables vars);
 void unset(char *key, t_env *ev);

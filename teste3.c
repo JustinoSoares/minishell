@@ -6,11 +6,22 @@
 /*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 08:48:30 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/19 22:11:18 by justinosoar      ###   ########.fr       */
+/*   Updated: 2024/11/21 07:33:21 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/minishell.h"
+
+int next_exist(const char *str, char c, int i)
+{
+    while (str[i])
+    {
+        if (str[i] == c)
+            return (i);
+        i++;
+    }
+    return (0);
+}
 
 static int ft_count_words(const char *s, char c)
 {
@@ -23,12 +34,14 @@ static int ft_count_words(const char *s, char c)
     {
         if (i == 0 && s[i] != c)
             words++;
-        if (s[i] == '\'')
+        if (s[i] == '\'' && next_exist(s, '\'', i + 1))
             while (s[i] && s[++i] != '\'')
                 ;
-        else if (s[i] == '"')
+        else if (s[i] == '"' && next_exist(s, '"', i + 1))
             while (s[i] && s[++i] != '"')
                 ;
+        if (s[i] != c && s[i + 1] == '\0')
+            words++;
         if (i > 0 && s[i] != c && s[i - 1] == c)
             words++;
         i++;
@@ -47,9 +60,7 @@ static char **ft_malloc_strs(char **strs, const char *s, char c)
     x = 0;
     while (s[i])
     {
-        if (s[i] != c)
-            count++;
-        if (s[i] == '\'')
+        if (s[i] == '\'' && next_exist(s, '\'', i + 1))
         {
             count = 0;
             while (s[i] && s[++i] != '\'')
@@ -57,9 +68,8 @@ static char **ft_malloc_strs(char **strs, const char *s, char c)
             strs[x] = malloc(sizeof(char) * (count + 1));
             if (!strs[x])
                 return (NULL);
-            x++;
         }
-        else if (s[i] == '"')
+        else if (s[i] == '"' && next_exist(s, '"', i + 1))
         {
             count = 0;
             while (s[i] && s[++i] != '"')
@@ -67,15 +77,19 @@ static char **ft_malloc_strs(char **strs, const char *s, char c)
             strs[x] = malloc(sizeof(char) * (count + 1));
             if (!strs[x])
                 return (NULL);
-            x++;
         }
-        if ((s[i] == c && i > 0 && s[i - 1] != c) || (s[i] != c && s[i + 1] == '\0'))
+        else
         {
-            strs[x] = malloc(sizeof(char) * (count + 1));
-            if (!strs[x])
-                return (NULL);
-            count = 0;
-            x++;
+            if (s[i] != c && s[i])
+                count++;
+            if ((s[i] == c && i > 0 && s[i - 1] != c) || (s[i] != c && s[i + 1] == '\0'))
+            {
+                strs[x] = malloc(sizeof(char) * (count + 1));
+                if (!strs[x])
+                    return (NULL);
+                count = 0;
+                x++;
+            }
         }
         i++;
     }
@@ -93,14 +107,19 @@ static char **ft_cpy_strs(char **strs, const char *s, char c)
     y = 0;
     while (s[i])
     {
-        if (s[i] == '\'')
+        if (s[i] == '\'' && next_exist(s, '\'', i + 1))
         {
             y = 0;
             while (s[++i] != '\'' && s[i])
                 strs[x][y++] = s[i];
             strs[x][y] = '\0';
-            //printf("dentro :%c\n", strs[x][y]);
+        }
+        else if (s[i] == '"' && next_exist(s, '"', i + 1))
+        {
             y = 0;
+            while (s[++i] != '"' && s[i])
+                strs[x][y++] = s[i];
+            strs[x][y] = '\0';
         }
         else
         {
@@ -116,7 +135,6 @@ static char **ft_cpy_strs(char **strs, const char *s, char c)
             }
         }
         i++;
-        printf("fora : %s\n", strs[x]);
     }
     return (strs);
 }
@@ -167,8 +185,13 @@ char **ft_split_aspa(char const *s, char c)
 int main(int ac, char **av)
 {
     char **strs;
-    char str[] = "'oi tudo' bem ana carla";
+    int i = 0;
+    char str[] = "oi tudo \"bem ana\" carla";
 
     strs = ft_split_aspa(str, ' ');
-    //printf("%s\n", strs[atoi(av[1])]);
+    while (strs[i])
+    {
+        printf("%s\n", strs[i]);
+        i++;
+    }
 }
