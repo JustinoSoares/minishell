@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/20 12:23:49 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/22 12:22:40 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ void ft_get_terminal(t_env *ev)
         line = readline("\033[1;32mroot@minishell\033[m:~$ ");
         if (!line || strcmp(line, "exit") == 0)
             break;
-        args = ft_split(line, ' ');
+        args = ft_split(line, 127);
         if (args[0] && strcmp(args[0], "echo") == 0)
             ft_echo(line + start_write(line, "echo"));
         else if (args[0] && strcmp(args[0], "cd") == 0)

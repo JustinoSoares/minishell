@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:22:00 by rquilami          #+#    #+#             */
-/*   Updated: 2024/11/20 12:21:13 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/22 12:39:57 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,28 +16,24 @@ void set_values(t_env *ev, char *var, int i, int j)
 {
 	j = 0;
     i++;
-    if (var[i] == '\'')
-			i++;
-	while (var[i] != '\0')
+    if (var[i] == '\'' || var[i] == '"')
 	{
-		if (var[i] == '\"' || (var[i + 1] == '\0' && var[i] == '\''))
-        {
-			i++;
-            while (var[i] != '\0')
-            {
-                ev->value[j++] = var[i];
-                i++;
-            }
-        }
-        else
-        {   
-            ev->value[j++] = var[i];
-            i++;
-            if (var[i] == 32)
-                break;
-        }
+		i++;
+		while (var[i] != '"')
+		{
+			ev->value[j++] = var[i];
+				i++;
+		}
 	}
-    ev->value[j] = '\0';
+	else
+	{
+		while (var[i] != '\0' && var[i] != 32)
+		{
+			ev->value[j++] = var[i];
+				i++;
+		}
+	}
+	ev->value[j] = '\0';
 }
 
 static void	replace_env(int i, int j, int n, char *key, t_env *ev)
