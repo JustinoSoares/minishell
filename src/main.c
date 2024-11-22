@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/19 13:27:31 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/22 16:43:43 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int new_line(char *str)
     return (0);
 }
 
-void    fill_env(t_env *ev, char **envp)
+void fill_env(t_env *ev, char **envp)
 {
     int i;
     int j;
@@ -130,7 +130,7 @@ void ft_get_terminal(char **envp, t_variables vars)
     while (true)
     {
         line = ft_strcat_index("\033[1;32mroot@minishell\033[m:~/ $ ",
-            last_word(getcwd(NULL, 0), '/'), 27);
+                               last_word(getcwd(NULL, 0), '/'), 27);
         vars.line = readline(line);
         vars.args = ft_split(vars.line, ' ');
         if (!vars.line)

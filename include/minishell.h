@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/21 07:36:06 by justinosoar      ###   ########.fr       */
+/*   Updated: 2024/11/22 16:36:14 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ char **ft_split_aspa(char const *s, char c);
 void env(t_env *ev, t_variables vars);
 void unset(char *key, t_env *ev);
 void ft_pwd(t_variables vars);
-void    ft_exit(t_variables vars);
+void ft_exit(t_variables vars);
 
 void ft_cd(t_variables vars);
 void ctrl_c(int sig);
@@ -91,4 +91,10 @@ void verfi_arg(t_env *ev);
 void export(t_variables vars);
 void copy_env(t_env *ev);
 void fill_env(t_env *ev, char **envp);
+char *ft_strcat_index(char *str, char *str2, int index);
+int is_duplas(char *str, int i);
+char *get_word(char *str, int start);
+int get_last_in(char *str, char c, int index);
+int is_in_aspas(char *str, int index);
+
 #endif
