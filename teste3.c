@@ -3,14 +3,82 @@
 /*                                                        :::      ::::::::   */
 /*   teste3.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 08:48:30 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/22 16:46:14 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/24 00:13:24 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/minishell.h"
+
+int count_elements(char *str, char c)
+{
+    int count = 0;
+    while (*str)
+    {
+        if (*str == c)
+            count++;
+        str++;
+    }
+    return (count);
+}
+
+char *get_word(char *str, int start)
+{
+    char *new;
+    int i = 0;
+    int size = 0;
+
+    while (str[size] && str[size] != 32 && str[size] != '"' && str[size] != '\'')
+    {
+        if (ft_isalnum(str[size]) || str[size] == '_')
+            size++;
+        else
+            break;
+    }
+    new = malloc(sizeof(char) * (size + 1));
+    while (str[start] && str[start] != 32 && str[start] != '"' && str[start] != '\'')
+    {
+        if (ft_isalnum(str[start]) || str[start] == '_')
+            new[i++] = str[start];
+        else
+            break;
+        start++;
+    }
+    new[i] = '\0';
+    return (new);
+}
+
+int count_until(char *str, char c, int index)
+{
+    int count = 0;
+    int i = 0;
+    while (i < index)
+    {
+        if (str[i] == c)
+            count++;
+        i++;
+    }
+    return (count);
+}
+
+int get_last_in(char *str, char c, int index)
+{
+    int i = 0;
+    int last = 0;
+    int back = index;
+    while (i < index)
+    {
+        if (str[i] == c)
+            last = i;
+        i++;
+    }
+    back = count_until(str, c, back);
+    if (back % 2 != 0)
+        return (last);
+    return (-1);
+}
 
 int is_in_aspas(char *str, int index)
 {
@@ -34,30 +102,7 @@ int is_in_aspas(char *str, int index)
     return (1);
 }
 
-char *print_var_macro(char *str, int i)
-{
-    char *macro;
-    if (str[i] == '$' && str[i + 1] == '?')
-    {
-        printf("0");
-        i += 2;
-    }
-    else if (str[i] == '$' && str[i + 1] != 32 && str[i + 1] != '"' && str[i + 1] != '\'' && str[i + 1] != '\0')
-    {
-        macro = getenv(get_word(str, i + 1));
-        if (macro && ((is_in_aspas(str, i) == 1) || count_elements(str, '\'') == 0))
-        {
-            printf("%s", macro);
-            i += ft_strlen(get_word(str, i + 1));
-        }
-        else if (!macro)
-            i += ft_strlen(get_word(str, i + 1));
-        else
-            printf("%c", str[i++]);
-    }
-    return (macro);
-}
-char *ft_strcat_index(char *str, char *str2, int index)
+char *ft_strcat_macro(char *str, char *str2, int index, int size_word)
 {
     char *new;
     int i = 0;
@@ -77,6 +122,7 @@ char *ft_strcat_index(char *str, char *str2, int index)
         i++;
         j++;
     }
+    x += size_word;
     while (str[x])
     {
         new[i] = str[x];
@@ -88,30 +134,61 @@ char *ft_strcat_index(char *str, char *str2, int index)
 
 char *is_expanded(char *str)
 {
-    int i = 0;
-    int j = 0;
-    char *new;
     char *macro;
-    new = malloc(sizeof(char) * (ft_strlen(str) + 1));
+    int i = 0;
     while (str[i])
     {
-        if (str[i] == '$' && str[i + 1] != 32 && str[i + 1] != '"' && str[i + 1] != '\'')
+        if (str[i] == '"')
         {
-            macro = getenv(get_word(str, i + 1));
-            if (macro && ((is_in_aspas(str, i) == 1) || count_elements(str, '\'') == 0))
-                str = ft_strcat_index(str, macro, i);
-            j++;
+            while (str[++i] && str[i] != '"')
+            {
+                printf("Entrou %c\n", str[i]);
+                if (str[i] == '$' && str[i + 1] != 32 && str[i + 1] != '"' && str[i + 1] != '\'' && str[i + 1] != '\0')
+                {
+                    macro = getenv(get_word(str, i + 1));
+                    if (macro)
+                    {
+                        str = ft_strcat_macro(str, macro, i, ft_strlen(get_word(str, i + 1)) + 1);
+                        i += ft_strlen(get_word(str, i + 1));
+                    }
+                    else
+                        i += ft_strlen(get_word(str, i + 1));
+                }
+                else
+                    i++;
+            }
         }
-        i++;
+        else if (str[i] == '\'')
+        {
+            while (str[++i] && str[i] != '\'')
+                i++;
+        }
+        else
+        {
+            if (str[i] == '$' && str[i + 1] != 32 && str[i + 1] != '"' && str[i + 1] != '\'' && str[i + 1] != '\0')
+            {
+                macro = getenv(get_word(str, i + 1));
+                if (macro)
+                {
+                    str = ft_strcat_macro(str, macro, i, ft_strlen(get_word(str, i + 1)) + 1);
+                    i += ft_strlen(get_word(str, i + 1));
+                }
+                else
+                    i += ft_strlen(get_word(str, i + 1));
+            }
+            else
+                i++;
+        }
     }
-    new = str;
-    return (new);
+    return (str);
 }
 
 int main(void)
 {
-    char *str = "echo $HOME";
+    char *str = "echo \"' $HOME'\"CAntar";
+
     char *new = is_expanded(str);
+    // str = ft_strcat_macro(str, "MIlaa", 5, 5);
     printf("%s\n", new);
     return (0);
 }

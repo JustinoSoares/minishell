@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/22 16:36:14 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/23 19:20:50 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,5 +96,6 @@ int is_duplas(char *str, int i);
 char *get_word(char *str, int start);
 int get_last_in(char *str, char c, int index);
 int is_in_aspas(char *str, int index);
+char *get_word(char *str, int start);
 
 #endif
