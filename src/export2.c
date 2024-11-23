@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:22:00 by rquilami          #+#    #+#             */
-/*   Updated: 2024/11/22 12:39:57 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/23 05:00:52 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,14 @@ void set_values(t_env *ev, char *var, int i, int j)
 {
 	j = 0;
     i++;
-    if (var[i] == '\'' || var[i] == '"')
+	if (var[i] == '"' || var[i] == '\'')
 	{
-		i++;
-		while (var[i] != '"')
-		{
-			ev->value[j++] = var[i];
-				i++;
-		}
+			i++;
+			while (var[i] != '"' && var[i] != '\'')
+			{
+				ev->value[j++] = var[i];
+					i++;
+			}
 	}
 	else
 	{
@@ -132,4 +132,25 @@ void	set_env(char *key, t_env *ev)
 	if (!ev->found)
 		new_env(i, j, n, key, ev);
 	ev->found = 0;
+}
+
+void    copy_env(t_env *ev)
+{
+    int i;
+    int j;
+
+    i = 0;
+    j = 0;
+    while (ev->env[i] != NULL)
+        i++;
+    ev->len = i;
+    ev->env_copy = malloc((i + 1) * sizeof(char *));
+    if (!ev->env_copy)
+        return;
+    while (j < i)
+    {
+        ev->env_copy[j] = strdup(ev->env[j]);
+        j++;
+    }
+    ev->env_copy[i] = NULL;
 }

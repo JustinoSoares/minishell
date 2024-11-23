@@ -6,18 +6,20 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:22:22 by rquilami          #+#    #+#             */
-/*   Updated: 2024/11/19 12:42:41 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/22 23:31:17 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void env(t_env *ev, char *str)
+void env(t_env *ev, t_variables vars)
 {
+    char *str;
+    int		i;
+
+    str = vars.line + (start_write(vars.line, vars.args[0]));
 	if (str == NULL || ft_strlen(str) == 0)
 	{
-		int		i;
-
 		i = 0;
 		while (ev->env[i] != NULL)
 		{
@@ -53,42 +55,5 @@ void	unset(char *key, t_env *ev)
 	ev->env = realloc(ev->env, sizeof(char *) * i--);
 	if (ev->env == NULL && ev->len > 0)
 		return;
-}
-
-//Será alterada em funcao da neccessidade de free
-//que houver no decorrer do desenvolvimento do projeto
-
-
-static void clean_all(t_env *ev)
-{
-	free(ev->env);
-	free(ev->env_copy);
-}
-//Precisa também aceitar números como argumento...e sair normalmente
-void    ft_exit(char *str, t_env  *ev)
-{
-	int i;
-
-	i = 0;
-	clean_all(ev);
-	if (str != NULL || ft_strlen(str) != 0)
-	{
-		while (str[i] != '\0')
-		{
-			if (!ft_isdigit(str[i]))
-			{
-				printf("bash: exit: %s: numeric argument required\n", str);
-				exit (2);
-			}
-			i++;
-		}
-		printf("exit\n");
-		exit(ft_atoi(str));
-	}
-	else
-	{
-		printf("exit\n");
-		exit(0);
-	}
 }
 
