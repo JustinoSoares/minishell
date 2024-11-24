@@ -6,7 +6,7 @@
 /*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 08:48:30 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/24 00:13:24 by justinosoar      ###   ########.fr       */
+/*   Updated: 2024/11/24 07:40:22 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,9 +140,9 @@ char *is_expanded(char *str)
     {
         if (str[i] == '"')
         {
-            while (str[++i] && str[i] != '"')
+            i++;
+            while (str[i] && str[i] != '"')
             {
-                printf("Entrou %c\n", str[i]);
                 if (str[i] == '$' && str[i + 1] != 32 && str[i + 1] != '"' && str[i + 1] != '\'' && str[i + 1] != '\0')
                 {
                     macro = getenv(get_word(str, i + 1));
@@ -185,7 +185,7 @@ char *is_expanded(char *str)
 
 int main(void)
 {
-    char *str = "echo \"' $HOME'\"CAntar";
+    char *str = "echo '$HOME' CAntar";
 
     char *new = is_expanded(str);
     // str = ft_strcat_macro(str, "MIlaa", 5, 5);
