@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/22 16:43:43 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/23 19:44:55 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,66 @@ char *last_word(char *str, char limited)
     return (word[i - 1]);
 }
 
+char *ft_strcat_macro(char *str, char *str2, int index, int size_word)
+{
+    char *new;
+    int i = 0;
+    int j = 0;
+    int x = 0;
+    int len = strlen(str) + strlen(str2);
+    new = malloc(sizeof(char) * (strlen(str) + strlen(str2) + 1));
+    while (str[i] && i < index)
+    {
+        new[i] = str[i];
+        i++;
+    }
+    x = i;
+    while (str2[j])
+    {
+        new[i] = str2[j];
+        i++;
+        j++;
+    }
+    x += size_word;
+    while (str[x])
+    {
+        new[i] = str[x];
+        i++;
+        x++;
+    }
+    return (new);
+}
+
+char *is_expanded(char *str)
+{
+    int i = 0;
+    char *macro;
+
+    while (str[i])
+    {
+        if (str[i] == '$' && str[i + 1] != 32 && str[i + 1] != '"' && str[i + 1] != '\'' 
+                && str[i + 1] != '\0')
+        {
+            macro = getenv(get_word(str, i + 1));
+            if (macro && ((is_in_aspas(str, i) == 1) || count_elements(str, '\'') == 0))
+            {
+                str = ft_strcat_macro(str, macro, i, ft_strlen(macro));
+                i += ft_strlen(macro) + 1;
+            }
+            else if (!macro)
+                i += ft_strlen(get_word(str, i + 1));
+            else
+                i++;
+        }
+        else
+        {
+            i++;
+        }
+    }
+    return (str);
+}
+
+
 void ft_get_terminal(char **envp, t_variables vars)
 {
     char *line;
@@ -132,11 +192,15 @@ void ft_get_terminal(char **envp, t_variables vars)
         line = ft_strcat_index("\033[1;32mroot@minishell\033[m:~/ $ ",
                                last_word(getcwd(NULL, 0), '/'), 27);
         vars.line = readline(line);
+        add_history(vars.line);
+        vars.line = is_expanded(vars.line);
+        if (!vars.line)
+            return (free(vars.line));
+        printf("%s\n", vars.line);
         vars.args = ft_split(vars.line, ' ');
         if (!vars.line)
             return (free(vars.line));
         ft_exec_functions(vars);
-        add_history(vars.line);
         write_history("history");
         free(vars.line);
     }
