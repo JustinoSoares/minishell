@@ -1,2 +1,4 @@
-ls $HOME
-ls $HOME PWD
+cat $USER
+echo $USER
+echo $USER$HOME
+l

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   teste3.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 08:48:30 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/24 07:40:22 by justinosoar      ###   ########.fr       */
+/*   Updated: 2024/11/24 15:23:27 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,63 +132,90 @@ char *ft_strcat_macro(char *str, char *str2, int index, int size_word)
     return (new);
 }
 
-char *is_expanded(char *str)
+int count_words(char *str)
 {
-    char *macro;
+    int count = 0;
     int i = 0;
     while (str[i])
     {
-        if (str[i] == '"')
+        if (str[i] == 32 && str[i] != '$')
+            count++;
+        i++;
+    }
+    return (count + 1);
+}
+int is_valid_macro_char(char str)
+{
+    while (str != 32 && str != '$' && str != '"' && str != '\'' && str != '\0' && str != '$')
+        return (1);
+    return (0);
+}
+char *ft_strncpy(char *s1, char *s2, int n)
+{
+    int i;
+
+    i = -1;
+    while (++i < n && s2[i])
+        s1[i] = s2[i];
+    s1[i] = '\0';
+    return (s1);
+}
+
+char **ft_split_new(char *s)
+{
+    int i = 0;
+    int k = 0;
+    int j = 0;
+    char **split;
+
+    split = malloc(sizeof(char *) * 256);
+    if (!split)
+        return (NULL);
+    while (s[i] == ' ' || s[i] == '\t' || s[i] == '\n')
+        i++;
+    while (s[i])
+    {
+        j = 0;
+        split[k] = (char *)malloc(sizeof(char) * 4096);
+        if (!split[k])
+            return (NULL);
+        while (s[i] != ' ' && s[i] != '\t' && s[i] != '\n' && s[i] && s[i] != '$')
+            split[k][j++] = s[i++];
+        while (s[i] == ' ' || s[i] == '\t' || s[i] == '\n' || s[i] == '$')
+            i += 1;
+        split[k][j] = '\0';
+        k += 1;
+    }
+    split[k] = NULL;
+    return (split);
+}
+
+char *is_expanded(char *str)
+{
+    char *macro;
+    char **each_word;
+    int i = 0;
+
+    each_word = ft_split_new(str);
+    while (each_word[i])
+    {
+        if (each_word[i][0] == '$')
         {
-            i++;
-            while (str[i] && str[i] != '"')
-            {
-                if (str[i] == '$' && str[i + 1] != 32 && str[i + 1] != '"' && str[i + 1] != '\'' && str[i + 1] != '\0')
-                {
-                    macro = getenv(get_word(str, i + 1));
-                    if (macro)
-                    {
-                        str = ft_strcat_macro(str, macro, i, ft_strlen(get_word(str, i + 1)) + 1);
-                        i += ft_strlen(get_word(str, i + 1));
-                    }
-                    else
-                        i += ft_strlen(get_word(str, i + 1));
-                }
-                else
-                    i++;
-            }
+            macro = getenv(get_word(each_word[i], 1));
+            each_word[i] = ft_strdup(macro);
         }
-        else if (str[i] == '\'')
-        {
-            while (str[++i] && str[i] != '\'')
-                i++;
-        }
-        else
-        {
-            if (str[i] == '$' && str[i + 1] != 32 && str[i + 1] != '"' && str[i + 1] != '\'' && str[i + 1] != '\0')
-            {
-                macro = getenv(get_word(str, i + 1));
-                if (macro)
-                {
-                    str = ft_strcat_macro(str, macro, i, ft_strlen(get_word(str, i + 1)) + 1);
-                    i += ft_strlen(get_word(str, i + 1));
-                }
-                else
-                    i += ft_strlen(get_word(str, i + 1));
-            }
-            else
-                i++;
-        }
+        printf("%s\n", each_word[i]);
+        i++;
     }
     return (str);
 }
 
 int main(void)
 {
-    char *str = "echo '$HOME' CAntar";
+    char *str = "echo '-$HOME $USER' CAntar";
 
     char *new = is_expanded(str);
     // str = ft_strcat_macro(str, "MIlaa", 5, 5);
-    printf("%s\n", new);
+    printf("%d\n", count_words(str));
     return (0);
 }

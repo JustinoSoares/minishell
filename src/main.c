@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/23 19:44:55 by justinosoar      ###   ########.fr       */
+/*   Updated: 2024/11/24 13:42:20 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,6 @@ int start_write(char *str, char *command)
     while (*(str + start) == ' ')
         start++;
     return (start);
-}
-
-void ctrl_c(int sig)
-{
-    (void)sig;
-    write(1, "\n", 1);
-    rl_on_new_line();
-    rl_replace_line("", 0);
-    rl_redisplay();
 }
 
 int new_line(char *str)
@@ -150,36 +141,76 @@ char *ft_strcat_macro(char *str, char *str2, int index, int size_word)
     return (new);
 }
 
-char *is_expanded(char *str)
+int is_valid_macro_char(char str)
 {
-    int i = 0;
-    char *macro;
-
-    while (str[i])
-    {
-        if (str[i] == '$' && str[i + 1] != 32 && str[i + 1] != '"' && str[i + 1] != '\'' 
-                && str[i + 1] != '\0')
-        {
-            macro = getenv(get_word(str, i + 1));
-            if (macro && ((is_in_aspas(str, i) == 1) || count_elements(str, '\'') == 0))
-            {
-                str = ft_strcat_macro(str, macro, i, ft_strlen(macro));
-                i += ft_strlen(macro) + 1;
-            }
-            else if (!macro)
-                i += ft_strlen(get_word(str, i + 1));
-            else
-                i++;
-        }
-        else
-        {
-            i++;
-        }
-    }
-    return (str);
+    while (str != 32 && str != '$' && str != '"' && str != '\'' && str != '\0' && str != '$')
+        return (1);
+    return (0);
 }
 
+char *is_expanded(char *st)
+{
+    char *macro, *word, *new;
+    int i = 0;
 
+    new = strdup(st);
+    
+    while (new[i])
+    {
+        if (new[i] == '"')
+        {
+            i++;
+            while (new[i] && new[i] != '"')
+            {
+                if (new[i] == '$' && is_valid_macro_char(new[i + 1]))
+                {
+                    word = get_word(new, i + 1);
+                    macro = getenv(word);
+                    if (macro)
+                    {
+                        new = ft_strcat_macro(new, macro, i, ft_strlen(word) + 1);
+                        i += ft_strlen(macro);
+                    }
+                    else
+                        i += ft_strlen(word);
+                    free(word);
+                }
+                else
+                    i++;
+            }
+        }
+        else if (new[i] == '\'')
+            while (new[++i] && new[i] != '\'')
+                ; // Ignorar dentro de aspas simpleS
+        else if (new[i] == '$' && is_valid_macro_char(new[i + 1]))
+        {
+            word = get_word(new, i + 1);
+            macro = getenv(word);
+            if (macro)
+            {
+                new = ft_strcat_macro(new, macro, i, ft_strlen(word) + 1);
+                i += ft_strlen(macro);
+            }
+            else
+            {
+                i += ft_strlen(word);
+            }
+            free(word);
+        }
+        else
+            i++;
+    }
+    return (new);
+}
+
+void ctrl_c(int sig)
+{
+    (void)sig;
+    write(1, "\n", 1);
+    rl_on_new_line();
+    rl_replace_line("", 0);
+    rl_redisplay();
+}
 void ft_get_terminal(char **envp, t_variables vars)
 {
     char *line;
@@ -194,9 +225,9 @@ void ft_get_terminal(char **envp, t_variables vars)
         vars.line = readline(line);
         add_history(vars.line);
         vars.line = is_expanded(vars.line);
+        printf("line: %s\n", vars.line);
         if (!vars.line)
             return (free(vars.line));
-        printf("%s\n", vars.line);
         vars.args = ft_split(vars.line, ' ');
         if (!vars.line)
             return (free(vars.line));
