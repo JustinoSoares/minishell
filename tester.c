@@ -6,70 +6,11 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 13:37:07 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/25 12:41:19 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/25 18:38:27 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/minishell.h"
-
-char* execute_command(const char *command)
-{
-    int pipefd[2]; // Pipe para comunicação entre o processo pai e o filho
-    pid_t pid;
-    char *output = malloc(MAX_BUFFER);
-    if (output == NULL)
-    {
-        perror("malloc");
-        exit(1);
-    }
-    // Cria o pipe
-    if (pipe(pipefd) == -1)
-    {
-        perror("pipe");
-        exit(1);
-    }
-    // Cria o processo filho
-    pid = fork();
-    if (pid == -1)
-    {
-        perror("fork");
-        exit(1);
-    }
-    if (pid == 0)
-    {  // Processo filho
-        // Fecha a extremidade de leitura do pipe, pois o filho vai escrever nele
-        close(pipefd[0]);
-
-        // Redireciona a saída padrão (stdout) para o pipe
-        dup2(pipefd[1], STDOUT_FILENO);
-
-        close(pipefd[1]);
-
-        // Executa o comando
-        execlp(command, command, (char *)NULL);
-        
-        perror("execlp");
-        exit(1);
-    }
-    else
-    {  // Processo pai
-        // Fecha a extremidade de escrita do pipe, pois o pai vai ler dela
-        close(pipefd[1]);
-
-        // Lê a saída do comando do pipe
-        int bytesRead = read(pipefd[0], output, MAX_BUFFER - 1);
-        if (bytesRead == -1)
-        {
-            perror("read");
-            exit(1);
-        }
-        output[bytesRead] = '\0';
-        close(pipefd[0]);
-        wait(NULL);
-    }
-
-    return output;
-}
 
 
 int redir_out(const char *file, char *str)

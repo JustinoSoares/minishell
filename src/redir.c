@@ -6,13 +6,13 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 08:34:50 by rquilami          #+#    #+#             */
-/*   Updated: 2024/11/25 12:39:49 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/25 18:44:32 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-char* execute_command(const char *command)
+char* execute_command(const char *command, t_variables *vars)
 {
     int pipefd[2]; // Pipe para comunicação entre o processo pai e o filho
     pid_t pid;
@@ -46,8 +46,18 @@ char* execute_command(const char *command)
         close(pipefd[1]);
 
         // Executa o comando
-        execlp(command, command, (char *)NULL);
-        
+		execve(getenv("PATH"), command, vars->env);
+        command = find_executable(vars->args[0]);
+        if (command != NULL)
+        {
+            
+        }
+        else
+        {
+            perror("Comando não encontrado");
+            free_matriz(vars->args);
+            exit(1);
+        }
         perror("execlp");
         exit(1);
     }
@@ -56,7 +66,6 @@ char* execute_command(const char *command)
         // Fecha a extremidade de escrita do pipe, pois o pai vai ler dela
         close(pipefd[1]);
 
-        // Lê a saída do comando do pipe
         int bytesRead = read(pipefd[0], output, MAX_BUFFER - 1);
         if (bytesRead == -1)
         {
@@ -114,6 +123,9 @@ int redir_out(const char *file, char *str)
     close(fd);
     return 0;
 }*/
+
+
+
 
 void    redir_main(char *line)
 {
