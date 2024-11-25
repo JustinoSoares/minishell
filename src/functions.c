@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/22 23:31:10 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/25 11:38:10 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void function_no_built(t_variables vars)
                 exit(1);
             }
         }
-        execve(command_path, vars.args, NULL);
+        execve(command_path, vars.args, vars.ev->env);
         perror("\033[31mError\033[m");
         exit(1);
     }

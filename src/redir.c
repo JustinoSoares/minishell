@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tester.c                                           :+:      :+:    :+:   */
+/*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/08 13:37:07 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/25 12:41:19 by rquilami         ###   ########.fr       */
+/*   Created: 2024/11/23 08:34:50 by rquilami          #+#    #+#             */
+/*   Updated: 2024/11/25 12:39:49 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "include/minishell.h"
+#include "../include/minishell.h"
 
 char* execute_command(const char *command)
 {
@@ -94,8 +94,30 @@ int redir_out(const char *file, char *str)
     return 0;
 }
 
-int main(void)
+/*int redir_in(const char *file)
 {
-    redir_out("test", execute_command("pwd"));
-	return (0);
+    int fd;
+
+    fd = 0;
+    fd = open(file, O_RDONLY);
+    if (fd == -1)
+    {
+        perror("Erro ao abrir o arquivo para redirecionar a entrada");
+        return -1;
+    }
+    if (dup2(fd, STDIN_FILENO) == -1)
+    {
+        perror("Erro ao redirecionar stdin");
+        close(fd);
+        return -1;
+    }
+    close(fd);
+    return 0;
+}*/
+
+void    redir_main(char *line)
+{
+    int i;
+    redir_out("test", execute_command("ls"));
 }
+

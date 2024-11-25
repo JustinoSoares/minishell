@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/22 23:31:25 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/25 12:34:08 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 #define MAX_IN 1024
 #define MAX_ARGS 100
 #define MAX_PATH 256
+#define MAX_BUFFER 1024
 
 typedef struct s_env
 {
