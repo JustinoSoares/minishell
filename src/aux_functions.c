@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   aux_functions.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 09:55:32 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/14 18:38:43 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/11/26 14:05:01 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,20 @@ int count_pipes(char *str)
         i++;
     }
     return (count);
+}
+
+int is_in_line(char *str)
+{
+    int	i;
+
+	i = 0;
+	while (str[i] != '\0')
+	{
+		if (str[i] == '>' || str[i] == '<')
+			return (1);
+		i++;
+	}
+    return (0);
 }
 
 char *find_executable(char *command)

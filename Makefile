@@ -4,7 +4,7 @@ READLINE_FLAG = -lreadline
 NAME = minishell
 SRC = src/main.c src/utils.c src/echo.c src/functions.c src/free.c \
 		src/aux_functions.c src/aux_echo.c src/error.c src/env.c src/cd.c \
-		src/pwd.c src/export.c src/export2.c
+		src/pwd.c src/export.c src/export2.c src/redir.c
 LIBFT_PATH=libft/
 LIBFT=libft.a
 OBJ = $(SRC:.c=.o)

@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/25 12:34:08 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/26 14:02:41 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,5 +97,7 @@ int     is_duplas(char *str, int i);
 char    *get_word(char *str, int start);
 int     get_last_in(char *str, char c, int index);
 int     is_in_aspas(char *str, int index);
+void    redir_main(char *line);
+int     is_in_line(char *str);
 
 #endif

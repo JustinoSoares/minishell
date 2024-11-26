@@ -6,37 +6,31 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 13:37:07 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/25 18:38:27 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/26 14:01:04 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/minishell.h"
 
-
-int redir_out(const char *file, char *str)
+char	*ft_strchr(const char *s, int c)
 {
-    int fd;
+	int	i;
 
-    fd = 0;
-    fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    if (fd == -1)
-    {
-        perror("Erro ao abrir o arquivo para redirecionar a saída");
-        return -1;
-    }
-    if (dup2(fd, STDOUT_FILENO) == -1)
-    {
-        perror("Erro ao redirecionar stdout");
-        close(fd);
-        return -1;
-    }
-	printf("%s\n",str);
-    close(fd);
-    return 0;
+	i = 0;
+	while (s[i] != (char)c)
+	{
+		if (s[i] == '\0')
+			return (NULL);
+		i++;
+	}
+	return ((char *)&s[i]);
 }
+
 
 int main(void)
 {
-    redir_out("test", execute_command("pwd"));
+    char line[100];
+    scanf("%s", line);
+    printf("linha: %s", ft_strchr(line, '>'));
 	return (0);
 }

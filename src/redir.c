@@ -6,82 +6,31 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 08:34:50 by rquilami          #+#    #+#             */
-/*   Updated: 2024/11/25 18:44:32 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/26 14:23:46 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-char* execute_command(const char *command, t_variables *vars)
+char    *find_comand(char *line)
 {
-    int pipefd[2]; // Pipe para comunicação entre o processo pai e o filho
-    pid_t pid;
-    char *output = malloc(MAX_BUFFER);
-    if (output == NULL)
+    int i;
+    char *new;
+
+    i = 0;
+    while (line[i] != '>' && line[i] != '\0')
+        i++;
+    new = malloc(sizeof(char) * (i + 1));
+    i = 0;
+    while (line[i] != '>')
     {
-        perror("malloc");
-        exit(1);
+        new[i] = line[i];
+        i++;
     }
-    // Cria o pipe
-    if (pipe(pipefd) == -1)
-    {
-        perror("pipe");
-        exit(1);
-    }
-    // Cria o processo filho
-    pid = fork();
-    if (pid == -1)
-    {
-        perror("fork");
-        exit(1);
-    }
-    if (pid == 0)
-    {  // Processo filho
-        // Fecha a extremidade de leitura do pipe, pois o filho vai escrever nele
-        close(pipefd[0]);
-
-        // Redireciona a saída padrão (stdout) para o pipe
-        dup2(pipefd[1], STDOUT_FILENO);
-
-        close(pipefd[1]);
-
-        // Executa o comando
-		execve(getenv("PATH"), command, vars->env);
-        command = find_executable(vars->args[0]);
-        if (command != NULL)
-        {
-            
-        }
-        else
-        {
-            perror("Comando não encontrado");
-            free_matriz(vars->args);
-            exit(1);
-        }
-        perror("execlp");
-        exit(1);
-    }
-    else
-    {  // Processo pai
-        // Fecha a extremidade de escrita do pipe, pois o pai vai ler dela
-        close(pipefd[1]);
-
-        int bytesRead = read(pipefd[0], output, MAX_BUFFER - 1);
-        if (bytesRead == -1)
-        {
-            perror("read");
-            exit(1);
-        }
-        output[bytesRead] = '\0';
-        close(pipefd[0]);
-        wait(NULL);
-    }
-
-    return output;
+    new[i] = '\0';
+    return (new);
 }
-
-
-int redir_out(const char *file, char *str)
+int redir_out(const char *file, char *command)
 {
     int fd;
 
@@ -98,7 +47,7 @@ int redir_out(const char *file, char *str)
         close(fd);
         return -1;
     }
-	printf("%s\n",str);
+	printf("%s\n",command);
     close(fd);
     return 0;
 }
@@ -130,6 +79,22 @@ int redir_out(const char *file, char *str)
 void    redir_main(char *line)
 {
     int i;
-    redir_out("test", execute_command("ls"));
+    int j;
+    char    *file;
+
+    i = 0;
+    j = 0;
+    while (line[i] != '>')
+        i++;
+    file = malloc(sizeof(char) * (ft_strlen(line) - i));
+    i++;
+    while (line[i] != '\0')
+    {
+        file[j++] = line[i];
+        i++;
+    }
+    file[j] = '\0';
+    redir_out(file, find_comand(line));
+    free(file);
 }
 
