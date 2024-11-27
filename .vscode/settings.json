@@ -59,6 +59,8 @@
   "files.associations": {
     "libft.h": "c",
     "minishell.h": "c",
-    "stdio.h": "c"
+    "stdio.h": "c",
+    "stat.h": "c",
+    "string.h": "c"
   }
 }

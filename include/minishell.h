@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/23 19:20:50 by justinosoar      ###   ########.fr       */
+/*   Updated: 2024/11/27 15:00:01 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,11 @@
 #define MAX_IN 1024
 #define MAX_ARGS 100
 #define MAX_PATH 256
+
+typedef struct s_array {
+    int count;
+    struct s_array *next;
+} t_array;
 
 typedef struct s_env
 {

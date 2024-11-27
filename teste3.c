@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   teste3.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 08:48:30 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/25 16:28:37 by justinosoar      ###   ########.fr       */
+/*   Updated: 2024/11/27 16:46:12 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,10 +183,10 @@ char **ft_split_new(char *s)
         {
             split[k][j++] = s[i++];
             if (s[i] == '$' || s[i] == '"' || s[i] == '\'')
-                break ;
+                break;
         }
         while (s[i] == ' ' || s[i] == '\t' || s[i] == '\n')
-                i++;
+            i++;
         split[k][j] = '\0';
         k += 1;
     }
@@ -194,23 +194,111 @@ char **ft_split_new(char *s)
     return (split);
 }
 
+int is_dup(char **each_word, int i)
+{
+    char *macro;
+    // each_word[i] = ft_strdup("");
+    while (each_word[++i] && each_word[i][0] != '"')
+    {
+        if (each_word[i][0] == '$')
+        {
+            macro = getenv(get_word(each_word[i], 1));
+            if (macro)
+                each_word[i] = ft_strdup(macro);
+            else
+                each_word[i] = ft_strdup("");
+        }
+    }
+    // each_word[i] = ft_strdup("");
+    return (i);
+}
+
+int is_simples(char **each_word, int i)
+{
+    each_word[i] = ft_strdup("");
+    while (each_word[++i] && each_word[i][0] != '\'')
+        ;
+    each_word[i] = ft_strdup("");
+    return (i);
+}
+
+int without_quotes(char **each_word, int i)
+{
+    char *macro;
+    if (each_word[i][0] == '$')
+    {
+        if (each_word[i][0] == '$')
+        {
+            macro = getenv(get_word(each_word[i], 1));
+            if (macro)
+                each_word[i] = ft_strdup(macro);
+            else
+                each_word[i] = ft_strdup("");
+        }
+        i++;
+    }
+    return (i);
+}
+
 char **is_expanded(char *str)
 {
     char *macro;
     char **each_word;
     int i = 0;
+    int status = 0;
 
     each_word = ft_split_new(str);
     while (each_word[i])
     {
-        if (each_word[i][0] == '$')
-        {
-            macro = getenv(get_word(each_word[i], 1));
-            each_word[i] = ft_strdup(macro);
-        }
+        if (each_word[i][0] == '\'')
+            i = is_simples(each_word, i);
+        else if (each_word[i][0] == '"')
+            i = is_dup(each_word, i);
+        else
+            i = without_quotes(each_word, i);
         i++;
     }
     return (each_word);
+}
+
+void insert_top(t_array **array, int count)
+{
+    t_array *new = malloc(sizeof(t_array));
+    new->count = count;
+    new->next = *array;
+    *array = new;
+}
+
+t_array *count_spaces(char *str)
+{
+    t_array *array = NULL;
+    t_array *tmp;
+    int count = 0;
+    int i = 0;
+    int index = 0;
+
+    array = malloc(sizeof(t_array));
+    while (str[i])
+    {
+        if (str[i] == '"')
+        {
+            while (str[++i] && str[i] != '"')
+            {
+                count = 0;
+                if (str[i] && str[i] == 32)
+                {
+                    while (str[i] && str[i] == 32)
+                    {
+                        count++;
+                        i++;
+                    }
+                    insert_top(&array, count);
+                }
+            }
+        }
+        i++;
+    }
+    return (array);
 }
 
 char *ft_strcat(char *dest, char *s)
@@ -219,35 +307,92 @@ char *ft_strcat(char *dest, char *s)
     int len;
     int i = 0;
     int j = 0;
+    int spaces = 0;
+    int count_space = 0;
 
     len = ft_strlen(dest) + ft_strlen(s);
     new = malloc(sizeof(char) * len + 1);
+    if (dest == NULL || s == NULL)
+        return (NULL);
     while (dest[i])
-        new[i++] = dest[i];
+    {
+        new[i] = dest[i];
+        i++;
+    }
     while (s[j])
         new[i++] = s[j++];
-    new[i] = 32;
-    return(new);
+    return (new);
 }
 
-char *cat(char **matriz)
+char *form_char(char c, int quant)
 {
     int i = 0;
+    char *new = malloc(sizeof(char) * quant + 1);
+    while (i < quant)
+    {
+        new[i] = c;
+        i++;
+    }
+    new[i] = '\0';
+    return (new);
+}
+
+char *join_all(char **matriz, char *str)
+{
+    int i = 0;
+    t_array *array;
+    t_array *tmp;
+    int index = 0;
     char *new = malloc(sizeof(char) * 1);
+
+    array = count_spaces(str);
+    tmp = array;
     while (matriz[i])
     {
-       new = ft_strcat(new, matriz[i]);
-       i++;
+        if (matriz[i][0] == '"')
+        {
+            while (matriz[++i] && matriz[i][0] != '"')
+            {
+                new = ft_strcat(new, matriz[i]);
+                new = ft_strcat(new, form_char(32, tmp->count));
+                printf("Count2 : %d\n", tmp->count);
+                if (tmp->next)
+                    tmp = tmp->next;
+            }
+        }
+        else
+        {
+            new = ft_strcat(new, matriz[i]);
+            new = ft_strcat(new, form_char(32, 1));
+        }
+        i++;
     }
     return (new);
 }
 
+int get_index_quotes(char *str, int pos)
+{
+    int i = 0;
+    int quotes = 0;
+    while (str[i])
+    {
+        if (str[i] == '"' || str[i] == '\'')
+            quotes++;
+        if (quotes == pos)
+            return (i);
+        i++;
+    }
+    return (-1);
+}
+
 int main(void)
 {
-    char *str = "echo '$HOME    $USER' CAntar";
-
+    char *str = "echo  \"$HOME        $USER       \" CAntar";
     char **new = is_expanded(str);
-    char *new_new = cat(new);
+    char *new_new = join_all(new, str);
+    //t_array *array = count_spaces(str);
+
+    printf("Original : %s\n", str);
     printf("%s\n", new_new);
     return (0);
 }
