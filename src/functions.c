@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/26 14:30:13 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/28 04:54:30 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,8 @@ void ft_exec_functions(t_variables vars)
         unset(vars.args[1], vars.ev);
     else if (vars.args[0] && ft_strcmp(vars.args[0], "export") == 0)
         get_variable(vars.ev, vars.args[1]);
+    else if (is_in_line(vars.line))
+        redir_main(&vars, vars.line);
     else
         function_no_built(vars);
 }
