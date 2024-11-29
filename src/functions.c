@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/28 04:54:30 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/29 13:21:00 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void function_no_built(t_variables vars)
     vars.pid = fork();
     if (vars.pid == 0)
     {
+        printf("vars.arg[0]: %s\n", vars.args[0]);
         command_path = vars.args[0];
         if (ft_strchr(vars.args[0], '/') == NULL)
         {
@@ -75,7 +76,9 @@ int ft_strcmp(char *s1, char *s2)
 
 void ft_exec_functions(t_variables vars)
 {
-    if (vars.args[0] && ft_strcmp(vars.args[0], "echo") == 0)
+    if (redir_in_line(vars.line))
+        redir_main(&vars, vars.line);
+    else if (vars.args[0] && ft_strcmp(vars.args[0], "echo") == 0)
     {
         ft_echo(vars);
         if (new_line(vars.args[1]) == 0)
@@ -93,8 +96,6 @@ void ft_exec_functions(t_variables vars)
         unset(vars.args[1], vars.ev);
     else if (vars.args[0] && ft_strcmp(vars.args[0], "export") == 0)
         get_variable(vars.ev, vars.args[1]);
-    else if (is_in_line(vars.line))
-        redir_main(&vars, vars.line);
     else
         function_no_built(vars);
 }

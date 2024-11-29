@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 08:34:50 by rquilami          #+#    #+#             */
-/*   Updated: 2024/11/28 09:18:12 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/29 13:26:49 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ char    *find_comand(char *line)
 {
     int i;
     int j;
-    int saved_stdout;
     char *command;
 
     i = 0;
@@ -27,19 +26,19 @@ char    *find_comand(char *line)
         i++;
     if (line[i] == '\0')
         return NULL;
-    command = malloc(sizeof(char) * (i + 1));
+    command = malloc(sizeof(char) * i);
     if (command == NULL)
     {
         perror("Erro ao alocar memória para o comando");
         return (NULL);
     }
-    while (j < i)
+    while (j < i - 1)
     {
         command[j] = line[j];
         j++;
     }
-    command[i] = '\0';
-    return (command);
+    command[j] = '\0';
+    return (find_executable(command));
 }
 
 
@@ -50,9 +49,9 @@ int redir_out(t_variables *vars, const char *file, char *command)
     pid_t   pid;
 
     fd = 0;
-    if (file == NULL || command == NULL)
+    if (file == NULL || strlen(file) == 0)
     {
-        perror(" ");
+        printf("bash: syntax error near unexpected token `newline\'\n");
         return (-1);
     }
     saved_stdout = dup(STDOUT_FILENO);
@@ -73,24 +72,10 @@ int redir_out(t_variables *vars, const char *file, char *command)
         close(fd);
         return (-1);
     }
-    
     pid = fork();
     if (pid == 0)
     {
-        command = vars->args[0];
-        if (ft_strchr(vars->args[0], '/') == NULL)
-        {
-            command = find_executable(vars->args[0]);
-            if (command == NULL)
-            {
-                perror("Comando não encontrado");
-                free_matriz(vars->args);
-                exit(1);
-            }
-        }
-        execve(command, vars->args, vars->ev->env);
-        perror("\033[31mError\033[m");
-        exit(1);
+        execve(command, vars->args, NULL);
     }
     if (pid > 0)
     {
@@ -119,12 +104,15 @@ void    redir_main(t_variables *vars, char *line)
         i++;
     file = malloc(sizeof(char) * (ft_strlen(line) - i));
     i++;
-    while (line[i] != '\0')
+    if (line[i] != '\0')
     {
-        file[j++] = line[i];
-        i++;
+        while (line[i] != '\0')
+        {
+            file[j++] = line[i];
+            i++;
+        }
+        file[j] = '\0';
     }
-    file[j] = '\0';
     redir_out(vars, file, find_comand(line));
     free(file);
 }

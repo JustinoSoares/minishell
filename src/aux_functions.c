@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 09:55:32 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/26 14:05:01 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/28 12:31:23 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int count_pipes(char *str)
     return (count);
 }
 
-int is_in_line(char *str)
+int redir_in_line(char *str)
 {
     int	i;
 

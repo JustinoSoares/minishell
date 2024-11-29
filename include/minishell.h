@@ -6,7 +6,7 @@
 /*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/28 04:54:47 by rquilami         ###   ########.fr       */
+/*   Updated: 2024/11/28 12:31:36 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,6 @@ char    *get_word(char *str, int start);
 int     get_last_in(char *str, char c, int index);
 int     is_in_aspas(char *str, int index);
 void    redir_main(t_variables *vars, char *line);
-int     is_in_line(char *str);
+int     redir_in_line(char *str);
 
 #endif
