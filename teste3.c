@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 08:48:30 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/27 16:46:12 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/02 12:13:10 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,7 +250,7 @@ char **is_expanded(char *str)
     each_word = ft_split_new(str);
     while (each_word[i])
     {
-        if (each_word[i][0] == '\'')
+         if (each_word[i][0] == '\'')
             i = is_simples(each_word, i);
         else if (each_word[i][0] == '"')
             i = is_dup(each_word, i);
@@ -261,12 +261,23 @@ char **is_expanded(char *str)
     return (each_word);
 }
 
-void insert_top(t_array **array, int count)
+void insert_fim(t_array **array, int count)
 {
-    t_array *new = malloc(sizeof(t_array));
+    t_array *new;
+    t_array *tmp;
+
+    new = malloc(sizeof(t_array));
     new->count = count;
-    new->next = *array;
-    *array = new;
+    new->next = NULL;
+    if (*array == NULL)
+        *array = new;
+    else
+    {
+        tmp = *array;
+        while (tmp->next)
+            tmp = tmp->next;
+        tmp->next = new;
+    }
 }
 
 t_array *count_spaces(char *str)
@@ -276,6 +287,7 @@ t_array *count_spaces(char *str)
     int count = 0;
     int i = 0;
     int index = 0;
+    int dolar = 0;
 
     array = malloc(sizeof(t_array));
     while (str[i])
@@ -284,15 +296,15 @@ t_array *count_spaces(char *str)
         {
             while (str[++i] && str[i] != '"')
             {
-                count = 0;
                 if (str[i] && str[i] == 32)
                 {
+                    count = 0;
                     while (str[i] && str[i] == 32)
                     {
                         count++;
                         i++;
                     }
-                    insert_top(&array, count);
+                    insert_fim(&array, count);
                 }
             }
         }
@@ -346,7 +358,7 @@ char *join_all(char **matriz, char *str)
     char *new = malloc(sizeof(char) * 1);
 
     array = count_spaces(str);
-    tmp = array;
+    tmp = array->next;
     while (matriz[i])
     {
         if (matriz[i][0] == '"')
@@ -387,12 +399,16 @@ int get_index_quotes(char *str, int pos)
 
 int main(void)
 {
-    char *str = "echo  \"$HOME        $USER       \" CAntar";
-    char **new = is_expanded(str);
-    char *new_new = join_all(new, str);
-    //t_array *array = count_spaces(str);
+    char *str = "echo \"$HOME  $USER    skj    \"CAntar";
+    //char **new = is_expanded(str);
+    //char *new_new = join_all(new, str);
+    char **new = ft_split_aspa(str, ' ');
 
-    printf("Original : %s\n", str);
-    printf("%s\n", new_new);
+    int i = 0;
+    while (new[i])
+    {
+        printf("%s\n", new[i]);
+        i++;
+    }
     return (0);
 }
