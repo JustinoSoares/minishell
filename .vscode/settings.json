@@ -61,6 +61,7 @@
     "minishell.h": "c",
     "stdio.h": "c",
     "stat.h": "c",
-    "string.h": "c"
+    "string.h": "c",
+    "array": "c"
   }
 }

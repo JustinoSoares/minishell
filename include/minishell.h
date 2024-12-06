@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/02 12:14:24 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/06 12:54:59 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,18 @@
 #define MAX_ARGS 100
 #define MAX_PATH 256
 
-typedef struct s_array {
+typedef struct s_array
+{
     int count;
     struct s_array *next;
 } t_array;
+
+typedef struct s_words
+{
+    char *word;
+    int type;
+    struct s_words *next;
+} t_words;
 
 typedef struct s_env
 {
@@ -58,6 +66,7 @@ typedef struct s_variables
     char *line;
     char **args;
     char **env;
+    t_words *words;
     pid_t pid;
     t_env *ev;
     struct s_variables *next;
@@ -104,5 +113,16 @@ int is_in_aspas(char *str, int index);
 char *get_word(char *str, int start);
 
 char **ft_split_aspa(char const *s, char c);
+
+
+int size_expanded(char *str);
+char *is_expanded(char *str);
+char *get_word_d(char *str, int start);
+char *get_word_s(char *str, int start);
+char *get_word_empty(char *str, int start);
+void insert_str_end(t_words **array, char *word, int type);
+void get_elements(char *str, t_words **array);
+char *filter_string (char *str);
+
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/24 13:42:20 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/06 16:12:35 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ int is_valid_macro_char(char str)
     return (0);
 }
 
-char *is_expanded(char *st)
+/*char *is_expanded(char *st)
 {
     char *macro, *word, *new;
     int i = 0;
@@ -201,7 +201,7 @@ char *is_expanded(char *st)
             i++;
     }
     return (new);
-}
+}*/
 
 void ctrl_c(int sig)
 {
@@ -214,18 +214,22 @@ void ctrl_c(int sig)
 void ft_get_terminal(char **envp, t_variables vars)
 {
     char *line;
+    char *new;
+    int len = 0;
     vars.status_command = 0;
     vars.env = envp;
-    signal(SIGINT, ctrl_c);  // quando o usuário aperta ctrl+c
-    signal(SIGQUIT, ctrl_c); // quando o usuário aperta ctrl+d
+    //signal(SIGQUIT, ctrl_c); // quando o usuário aperta ctrl+d
     while (true)
     {
+        signal(SIGINT, ctrl_c);  // quando o usuário aperta ctrl+c
         line = ft_strcat_index("\033[1;32mroot@minishell\033[m:~/ $ ",
                                last_word(getcwd(NULL, 0), '/'), 27);
-        vars.line = readline(line);
-        add_history(vars.line);
-        vars.line = is_expanded(vars.line);
+        new = readline(line);
+        if (!new)
+            return ;
+        vars.line = filter_string(new);
         printf("line: %s\n", vars.line);
+        add_history(new);
         if (!vars.line)
             return (free(vars.line));
         vars.args = ft_split(vars.line, ' ');
@@ -234,6 +238,7 @@ void ft_get_terminal(char **envp, t_variables vars)
         ft_exec_functions(vars);
         write_history("history");
         free(vars.line);
+        free(new);
     }
 }
 
