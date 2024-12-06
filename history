@@ -1,3 +1,14 @@
 ls
-cat $USER
-bash
+ls
+/bin/ls
+/bin/ls
+/bin/ls
+/bin/ls
+/bin/ls
+/bin/ls
+/bin/ls
+/bin/ls
+/bin/ls
+/bin/ls
+/bin/pwd
+/bin/cd libft/

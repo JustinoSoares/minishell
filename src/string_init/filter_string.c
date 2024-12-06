@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 08:36:42 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/06 16:09:59 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/06 16:42:18 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,8 @@ char *filter_string(char *str)
     char *new;
 
     get_elements(str, &array);
-    new = ft_strdup("");
+    new = malloc(sizeof(char) * 2);
+    ft_memset(new, 0, 2);
     tmp = array;
     while (tmp != NULL)
     {
