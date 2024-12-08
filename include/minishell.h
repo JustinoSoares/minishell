@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/07 22:39:12 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/08 12:18:57 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 #define MAX_IN 1024
 #define MAX_ARGS 100
 #define MAX_PATH 256
+
+extern int status_signal;
 
 typedef struct s_array
 {
@@ -113,15 +115,15 @@ char *get_word(char *str, int start);
 
 char **ft_split_aspa(char const *s, char c);
 
-
 int size_expanded(char *str);
-char *is_expanded(char *str);
+char *is_expanded(char *str, t_variables vars);
 char *get_word_d(char *str, int start);
 char *get_word_s(char *str, int start);
 char *get_word_empty(char *str, int start);
 void insert_str_end(t_words **array, char *word, int type);
-void get_elements(char *str, t_words **array);
-char *filter_string (char *str);
+void get_elements(char *str, t_words **array, t_variables vars);
+char *filter_string(char *str, t_variables vars);
 
+void free_words(t_words *words);
 
 #endif

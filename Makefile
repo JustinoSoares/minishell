@@ -1,5 +1,5 @@
 CC = cc 
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -g
 READLINE_FLAG = -lreadline
 NAME = minishell
 SRC = src/main.c src/utils.c src/echo.c src/functions.c src/free.c \

@@ -1,8 +1,5 @@
-ls
-ls
-pwd
-"pwd"
-ls
-ls
-ls
-clear
+echo $?
+echo $?
+ech $?
+ll
+ech $?

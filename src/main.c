@@ -6,11 +6,13 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/08 02:36:03 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/08 12:24:06 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
+
+int status_signal = 0;
 
 int index_of(char *str, char *word)
 {
@@ -148,61 +150,6 @@ int is_valid_macro_char(char str)
     return (0);
 }
 
-/*char *is_expanded(char *st)
-{
-    char *macro, *word, *new;
-    int i = 0;
-
-    new = strdup(st);
-
-    while (new[i])
-    {
-        if (new[i] == '"')
-        {
-            i++;
-            while (new[i] && new[i] != '"')
-            {
-                if (new[i] == '$' && is_valid_macro_char(new[i + 1]))
-                {
-                    word = get_word(new, i + 1);
-                    macro = getenv(word);
-                    if (macro)
-                    {
-                        new = ft_strcat_macro(new, macro, i, ft_strlen(word) + 1);
-                        i += ft_strlen(macro);
-                    }
-                    else
-                        i += ft_strlen(word);
-                    free(word);
-                }
-                else
-                    i++;
-            }
-        }
-        else if (new[i] == '\'')
-            while (new[++i] && new[i] != '\'')
-                ; // Ignorar dentro de aspas simpleS
-        else if (new[i] == '$' && is_valid_macro_char(new[i + 1]))
-        {
-            word = get_word(new, i + 1);
-            macro = getenv(word);
-            if (macro)
-            {
-                new = ft_strcat_macro(new, macro, i, ft_strlen(word) + 1);
-                i += ft_strlen(macro);
-            }
-            else
-            {
-                i += ft_strlen(word);
-            }
-            free(word);
-        }
-        else
-            i++;
-    }
-    return (new);
-}*/
-
 void ctrl_c(int sig)
 {
     (void)sig;
@@ -211,6 +158,18 @@ void ctrl_c(int sig)
     rl_replace_line("", 0);
     rl_redisplay();
 }
+int is_string_space(char *str)
+{
+    int i = 0;
+    while (str[i])
+    {
+        if (str[i] != ' ' && str[i] != '\t')
+            return (0);
+        i++;
+    }
+    return (1);
+}
+
 void ft_get_terminal(char **envp, t_variables vars)
 {
     char *line;
@@ -218,17 +177,30 @@ void ft_get_terminal(char **envp, t_variables vars)
     int len = 0;
     vars.status_command = 0;
     vars.env = envp;
-    // signal(SIGQUIT, ctrl_c); // quando o usuário aperta ctrl+d
-    signal(SIGINT, ctrl_c); // quando o usuário aperta ctrl+c
     while (true)
     {
+        signal(SIGINT, ctrl_c);
+        signal(SIGQUIT, SIG_IGN);
         line = ft_strcat_index("\033[1;32mroot@minishell\033[m:~/ $ ",
                                last_word(getcwd(NULL, 0), '/'), 27);
-        new = readline(line);
+        new = readline("Minishell: ");
+        if (aspas_error(new, true))
+        {
+            add_history(new);
+            continue;
+        }
         if (!new)
-            return;
-        vars.line = filter_string(new);
+        {
+            free(line);
+            printf("exit\n");
+            exit(0);
+        }
+        if (new[0] == '\0')
+            continue;
+        vars.line = filter_string(new, vars);
         add_history(new);
+        if (is_string_space(new) == 1)
+            continue;
         if (!vars.line)
             return (free(vars.line));
         vars.args = ft_split(vars.line, ' ');

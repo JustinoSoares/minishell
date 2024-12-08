@@ -6,27 +6,38 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/08 02:37:56 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/08 13:03:34 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
+void new_prompt(int signal)
+{
+    if (signal == SIGINT)
+        write(1, "\n", 1);
+    else if (signal == SIGQUIT)
+        write(1, "Sair\n", 5);
+}
+
 void function_no_built(t_variables vars)
 {
     char *command_path;
+    int g_exit_status;
+    command_path = vars.args[0];
     vars.pid = fork();
     if (vars.pid == 0)
     {
-        command_path = vars.args[0];
         if (ft_strchr(vars.args[0], '/') == NULL)
         {
             command_path = find_executable(vars.args[0]);
+            printf("Comando: %s\n", command_path);
             if (command_path == NULL)
             {
                 perror("Comando não encontrado");
+                vars.status_command = 2;
                 free_matriz(vars.args);
-                exit(1);
+                exit(127);
             }
         }
         execve(command_path, vars.args, NULL);
@@ -34,9 +45,27 @@ void function_no_built(t_variables vars)
         exit(1);
     }
     else if (vars.pid > 0)
+    {
+        signal(SIGINT, new_prompt);
+        signal(SIGQUIT, new_prompt);
         waitpid(vars.pid, &vars.status_command, 0);
+        if (WIFEXITED(vars.status_command))
+        {
+            vars.status_command = WEXITSTATUS(vars.status_command); // Captura o código de saída
+            printf("Código de saída: %d\n", vars.status_command);
+        }
+        vars.status_command = 1;
+        if (WIFSIGNALED(vars.status_command))
+        {
+            vars.status_command = 128 + WTERMSIG(vars.status_command); // Sinal que terminou o processo
+            printf("Código de saída: %d\n", vars.status_command);
+        }
+    }
     else
+    {
+        vars.status_command = 1;
         perror("Error");
+    }
 }
 
 char *remove_aspas(char *str)
