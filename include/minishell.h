@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/06 12:54:59 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/07 22:39:12 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ typedef struct s_variables
     char *line;
     char **args;
     char **env;
-    t_words *words;
     pid_t pid;
     t_env *ev;
     struct s_variables *next;

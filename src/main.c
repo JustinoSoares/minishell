@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/06 16:12:35 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/08 02:36:03 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,7 @@ int is_valid_macro_char(char str)
     int i = 0;
 
     new = strdup(st);
-    
+
     while (new[i])
     {
         if (new[i] == '"')
@@ -218,17 +218,16 @@ void ft_get_terminal(char **envp, t_variables vars)
     int len = 0;
     vars.status_command = 0;
     vars.env = envp;
-    //signal(SIGQUIT, ctrl_c); // quando o usuário aperta ctrl+d
+    // signal(SIGQUIT, ctrl_c); // quando o usuário aperta ctrl+d
+    signal(SIGINT, ctrl_c); // quando o usuário aperta ctrl+c
     while (true)
     {
-        signal(SIGINT, ctrl_c);  // quando o usuário aperta ctrl+c
         line = ft_strcat_index("\033[1;32mroot@minishell\033[m:~/ $ ",
                                last_word(getcwd(NULL, 0), '/'), 27);
         new = readline(line);
         if (!new)
-            return ;
+            return;
         vars.line = filter_string(new);
-        printf("line: %s\n", vars.line);
         add_history(new);
         if (!vars.line)
             return (free(vars.line));

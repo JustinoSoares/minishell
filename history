@@ -1,14 +1,8 @@
 ls
 ls
-/bin/ls
-/bin/ls
-/bin/ls
-/bin/ls
-/bin/ls
-/bin/ls
-/bin/ls
-/bin/ls
-/bin/ls
-/bin/ls
-/bin/pwd
-/bin/cd libft/
+pwd
+"pwd"
+ls
+ls
+ls
+clear

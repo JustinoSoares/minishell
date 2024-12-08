@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2024/11/22 12:16:07 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/08 02:37:56 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,6 @@ int ft_strcmp(char *s1, char *s2)
     int i = 0;
     if (!s1 || !s2)
         return (-1);
-    if (aspas_error(s1, false))
-        return (-1);
-    s1 = remove_aspas(s1);
     while (s1[i] && s2[i] && s1[i] == s2[i])
         i++;
     return (s1[i] - s2[i]);
@@ -77,9 +74,12 @@ void ft_exec_functions(t_variables vars)
 {
     if (vars.args[0] && ft_strcmp(vars.args[0], "echo") == 0)
     {
-        ft_echo(vars);
-        if (new_line(vars.args[1]) == 0)
-            printf("\n");
+        if (vars.args[1])
+        {
+            ft_echo(vars);
+            if (new_line(vars.args[1]) == 0)
+                printf("\n");
+        }
     }
     else if (vars.args[0] && ft_strcmp(vars.args[0], "env") == 0)
         env(vars.ev, vars);
