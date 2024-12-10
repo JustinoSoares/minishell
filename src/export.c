@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:56:42 by rquilami          #+#    #+#             */
-/*   Updated: 2024/11/19 13:06:23 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/10 09:30:42 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,19 +121,19 @@ static void print_env(t_env *ev)
 	}
 }
 
-void	export(t_variables vars)
+void	export(t_variables *vars)
 {
 	char *var;
-	var = vars.args[1];
+	var = vars->args[1];
 	if (var == NULL || ft_strlen(var) == 0)
 	{
-		copy_env(vars.ev);
-		sort_env(vars.ev->env_copy);
-		print_env(vars.ev);
+		copy_env(vars->ev);
+		sort_env(vars->ev->env_copy);
+		print_env(vars->ev);
 	}
 	else
 	{
-		get_variable(vars.ev, var);
-		set_env(vars.ev->key, vars.ev);
+		get_variable(vars->ev, var);
+		set_env(vars->ev->key, vars->ev);
 	}
 }

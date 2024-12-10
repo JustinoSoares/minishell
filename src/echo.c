@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 15:38:25 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/07 21:40:41 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/08 14:47:59 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,13 @@ char *str_delimited(char *str)
     return (new);
 }
 
-void ft_echo(t_variables vars)
+void ft_echo(t_variables *vars)
 {
     int i = 0;
     int get = 0;
     char *str;
 
-    str = vars.line + (start_write(vars.line, vars.args[0]) + new_line(vars.args[1]));
+    str = vars->line + (start_write(vars->line, vars->args[0]) + new_line(vars->args[1]));
     if (aspas_error(str, true))
         return;
     while (str[i])

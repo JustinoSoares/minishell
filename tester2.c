@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 08:48:30 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/06 15:38:33 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/09 23:16:42 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -311,14 +311,46 @@ int ft_quotes_simples(char *str, t_words **array, int i)
     return (i + 1);
 }
 
-int ft_empty(char *str, t_words **s_array, int i)
+int insert_redirect(char *str, t_words **array, int i)
+{
+    if (str[i] && (str[i] == '|'))
+    {
+        insert_str_end(array, "|", 0);
+        i++;
+    }
+    else if (str[i] && (str[i] == '>'))
+    {
+        if (str[i + 1] && str[i + 1] == '>')
+        {
+            insert_str_end(array, ">>", 0);
+            i++;
+        }
+        else
+            insert_str_end(array, ">", 0);
+        i++;
+    }
+    else if (str[i] && (str[i] == '<'))
+    {
+        if (str[i + 1] && str[i + 1] == '<')
+        {
+            insert_str_end(array, "<<", 0);
+            i++;
+        }
+        else
+            insert_str_end(array, "<", 0);
+        i++;
+    }
+    return (i);
+}
+
+int ft_empty(char *str, t_words **array, int i)
 {
     char *word;
     char *expanded_word;
     int index = i;
     int count = 0;
 
-    while (str[index] && str[index] != 32 && str[index] != '"' && str[index] != '\'')
+    while (str[index] && str[index] != 32 && str[index] != '"' && str[index] != '\'' && str[index] != '\t')
     {
         index++;
         count++;
@@ -328,13 +360,16 @@ int ft_empty(char *str, t_words **s_array, int i)
         return (0);
     ft_memset(word, 0, count + 1);
     index = 0;
-    while (str[i] && str[i] != 32 && str[i] != '"' && str[i] != '\'') 
+    while (str[i] && str[i] != 32 && str[i] != '"' && str[i] != '\'' && str[i] != '\t')
+    {
+        i = insert_redirect(str, array, i);
         word[index++] = str[i++];
+    }
     word[index] = '\0';
     if (word)
     {
         expanded_word = is_expanded(word);
-        insert_str_end(s_array, expanded_word, 0);
+        insert_str_end(array, expanded_word, 0);
     }
     return (i + 1);
 }
@@ -360,30 +395,70 @@ void get_elements(char *str, t_words **array)
     }
 }
 
-int main(void)
+void insert_token_end(t_tokens **array, char *str, int type)
 {
-    char *str;
+    t_tokens *new;
+    t_tokens *tmp;
 
-    str = "ls";
+    new = malloc(sizeof(t_tokens));
+    new->token = strdup(str);
+    new->type = type;
+    new->next = NULL;
+    if (*array == NULL)
+        *array = new;
+    else
+    {
+        tmp = *array;
+        while (tmp->next)
+            tmp = tmp->next;
+        tmp->next = new;
+    }
+}
+
+void token(char *str, t_tokens *tokens)
+{
     t_words *array = NULL;
     t_words *tmp;
+
     char *new = NULL;
-    // str = ft_strjoin(str, "  ");
     get_elements(str, &array);
     tmp = array;
     while (tmp != NULL)
     {
+        if (tmp->word[0] == '>')
+        {
+            insert_token_end(tokens, new, 0);
+            insert_token_end(tokens, tmp->word, 0);
+            //tmp = tmp->next;
+            new = NULL;
+        }
+        printf("Word : %s\n", tmp->word);
         new = ft_strjoin(new, tmp->word);
         if (tmp->next)
             new = ft_strjoin(new, " ");
         tmp = tmp->next;
     }
-    printf("Old : %s\n", str);
-    printf("New : %s\n", new);
+    //printf("New : %s\n", new);
+    insert_token_end(tokens, new, 0);
+}
 
-    // char *macro = "$USER";
-    // printf("Size : %d\n", size_expanded(macro));
-    // printf("Size : %s\n", is_expanded(macro));
+int main(void)
+{
+    char *str;
+    t_tokens *tokens = NULL;
+    t_tokens *tmp_token;
+
+    str = "echo justino | grep > log";
+
+    token(str, tokens);
+    tmp_token = tokens;
+    while (tmp_token != NULL)
+    {
+        printf("Token : %s\n", tmp_token->token);
+        tmp_token = tmp_token->next;
+    }
+    //printf("Old : %s\n", str);
+    //printf("New : %s\n", new);
 
     return (0);
 }

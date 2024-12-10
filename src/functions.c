@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/08 13:03:34 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/10 09:58:31 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,50 +20,44 @@ void new_prompt(int signal)
         write(1, "Sair\n", 5);
 }
 
-void function_no_built(t_variables vars)
+void function_no_built(t_variables *vars)
 {
     char *command_path;
     int g_exit_status;
-    command_path = vars.args[0];
-    vars.pid = fork();
-    if (vars.pid == 0)
+    command_path = vars->args[0];
+    vars->pid = fork();
+    if (vars->pid == 0)
     {
-        if (ft_strchr(vars.args[0], '/') == NULL)
+        signal(SIGINT, SIG_DFL);
+        signal(SIGQUIT, SIG_DFL);
+        if (ft_strchr(vars->args[0], '/') == NULL)
         {
-            command_path = find_executable(vars.args[0]);
-            printf("Comando: %s\n", command_path);
+            command_path = find_executable(vars->args[0]);
             if (command_path == NULL)
             {
                 perror("Comando não encontrado");
-                vars.status_command = 2;
-                free_matriz(vars.args);
+                vars->status_command = 2;
+                free_matriz(vars->args);
                 exit(127);
             }
         }
-        execve(command_path, vars.args, NULL);
+        execve(command_path, vars->args, vars->ev->env);
         perror("\033[31mError\033[m");
         exit(1);
     }
-    else if (vars.pid > 0)
+    if (vars->pid > 0)
     {
         signal(SIGINT, new_prompt);
         signal(SIGQUIT, new_prompt);
-        waitpid(vars.pid, &vars.status_command, 0);
-        if (WIFEXITED(vars.status_command))
-        {
-            vars.status_command = WEXITSTATUS(vars.status_command); // Captura o código de saída
-            printf("Código de saída: %d\n", vars.status_command);
-        }
-        vars.status_command = 1;
-        if (WIFSIGNALED(vars.status_command))
-        {
-            vars.status_command = 128 + WTERMSIG(vars.status_command); // Sinal que terminou o processo
-            printf("Código de saída: %d\n", vars.status_command);
-        }
+        waitpid(vars->pid, &vars->status_command, 0);
+        if (WIFEXITED(vars->status_command))
+            vars->status_command = WEXITSTATUS(vars->status_command);
+        else if (WIFSIGNALED(vars->status_command))
+            vars->status_command = 128 + WTERMSIG(vars->status_command);
     }
     else
     {
-        vars.status_command = 1;
+        vars->status_command = 1;
         perror("Error");
     }
 }
@@ -99,70 +93,120 @@ int ft_strcmp(char *s1, char *s2)
     return (s1[i] - s2[i]);
 }
 
-void ft_exec_functions(t_variables vars)
+void ft_exec_functions(t_variables *vars)
 {
-    if (vars.args[0] && ft_strcmp(vars.args[0], "echo") == 0)
+    if (vars->args[0] && ft_strcmp(vars->args[0], "echo") == 0)
     {
-        if (vars.args[1])
+        if (vars->args[1])
         {
             ft_echo(vars);
-            if (new_line(vars.args[1]) == 0)
+            if (new_line(vars->args[1]) == 0)
                 printf("\n");
         }
     }
-    else if (vars.args[0] && ft_strcmp(vars.args[0], "env") == 0)
-        env(vars.ev, vars);
-    else if (vars.args[0] && ft_strcmp(vars.args[0], "cd") == 0)
+    else if (vars->args[0] && ft_strcmp(vars->args[0], "env") == 0)
+        env(vars->ev, vars);
+    else if (vars->args[0] && ft_strcmp(vars->args[0], "cd") == 0)
         ft_cd(vars);
-    else if (vars.args[0] && ft_strcmp(vars.args[0], "pwd") == 0)
+    else if (vars->args[0] && ft_strcmp(vars->args[0], "pwd") == 0)
         ft_pwd(vars);
-    else if (vars.args[0] && ft_strcmp(vars.args[0], "exit") == 0)
+    else if (vars->args[0] && ft_strcmp(vars->args[0], "exit") == 0)
         ft_exit(vars);
-    else if (vars.args[0] && ft_strcmp(vars.args[0], "unset") == 0)
-        unset(vars.args[1], vars.ev);
-    else if (vars.args[0] && ft_strcmp(vars.args[0], "export") == 0)
+    else if (vars->args[0] && ft_strcmp(vars->args[0], "unset") == 0)
+        unset(vars->args[1], vars->ev);
+    else if (vars->args[0] && ft_strcmp(vars->args[0], "export") == 0)
         export(vars);
     else
         function_no_built(vars);
 }
 
-void function_pipe(t_variables vars)
+int count_pipes(t_words *words)
+{
+    int count = 0;
+    while (words)
+    {
+        if (words->word[0] == '|')
+            count++;
+        words = words->next;
+    }
+    return (count);
+}
+
+char **split_pipe(t_words **words, char c)
+{
+    char **line = malloc(sizeof(char *) * count_pipes(*words) + 1);
+    char *new = NULL;
+    t_words *word = *words;
+    int i = 0;
+
+    while (word)
+    {
+        if (word->word[0] == c)
+        {
+            word = word->next;
+            continue;
+        }
+        new = ft_strjoin(new, word->word);
+        printf("new: %s\n", new);
+        //printf("word: %s\n", word->word);
+        /* new = ft_strjoin(new, word->word);
+         printf("new: %s\n", new);
+         if (word->word[0] == c)
+         {
+             word = word->next;
+             line[i] = new;
+             i++;
+             new = NULL;
+         }*/
+        word = word->next;
+    }
+    line[i] = NULL;
+    return (line);
+}
+
+void function_pipe(t_variables *vars, t_words **words)
 {
     int fd[2];
     char **args;
     char **get_args;
+    int i = 0;
 
-    args = ft_split(vars.line, '|');
-    vars.quant = count_pipes(vars.line) + 1;
-    vars.prev_fd = -1;
-    vars.index = -1;
-    while (++vars.index < vars.quant)
+    args = split_pipe(words, '|');
+    while (args[i])
+    {
+        printf("args[%d]: %s\n", i, args[i]);
+        i++;
+    }
+    vars->quant = count_pipes(*words) + 1;
+    vars->prev_fd = -1;
+    vars->index = -1;
+    while (++vars->index < vars->quant)
     {
         if (pipe(fd) == -1)
         {
             perror("pipe");
             exit(EXIT_FAILURE);
         }
-        vars.args = ft_split(args[vars.index], ' ');
-        vars.pid = fork();
-        if (vars.pid == 0)
+        vars->args = ft_split(args[vars->index], ' ');
+        vars->pid = fork();
+        if (vars->pid == 0)
         {
-            if (vars.prev_fd != -1)
+            if (vars->prev_fd != -1)
             {
-                dup2(vars.prev_fd, 0);
-                close(vars.prev_fd);
+                dup2(vars->prev_fd, 0);
+                close(vars->prev_fd);
             }
-            if (vars.index < vars.quant - 1)
+            if (vars->index < vars->quant - 1)
                 dup2(fd[1], STDOUT_FILENO);
             ft_exec_functions(vars);
             close(fd[0]);
             exit(0);
         }
-        else if (vars.pid > 0)
+        else if (vars->pid > 0)
         {
-            waitpid(vars.pid, &vars.status_command, 0);
+            waitpid(vars->pid, &vars->status_command, 0);
             close(fd[1]);
-            vars.prev_fd = fd[0];
+            vars->prev_fd = fd[0];
         }
         else
             perror("Error");

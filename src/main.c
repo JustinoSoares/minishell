@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/08 12:24:06 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/10 10:55:00 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,11 +152,11 @@ int is_valid_macro_char(char str)
 
 void ctrl_c(int sig)
 {
-    (void)sig;
     write(1, "\n", 1);
     rl_on_new_line();
     rl_replace_line("", 0);
     rl_redisplay();
+    status_signal = sig;
 }
 int is_string_space(char *str)
 {
@@ -170,13 +170,14 @@ int is_string_space(char *str)
     return (1);
 }
 
-void ft_get_terminal(char **envp, t_variables vars)
+void ft_get_terminal(char **envp, t_variables *vars)
 {
     char *line;
     char *new;
     int len = 0;
-    vars.status_command = 0;
-    vars.env = envp;
+    t_words *words = NULL;
+    vars->status_command = 0;
+    vars->env = envp;
     while (true)
     {
         signal(SIGINT, ctrl_c);
@@ -197,18 +198,21 @@ void ft_get_terminal(char **envp, t_variables vars)
         }
         if (new[0] == '\0')
             continue;
-        vars.line = filter_string(new, vars);
+        vars->line = filter_string(new, vars, &words);
+        while (words)
+            words = words->next;        
         add_history(new);
         if (is_string_space(new) == 1)
             continue;
-        if (!vars.line)
-            return (free(vars.line));
-        vars.args = ft_split(vars.line, ' ');
-        if (!vars.line)
-            return (free(vars.line));
+        if (!vars->line)
+            return (free(vars->line));
+        vars->args = ft_split(vars->line, ' ');
+        if (!vars->line)
+            return (free(vars->line));
         ft_exec_functions(vars);
         write_history("history");
-        free(vars.line);
+        // printf("saída: %d\n", vars->status_command);
+        free(vars->line);
         free(new);
     }
 }
@@ -218,6 +222,6 @@ int main(int argc, char **argv, char **envp)
     t_variables vars;
     vars.ev = malloc(sizeof(t_env));
     fill_env(vars.ev, envp);
-    ft_get_terminal(envp, vars);
+    ft_get_terminal(envp, &vars);
     return (0);
 }

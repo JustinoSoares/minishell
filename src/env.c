@@ -6,18 +6,18 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:22:22 by rquilami          #+#    #+#             */
-/*   Updated: 2024/11/19 13:17:02 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/10 09:29:13 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void env(t_env *ev, t_variables vars)
+void env(t_env *ev, t_variables *vars)
 {
     char *str;
     int		i;
 
-    str = vars.line + (start_write(vars.line, vars.args[0]));
+    str = vars->line + (start_write(vars->line, vars->args[0]));
 	if (str == NULL || ft_strlen(str) == 0)
 	{
 		i = 0;

@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 16:38:08 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/08 13:01:09 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/08 15:00:39 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int size_expanded(char *str)
     return (size);
 }
 
-char *is_expanded(char *str, t_variables vars)
+char *is_expanded(char *str, t_variables *vars)
 {
     int i = 0;
     int j = 0;
@@ -62,9 +62,12 @@ char *is_expanded(char *str, t_variables vars)
     {
         if (str[i] && str[i] == '$' && str[i + 1] == '?')
         {
-            printf("NUm j%d\n", vars.status_command);
-            new[j++] = vars.status_command + '0';
-            i += 2;
+            if (status_signal == SIGINT)
+                vars->status_command = 130;
+            else if (status_signal == SIGQUIT)
+                vars->status_command = 131;
+            status_signal = 0;
+            return (ft_itoa(vars->status_command));
         }
         else if (str[i] && str[i] == '$' && (str[i + 1] == '\0' || str[i + 1] == '$'))
             new[j++] = str[i++];

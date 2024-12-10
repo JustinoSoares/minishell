@@ -6,13 +6,13 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 08:36:42 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/08 09:22:16 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/10 04:53:09 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int ft_quotes_dup(char *str, t_words **array, int i, t_variables vars)
+int ft_quotes_dup(char *str, t_words **array, int i, t_variables *vars)
 {
     char *word;
     char *expanded_word;
@@ -65,8 +65,39 @@ int ft_quotes_simples(char *str, t_words **array, int i)
     free(word);
     return (i + 1);
 }
+int insert_redirect(char *str, t_words **array, int i)
+{
+    if (str[i] && (str[i] == '|'))
+    {
+        insert_str_end(array, "|", 0);
+        i++;
+    }
+    else if (str[i] && (str[i] == '>'))
+    {
+        if (str[i + 1] && str[i + 1] == '>')
+        {
+            insert_str_end(array, ">>", 0);
+            i++;
+        }
+        else
+            insert_str_end(array, ">", 0);
+        i++;
+    }
+    else if (str[i] && (str[i] == '<'))
+    {
+        if (str[i + 1] && str[i + 1] == '<')
+        {
+            insert_str_end(array, "<<", 0);
+            i++;
+        }
+        else
+            insert_str_end(array, "<", 0);
+        i++;
+    }
+    return (i);
+}
 
-int ft_empty(char *str, t_words **array, int i, t_variables vars)
+int ft_empty(char *str, t_words **array, int i, t_variables *vars)
 {
     char *word;
     char *expanded_word;
@@ -84,7 +115,10 @@ int ft_empty(char *str, t_words **array, int i, t_variables vars)
     ft_memset(word, 0, count + 1);
     index = 0;
     while (str[i] && str[i] != '"' && str[i] != '\'' && str[i] != ' ')
+    {
+        i = insert_redirect(str, array, i);
         word[index++] = str[i++];
+    }
     word[index] = '\0';
     if (word)
     {
@@ -95,7 +129,7 @@ int ft_empty(char *str, t_words **array, int i, t_variables vars)
     return (i);
 }
 
-void get_elements(char *str, t_words **array, t_variables vars)
+void get_elements(char *str, t_words **array, t_variables *vars)
 {
     int i = 0;
     char *word;
@@ -128,18 +162,16 @@ int count_stack(t_words *array)
     return (count);
 }
 
-
-
-char *filter_string(char *str, t_variables vars)
+char *filter_string(char *str, t_variables *vars, t_words **words)
 {
-    t_words *array = NULL;
+    //t_words *array = NULL;
     t_words *tmp;
     char *new = NULL;
 
-    get_elements(str, &array, vars);
-    if (!array)
+    get_elements(str, words, vars);
+    if (!words)
         return (NULL);
-    tmp = array;
+    tmp = *words;
     while (tmp != NULL)
     {
         new = ft_strjoin(new, tmp->word);
@@ -148,6 +180,5 @@ char *filter_string(char *str, t_variables vars)
         tmp = tmp->next;
     }
     new = ft_strjoin(new, "\0");
-    free_words(array);
     return (new);
 }
