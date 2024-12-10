@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/10 08:35:04 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/10 12:24:39 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ void set_values(t_env *ev, char *var, int i, int j);
 void set_env(char *key, t_env *ev);
 void get_variable(t_env *ev, char *var);
 void verfi_arg(t_env *ev);
-void export(t_variables *vars);
+void	export(t_env *ev, char *var, char *value);
 void copy_env(t_env *ev);
 void fill_env(t_env *ev, char **envp);
 char *ft_strcat_index(char *str, char *str2, int index);

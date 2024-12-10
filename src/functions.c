@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/10 12:14:18 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/10 12:25:51 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ void ft_exec_functions(t_variables *vars)
     else if (vars->args[0] && ft_strcmp(vars->args[0], "unset") == 0)
         unset(vars->args[1], vars->ev);
     else if (vars->args[0] && ft_strcmp(vars->args[0], "export") == 0)
-        export(vars);
+        get_variable(vars->ev, vars->args[1]);
     else
         function_no_built(vars);
 }

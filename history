@@ -1,14 +1,2 @@
-cat jkgkb | grep k
-ls -l | wc -l | cat -e
-ls -l ||
-ls -l | |
-ls -l |  |
-ls -l | |
-ls -l | wc -l | cat -e -n
-ls -l | wc -l | cat -e -n | grep '$
-ls -l | wc -l | cat -e -n | grep '$'
-ls -l | wc -l | cat -e -n | grep '$' | ls -l | cat -e
-ls 
-ls | |
-ls | |
-ls | 
+export ROMAO=KL
+export ROMAO="KL"
