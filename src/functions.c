@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/10 09:58:31 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/10 12:14:18 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,23 +143,19 @@ char **split_pipe(t_words **words, char c)
     {
         if (word->word[0] == c)
         {
+            line[i] = new;
             word = word->next;
+            i++;
+            new = NULL;
             continue;
         }
         new = ft_strjoin(new, word->word);
-        printf("new: %s\n", new);
-        //printf("word: %s\n", word->word);
-        /* new = ft_strjoin(new, word->word);
-         printf("new: %s\n", new);
-         if (word->word[0] == c)
-         {
-             word = word->next;
-             line[i] = new;
-             i++;
-             new = NULL;
-         }*/
+        if (word->next)
+            new = ft_strjoin(new, " ");
         word = word->next;
     }
+    line[i] = new;
+    i++;
     line[i] = NULL;
     return (line);
 }
@@ -172,11 +168,6 @@ void function_pipe(t_variables *vars, t_words **words)
     int i = 0;
 
     args = split_pipe(words, '|');
-    while (args[i])
-    {
-        printf("args[%d]: %s\n", i, args[i]);
-        i++;
-    }
     vars->quant = count_pipes(*words) + 1;
     vars->prev_fd = -1;
     vars->index = -1;

@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/10 10:55:00 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/10 11:08:26 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,8 +199,6 @@ void ft_get_terminal(char **envp, t_variables *vars)
         if (new[0] == '\0')
             continue;
         vars->line = filter_string(new, vars, &words);
-        while (words)
-            words = words->next;        
         add_history(new);
         if (is_string_space(new) == 1)
             continue;
@@ -209,9 +207,9 @@ void ft_get_terminal(char **envp, t_variables *vars)
         vars->args = ft_split(vars->line, ' ');
         if (!vars->line)
             return (free(vars->line));
-        ft_exec_functions(vars);
+        function_pipe(vars, &words);
+        words = NULL;
         write_history("history");
-        // printf("saída: %d\n", vars->status_command);
         free(vars->line);
         free(new);
     }
