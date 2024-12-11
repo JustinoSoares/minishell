@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:22:00 by rquilami          #+#    #+#             */
-/*   Updated: 2024/12/10 12:23:20 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/11 15:08:43 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void set_values(t_env *ev, char *var, int i, int j)
 	}
 	else
 	{
-		while (var[i] != '\0' && var[i] != 32)
+		while (var[i] != '\0')
 		{
 			ev->value[j++] = var[i];
 				i++;

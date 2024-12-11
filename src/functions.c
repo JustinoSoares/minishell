@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/10 12:25:51 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/11 12:52:00 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,6 +171,11 @@ void function_pipe(t_variables *vars, t_words **words)
     vars->quant = count_pipes(*words) + 1;
     vars->prev_fd = -1;
     vars->index = -1;
+    if (vars->quant == 1)
+    {
+        ft_exec_functions(vars);
+        return ;
+    }
     while (++vars->index < vars->quant)
     {
         if (pipe(fd) == -1)

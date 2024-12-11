@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/10 11:08:26 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/11 15:41:06 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,9 +182,12 @@ void ft_get_terminal(char **envp, t_variables *vars)
     {
         signal(SIGINT, ctrl_c);
         signal(SIGQUIT, SIG_IGN);
-        line = ft_strcat_index("\033[1;32mroot@minishell\033[m:~/ $ ",
-                               last_word(getcwd(NULL, 0), '/'), 27);
         new = readline("Minishell: ");
+        if (!new)
+        {
+            free(new);
+            exit(0);
+        }
         if (aspas_error(new, true))
         {
             add_history(new);
@@ -192,13 +195,14 @@ void ft_get_terminal(char **envp, t_variables *vars)
         }
         if (!new)
         {
-            free(line);
             printf("exit\n");
+            free(new);
             exit(0);
         }
         if (new[0] == '\0')
             continue;
         vars->line = filter_string(new, vars, &words);
+        printf("line %s\n", vars->line);
         add_history(new);
         if (is_string_space(new) == 1)
             continue;

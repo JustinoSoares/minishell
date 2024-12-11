@@ -6,20 +6,19 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:56:42 by rquilami          #+#    #+#             */
-/*   Updated: 2024/12/10 12:55:08 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/11 15:30:14 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-
 // Esta func pega as env e organiza elas em ordem alfabetica baseadas no valor da tabela ASCII
-static void	sort_env(char **env)
+static void sort_env(char **env)
 {
-	int		i;
-	int		n;
-	int		j;
-	char	*temp;
+	int i;
+	int n;
+	int j;
+	char *temp;
 
 	i = 0;
 	n = 0;
@@ -41,32 +40,32 @@ static void	sort_env(char **env)
 		i++;
 	}
 }
-//Essa funcao verifica se o argumento passado no Export é valido
-void	verfi_arg(t_env *ev)
+// Essa funcao verifica se o argumento passado no Export é valido
+void verfi_arg(t_env *ev)
 {
-    ev->i = 0;
-    while (ev->key[ev->i])
-    {
-        if (ev->key[ev->i] == '%' || ev->key[ev->i] == '#' ||
-        ev->key[ev->i] == '{' || ev->key[ev->i] == '}' ||
-        ev->key[ev->i] == ':' || ev->key[ev->i] == '?' ||
-        ev->key[ev->i] == ';' || ev->key[ev->i] == '@' ||
-        ev->key[ev->i] == ';' || ev->key[ev->i] == '@' ||
-        ev->key[ev->i] == '+' || ev->key[ev->i] == '*' ||
-        ev->key[ev->i] == ',' || ev->key[ev->i] == '.' ||
-        ev->key[ev->i] == '^' || ev->key[ev->i] == '~' ||
-        ev->key[ev->i] == '/' || ev->key[ev->i] == '-' )
-        {
-            printf("export: `%s\' not a valid identifier\n", ev->key);
-            return;
-        }
-        if (ev->key[ev->i] == '(' || ev->key[ev->i] == ')')
-        {
-            printf("syntax error near unexpected token `%c\'\n", ev->key[ev->i]);
-            return;
-        }
-        ev->i++;
-    }
+	ev->i = 0;
+	while (ev->key[ev->i])
+	{
+		if (ev->key[ev->i] == '%' || ev->key[ev->i] == '#' ||
+			ev->key[ev->i] == '{' || ev->key[ev->i] == '}' ||
+			ev->key[ev->i] == ':' || ev->key[ev->i] == '?' ||
+			ev->key[ev->i] == ';' || ev->key[ev->i] == '@' ||
+			ev->key[ev->i] == ';' || ev->key[ev->i] == '@' ||
+			ev->key[ev->i] == '+' || ev->key[ev->i] == '*' ||
+			ev->key[ev->i] == ',' || ev->key[ev->i] == '.' ||
+			ev->key[ev->i] == '^' || ev->key[ev->i] == '~' ||
+			ev->key[ev->i] == '/' || ev->key[ev->i] == '-')
+		{
+			printf("export: `%s\' not a valid identifier\n", ev->key);
+			return;
+		}
+		if (ev->key[ev->i] == '(' || ev->key[ev->i] == ')')
+		{
+			printf("syntax error near unexpected token `%c\'\n", ev->key[ev->i]);
+			return;
+		}
+		ev->i++;
+	}
 }
 
 static void print_env(t_env *ev)
@@ -101,7 +100,7 @@ static void print_env(t_env *ev)
 	}
 }
 
-void	export(t_env *ev, char *var, char *value)
+void export(t_env *ev, char *var, char *value)
 {
 	if (var == NULL || ft_strlen(var) == 0)
 	{
@@ -111,36 +110,88 @@ void	export(t_env *ev, char *var, char *value)
 	}
 	else
 	{
-		 ev->key = var;
-		 ev->value = value;
-		 set_env(ev->key, ev);
+		ev->key = var;
+		ev->value = value;
+		set_env(ev->key, ev);
 	}
 }
 
-void	get_variable(t_env *ev, char *var)
-{ 
-	printf("var %s\n", var);
+int	count_key_value(char *var, int identify)
+{
+	int i = 0;
+	int count = 0;
+
+	while (var[i] != '=')
+	{
+		count++;
+		i++;
+	}
+	printf("count key %d\n", count);
+	if (identify == 0)
+		return (count);
+	count = 0;
+	while (var[i] != '\0')
+	{
+		count++;
+		i++;
+	}
+	printf("count value %d\n", count);
+	return (count);
+}
+
+char *ft_key(char *var)
+{
+	int i = 0;
+	int pos_key = 0;
+	char *key;
+
+	key = malloc(sizeof(char) * count_key_value(var, 0) + 1);
+	if (key == NULL)
+		return (NULL);
+	while (var[i] != '=' && var[i] != 32 && var[i] != '\0' && var[i] != '$')
+	{
+		key[pos_key] = var[i];
+		pos_key++;
+		i++;
+	}
+	key[pos_key] = '\0';
+	return (key);
+}
+
+char *ft_value(char *var)
+{
+	int pos_value = 0;
+	char *value;
+	int i = count_key_value(var, 0) + 1;
+
+	value = malloc(sizeof(char) * count_key_value(var, 1) + 1);
+	if (value == NULL)
+		return (NULL);
+	while (var[i] != '\0')
+	{
+		value[pos_value] = var[i];
+		pos_value++;
+		i++;
+	}
+	value[pos_value] = '\0';
+	return (value);
+}
+
+
+void get_variable(t_env *ev, char *var)
+{
 	if (var == NULL || ft_strlen(var) == 0)
 		export(ev, NULL, NULL);
 	else
 	{
 		ev->i = 0;
 		ev->just_var = 0;
-		ev->key = malloc(sizeof(char) * ft_strlen(var) + 1);
-		ev->value = malloc(sizeof(char) * ft_strlen(var) + 1);
-		while (var[ev->i] != '=' && var[ev->i] != 32 && var[ev->i] != '\0' && var[ev->i] != '$')
-		{
-			ev->key[ev->i] = var[ev->i];
-			ev->i++;
-		}
-		ev->key[ev->i] = '\0';
-		verfi_arg(ev);
-		if (var[ev->i] == '\0')
-			ev->just_var = 1;
-		set_values(ev, var, ev->i, ev->j);
-
+		ev->key = ft_key(var);
+		ev->value = ft_value(var);
 		printf("key %s\n", ev->key);
 		printf("value %s\n", ev->value);
+		verfi_arg(ev);
+		//set_values(ev, var, ev->i, ev->j);
 		export(ev, ev->key, ev->value);
 	}
 }

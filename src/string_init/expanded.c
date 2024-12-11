@@ -6,13 +6,31 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 16:38:08 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/08 15:00:39 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/11 13:12:46 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int size_expanded(char *str)
+char *ft_get_env(char *key, t_env *env)
+{
+    int i = 0;
+    int c = 0;
+    while (env->env[i])
+    {
+        if (ft_strncmp(env->env[i], key, ft_strlen(key)) == 0)
+        {
+            while (env->env[i][c] && env->env[i][c] != '=')
+                c++;
+            if (env->env[i][c] == '=')
+                return (env->env[i] + c + 1);
+        }
+        i++;
+    }
+    return (NULL);
+}
+
+int size_expanded(char *str, t_variables *vars)
 {
     int i = 0;
     int size = 0;
@@ -31,7 +49,7 @@ int size_expanded(char *str)
         else if (str[i] == '$' && str[i + 1])
         {
             word = get_word(str, i + 1);
-            macro = getenv(word);
+            macro = ft_get_env(word, vars->ev);
             if (macro)
                 size += strlen(macro);
             i += strlen(word);
@@ -54,8 +72,8 @@ char *is_expanded(char *str, t_variables *vars)
     char *word;
     char *macro;
 
-    new = malloc(sizeof(char) * size_expanded(str) + 1);
-    new = ft_memset(new, 0, size_expanded(str) + 1);
+    new = malloc(sizeof(char) * size_expanded(str, vars) + 1);
+    new = ft_memset(new, 0, size_expanded(str, vars) + 1);
     if (new == NULL)
         return (NULL);
     while (str[i])
@@ -76,7 +94,7 @@ char *is_expanded(char *str, t_variables *vars)
             word = get_word(str, i + 1);
             if (word == NULL)
                 return (NULL);
-            macro = getenv(word);
+            macro = ft_get_env(word, vars->ev);
             if (macro && strlen(macro) > 0)
             {
                 strcat(new, macro);

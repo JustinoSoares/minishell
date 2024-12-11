@@ -6,11 +6,24 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 08:36:42 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/10 04:53:09 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/11 16:47:01 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+int ft_count_quotes(char *str, int index, char c)
+{
+    int count;
+
+    count = 0;
+    while (str[index] && str[index] != c)
+    {
+        index++;
+        count++;
+    }
+    return (count + 1);
+}
 
 int ft_quotes_dup(char *str, t_words **array, int i, t_variables *vars)
 {
@@ -19,18 +32,19 @@ int ft_quotes_dup(char *str, t_words **array, int i, t_variables *vars)
     int index = i;
     int count = 0;
 
-    while (str[index] && str[index] != '"')
-    {
-        index++;
-        count++;
-    }
+    count = ft_count_quotes(str, i, '"');
+    printf("count %d\n", count);
     word = malloc(sizeof(char) * count + 1);
     if (!word)
         return (0);
     ft_memset(word, 0, count + 1);
     index = 0;
+    word[index++] = str[i++];
     while (str[i] && str[i] != '"')
         word[index++] = str[i++];
+    word[index++] = str[i++];
+    if (str[i + 1] == ' ')
+        word[index++] = ' ';
     word[index] = '\0';
     if (word)
     {
@@ -59,6 +73,8 @@ int ft_quotes_simples(char *str, t_words **array, int i)
     index = 0;
     while (str[i] && str[i] != '\'')
         word[index++] = str[i++];
+    if (str[i + 1] == ' ')
+        word[index++] = ' ';
     word[index] = '\0';
     if (word)
         insert_str_end(array, word, 1);
@@ -119,11 +135,13 @@ int ft_empty(char *str, t_words **array, int i, t_variables *vars)
         i = insert_redirect(str, array, i);
         word[index++] = str[i++];
     }
+    if (str[i] == ' ')
+        word[index++] = ' ';
     word[index] = '\0';
     if (word)
     {
         expanded_word = is_expanded(word, vars);
-        insert_str_end(array, expanded_word, 2);
+        insert_str_end(array, expanded_word, 0);
     }
     free(word);
     return (i);
@@ -139,7 +157,7 @@ void get_elements(char *str, t_words **array, t_variables *vars)
     while (str[i])
     {
         if (str[i] && str[i] == '"')
-            i = ft_quotes_dup(str, array, i + 1, vars);
+            i = ft_quotes_dup(str, array, i, vars);
         else if (str[i] && str[i] == '\'')
             i = ft_quotes_simples(str, array, i + 1);
         else if (str[i])
@@ -164,7 +182,6 @@ int count_stack(t_words *array)
 
 char *filter_string(char *str, t_variables *vars, t_words **words)
 {
-    //t_words *array = NULL;
     t_words *tmp;
     char *new = NULL;
 
@@ -175,8 +192,8 @@ char *filter_string(char *str, t_variables *vars, t_words **words)
     while (tmp != NULL)
     {
         new = ft_strjoin(new, tmp->word);
-        if (tmp->next)
-            new = ft_strjoin(new, " ");
+        // if (tmp->next && tmp->next->type == 0)
+        // new = ft_strjoin(new, " ");
         tmp = tmp->next;
     }
     new = ft_strjoin(new, "\0");
