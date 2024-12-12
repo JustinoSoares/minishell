@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/11 12:52:00 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/12 13:55:10 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,41 +20,47 @@ void new_prompt(int signal)
         write(1, "Sair\n", 5);
 }
 
+void process_child(char *command_path, t_variables *vars)
+{
+    signal(SIGINT, SIG_DFL);
+    signal(SIGQUIT, SIG_DFL);
+    if (ft_strchr(vars->args[0], '/') == NULL)
+    {
+        command_path = find_executable(vars->args[0]);
+        if (command_path == NULL)
+        {
+            perror("Comando não encontrado");
+            vars->status_command = 2;
+            free_matriz(vars->args);
+            exit(127);
+        }
+    }
+    execve(command_path, vars->args, vars->ev->env);
+    perror("\033[31mError\033[m");
+    exit(1);
+}
+
+void process_parent(t_variables *vars)
+{
+    signal(SIGINT, new_prompt);
+    signal(SIGQUIT, new_prompt);
+    waitpid(vars->pid, &vars->status_command, 0);
+    if (WIFEXITED(vars->status_command))
+        vars->status_command = WEXITSTATUS(vars->status_command);
+    else if (WIFSIGNALED(vars->status_command))
+        vars->status_command = 128 + WTERMSIG(vars->status_command);
+}
+
 void function_no_built(t_variables *vars)
 {
     char *command_path;
-    int g_exit_status;
+
     command_path = vars->args[0];
     vars->pid = fork();
     if (vars->pid == 0)
-    {
-        signal(SIGINT, SIG_DFL);
-        signal(SIGQUIT, SIG_DFL);
-        if (ft_strchr(vars->args[0], '/') == NULL)
-        {
-            command_path = find_executable(vars->args[0]);
-            if (command_path == NULL)
-            {
-                perror("Comando não encontrado");
-                vars->status_command = 2;
-                free_matriz(vars->args);
-                exit(127);
-            }
-        }
-        execve(command_path, vars->args, vars->ev->env);
-        perror("\033[31mError\033[m");
-        exit(1);
-    }
+        process_child(command_path, vars);
     if (vars->pid > 0)
-    {
-        signal(SIGINT, new_prompt);
-        signal(SIGQUIT, new_prompt);
-        waitpid(vars->pid, &vars->status_command, 0);
-        if (WIFEXITED(vars->status_command))
-            vars->status_command = WEXITSTATUS(vars->status_command);
-        else if (WIFSIGNALED(vars->status_command))
-            vars->status_command = 128 + WTERMSIG(vars->status_command);
-    }
+        process_parent(vars);
     else
     {
         vars->status_command = 1;
@@ -160,52 +166,69 @@ char **split_pipe(t_words **words, char c)
     return (line);
 }
 
-void function_pipe(t_variables *vars, t_words **words)
+char **init_pipe(t_words **words, t_variables *vars)
 {
-    int fd[2];
     char **args;
-    char **get_args;
-    int i = 0;
 
     args = split_pipe(words, '|');
     vars->quant = count_pipes(*words) + 1;
     vars->prev_fd = -1;
     vars->index = -1;
+
+    return (args);
+}
+
+void process_child_pipe(t_variables *vars, int fd[2])
+{
+    if (vars->prev_fd != -1)
+    {
+        dup2(vars->prev_fd, 0);
+        close(vars->prev_fd);
+    }
+    if (vars->index < vars->quant - 1)
+        dup2(fd[1], STDOUT_FILENO);
+    ft_exec_functions(vars);
+    close(fd[0]);
+    exit(0);
+}
+
+char **init_process(t_variables *vars, int fd[2], char **args)
+{
+    if (pipe(fd) == -1)
+    {
+        perror("pipe");
+        exit(EXIT_FAILURE);
+    }
+    vars->args = ft_split(args[vars->index], ' ');
+    vars->pid = fork();
+    if (vars->pid == 0)
+        process_child_pipe(vars, fd);
+    else if (vars->pid > 0)
+    {
+        waitpid(vars->pid, &vars->status_command, 0);
+        close(fd[1]);
+        vars->prev_fd = fd[0];
+    }
+    else
+        perror("Error");
+    return (args);
+}
+
+void function_pipe(t_variables *vars, t_words **words)
+{
+    int fd[2];
+    char **args;
+    char **get_args;
+    int i;
+
+    i = 0;
+    args = init_pipe(words, vars);
     if (vars->quant == 1)
     {
         ft_exec_functions(vars);
-        return ;
+        return;
     }
     while (++vars->index < vars->quant)
-    {
-        if (pipe(fd) == -1)
-        {
-            perror("pipe");
-            exit(EXIT_FAILURE);
-        }
-        vars->args = ft_split(args[vars->index], ' ');
-        vars->pid = fork();
-        if (vars->pid == 0)
-        {
-            if (vars->prev_fd != -1)
-            {
-                dup2(vars->prev_fd, 0);
-                close(vars->prev_fd);
-            }
-            if (vars->index < vars->quant - 1)
-                dup2(fd[1], STDOUT_FILENO);
-            ft_exec_functions(vars);
-            close(fd[0]);
-            exit(0);
-        }
-        else if (vars->pid > 0)
-        {
-            waitpid(vars->pid, &vars->status_command, 0);
-            close(fd[1]);
-            vars->prev_fd = fd[0];
-        }
-        else
-            perror("Error");
-    }
+        init_process(vars, fd, args);
     free_matriz(args);
 }

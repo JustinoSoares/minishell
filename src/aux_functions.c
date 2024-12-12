@@ -6,32 +6,37 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 09:55:32 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/10 08:04:33 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/12 12:59:47 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
+void cat_path(char *full_path, char *dirs, char *command)
+{
+    ft_strlcpy(full_path, dirs, MAX_PATH);
+    ft_strlcat(full_path, "/", MAX_PATH);
+    ft_strlcat(full_path, command, MAX_PATH);
+}
 
 char *find_executable(char *command)
 {
-    char *path = getenv("PATH");
+    char *path;
     static char full_path[MAX_PATH];
     struct stat buffer;
     char **dirs;
-    int i = 0;
-    int len_dir;
-    int len_cmd;
+    int i;
+
+    i = 0;
+    path = getenv("PATH");
+    if (!path)
+        return (NULL);
     dirs = ft_split(path, ':');
     while (dirs[i])
     {
-        len_dir = ft_strlen(dirs[i]);
-        len_cmd = ft_strlen(command);
-        if (len_dir + 1 + len_cmd < MAX_PATH)
+        if (ft_strlen(dirs[i]) + 1 + ft_strlen(command) < MAX_PATH)
         {
-            ft_strlcpy(full_path, dirs[i], MAX_PATH);
-            ft_strlcat(full_path, "/", MAX_PATH);
-            ft_strlcat(full_path, command, MAX_PATH);
+            cat_path(full_path, dirs[i], command);
             if (stat(full_path, &buffer) == 0 && (buffer.st_mode & S_IXUSR))
             {
                 free_matriz(dirs);

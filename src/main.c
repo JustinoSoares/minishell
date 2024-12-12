@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/11 15:41:06 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/12 14:11:47 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,35 +71,6 @@ void fill_env(t_env *ev, char **envp)
     ev->env[i] = NULL;
 }
 
-char *ft_strcat_index(char *str, char *str2, int index)
-{
-    char *new;
-    int i = 0;
-    int j = 0;
-    int x = 0;
-    int len = strlen(str) + strlen(str2);
-    new = malloc(sizeof(char) * (strlen(str) + strlen(str2) + 1));
-    while (str[i] && i < index)
-    {
-        new[i] = str[i];
-        i++;
-    }
-    x = i;
-    while (str2[j])
-    {
-        new[i] = str2[j];
-        i++;
-        j++;
-    }
-    while (str[x])
-    {
-        new[i] = str[x];
-        i++;
-        x++;
-    }
-    return (new);
-}
-
 char *last_word(char *str, char limited)
 {
     int i = 0;
@@ -111,36 +82,6 @@ char *last_word(char *str, char limited)
     while (word[i])
         i++;
     return (word[i - 1]);
-}
-
-char *ft_strcat_macro(char *str, char *str2, int index, int size_word)
-{
-    char *new;
-    int i = 0;
-    int j = 0;
-    int x = 0;
-    int len = strlen(str) + strlen(str2);
-    new = malloc(sizeof(char) * (strlen(str) + strlen(str2) + 1));
-    while (str[i] && i < index)
-    {
-        new[i] = str[i];
-        i++;
-    }
-    x = i;
-    while (str2[j])
-    {
-        new[i] = str2[j];
-        i++;
-        j++;
-    }
-    x += size_word;
-    while (str[x])
-    {
-        new[i] = str[x];
-        i++;
-        x++;
-    }
-    return (new);
 }
 
 int is_valid_macro_char(char str)
@@ -170,52 +111,47 @@ int is_string_space(char *str)
     return (1);
 }
 
+char *ft_input(char *read)
+{
+    signal(SIGINT, ctrl_c);
+    signal(SIGQUIT, SIG_IGN);
+    read = readline("Minishell: ");
+    if (!read)
+    {
+        free(read);
+        printf("exit\n");
+        exit(0);
+    }
+    add_history(read);
+    return (read);
+}
+
 void ft_get_terminal(char **envp, t_variables *vars)
 {
     char *line;
-    char *new;
-    int len = 0;
-    t_words *words = NULL;
+    char *read;
+    t_words *words;
+
+    words = NULL;
     vars->status_command = 0;
     vars->env = envp;
     while (true)
     {
-        signal(SIGINT, ctrl_c);
-        signal(SIGQUIT, SIG_IGN);
-        new = readline("Minishell: ");
-        if (!new)
-        {
-            free(new);
-            exit(0);
-        }
-        if (aspas_error(new, true))
-        {
-            add_history(new);
+        read = ft_input(read);
+        if (aspas_error(read, true) || read[0] == '\0'
+                || is_string_space(read) == 1)
             continue;
-        }
-        if (!new)
-        {
-            printf("exit\n");
-            free(new);
-            exit(0);
-        }
-        if (new[0] == '\0')
-            continue;
-        vars->line = filter_string(new, vars, &words);
-        printf("line %s\n", vars->line);
-        add_history(new);
-        if (is_string_space(new) == 1)
-            continue;
+        vars->line = filter_string(read, vars, &words);
         if (!vars->line)
             return (free(vars->line));
         vars->args = ft_split(vars->line, ' ');
-        if (!vars->line)
-            return (free(vars->line));
+        if (!vars->args)
+            return (free(vars->args));
         function_pipe(vars, &words);
         words = NULL;
         write_history("history");
         free(vars->line);
-        free(new);
+        free(read);
     }
 }
 

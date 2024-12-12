@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/09 17:44:46 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/12 14:12:42 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ void    ft_exit(t_variables *vars)
 			i++;
 		}
 		printf("exit\n");
-		
 		exit(ft_atoi(str));
 	}
 	else
