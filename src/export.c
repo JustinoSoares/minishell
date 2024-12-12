@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:56:42 by rquilami          #+#    #+#             */
-/*   Updated: 2024/12/11 15:30:14 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/12 17:07:22 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ void export(t_env *ev, char *var, char *value)
 	}
 }
 
-int	count_key_value(char *var, int identify)
+int count_key_value(char *var, int identify)
 {
 	int i = 0;
 	int count = 0;
@@ -126,16 +126,17 @@ int	count_key_value(char *var, int identify)
 		count++;
 		i++;
 	}
-	printf("count key %d\n", count);
 	if (identify == 0)
 		return (count);
 	count = 0;
+	i++;
+	if (var[i] == '"')
+		i++;
 	while (var[i] != '\0')
 	{
 		count++;
 		i++;
 	}
-	printf("count value %d\n", count);
 	return (count);
 }
 
@@ -158,16 +159,10 @@ char *ft_key(char *var)
 	return (key);
 }
 
-char *ft_value(char *var)
+char *ft_value_dup(char *var, char *value, int i)
 {
 	int pos_value = 0;
-	char *value;
-	int i = count_key_value(var, 0) + 1;
-
-	value = malloc(sizeof(char) * count_key_value(var, 1) + 1);
-	if (value == NULL)
-		return (NULL);
-	while (var[i] != '\0')
+	while (var[i] != '\0' && var[i] != '"')
 	{
 		value[pos_value] = var[i];
 		pos_value++;
@@ -177,21 +172,126 @@ char *ft_value(char *var)
 	return (value);
 }
 
-
-void get_variable(t_env *ev, char *var)
+char *ft_value_simple(char *var, char *value, int i)
 {
-	if (var == NULL || ft_strlen(var) == 0)
-		export(ev, NULL, NULL);
+	int pos_value = 0;
+	while (var[i] != '\0' && var[i] != '\'')
+	{
+		value[pos_value] = var[i];
+		pos_value++;
+		i++;
+	}
+	value[pos_value] = '\0';
+	return (value);
+}
+
+char *ft_value(char *var)
+{
+	int pos_value = 0;
+	char *value;
+	int i = count_key_value(var, 0) + 1;
+
+	value = malloc(sizeof(char) * count_key_value(var, 1) + 1);
+	if (value == NULL)
+		return (NULL);
+	if (var[i] && var[i] == '"')
+		value = ft_value_dup(var, value, i + 1);
+	else if (var[i] && var[i] == '\'')
+		value = ft_value_simple(var, value, i + 1);
 	else
 	{
-		ev->i = 0;
-		ev->just_var = 0;
-		ev->key = ft_key(var);
-		ev->value = ft_value(var);
-		printf("key %s\n", ev->key);
-		printf("value %s\n", ev->value);
-		verfi_arg(ev);
-		//set_values(ev, var, ev->i, ev->j);
-		export(ev, ev->key, ev->value);
+		while (var[i] != '\0')
+		{
+			value[pos_value] = var[i];
+			pos_value++;
+			i++;
+		}
+		value[pos_value] = '\0';
 	}
+	return (value);
+}
+
+char *replace_space(char *s, char c)
+{
+	int i;
+	char quote;
+
+	i = 0;
+	while (s[i] != '\0')
+	{
+		if (s[i] == '"' || s[i] == '\'')
+		{
+			quote = s[i];
+			i++;
+			while (s[i] != '\0' && s[i] != quote)
+				i++;
+		}
+		if (s[i] == ' ')
+			s[i] = c;
+		i++;
+	}
+	return (s);
+}
+
+int count_words(t_words *words)
+{
+	int count = 0;
+	t_words *tmp;
+
+	tmp = words;
+	while (tmp)
+	{
+		count++;
+		tmp = tmp->next;
+	}
+	return (count);
+}
+
+char *args_export(t_words **words)
+{
+	char *var;
+	t_words *tmp;
+
+	tmp = *words;
+	var = NULL;
+	if (tmp && tmp->next)
+		tmp = tmp->next;
+	else
+		return (NULL);
+	if (tmp)
+		var = ft_strjoin(var, tmp->word);
+	if (tmp->next && tmp->next->type == 1)
+	{
+		tmp = tmp->next;
+		var = ft_strjoin(var, "'");
+		var = ft_strjoin(var, tmp->word);
+		var = ft_strjoin(var, "'");
+	}
+	else if (tmp->next && tmp->next->type == 2)
+	{
+		tmp = tmp->next;
+		var = ft_strjoin(var, "\"");
+		var = ft_strjoin(var, tmp->word);
+		var = ft_strjoin(var, "\"");
+	}
+	return (var);
+}
+
+void get_variable(t_env *ev, t_words **words)
+{
+	char **split;
+	char *var;
+
+	var = args_export(words);
+	if (!var)
+	{
+		export(ev, NULL, NULL);
+		return;
+	}
+	ev->i = 0;
+	ev->just_var = 0;
+	ev->key = ft_key(var);
+	ev->value = ft_value(var);
+	verfi_arg(ev);
+	export(ev, ev->key, ev->value);
 }

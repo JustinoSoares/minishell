@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/12 12:51:40 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/12 15:42:10 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int is_contra_barra(char *str, int i);
 void ft_echo(t_variables *vars);
 int start_write(char *str, char *command);
 int new_line(char *str);
-void ft_exec_functions(t_variables *vars);
+void ft_exec_functions(t_variables *vars, t_words **words);
 void free_matriz(char **matriz);
 int aspas_error(char *str, int show_error);
 char *find_executable(char *command);
@@ -107,7 +107,7 @@ void ctrl_c(int sig);
 
 void set_values(t_env *ev, char *var, int i, int j);
 void set_env(char *key, t_env *ev);
-void get_variable(t_env *ev, char *var);
+void get_variable(t_env *ev, t_words **words);
 void verfi_arg(t_env *ev);
 void	export(t_env *ev, char *var, char *value);
 void copy_env(t_env *ev);

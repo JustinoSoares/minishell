@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/12 13:55:10 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/12 15:33:04 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ int ft_strcmp(char *s1, char *s2)
     return (s1[i] - s2[i]);
 }
 
-void ft_exec_functions(t_variables *vars)
+void ft_exec_functions(t_variables *vars, t_words **words)
 {
     if (vars->args[0] && ft_strcmp(vars->args[0], "echo") == 0)
     {
@@ -121,7 +121,7 @@ void ft_exec_functions(t_variables *vars)
     else if (vars->args[0] && ft_strcmp(vars->args[0], "unset") == 0)
         unset(vars->args[1], vars->ev);
     else if (vars->args[0] && ft_strcmp(vars->args[0], "export") == 0)
-        get_variable(vars->ev, vars->args[1]);
+        get_variable(vars->ev, words);
     else
         function_no_built(vars);
 }
@@ -178,7 +178,7 @@ char **init_pipe(t_words **words, t_variables *vars)
     return (args);
 }
 
-void process_child_pipe(t_variables *vars, int fd[2])
+void process_child_pipe(t_variables *vars, int fd[2], t_words **words)
 {
     if (vars->prev_fd != -1)
     {
@@ -187,12 +187,12 @@ void process_child_pipe(t_variables *vars, int fd[2])
     }
     if (vars->index < vars->quant - 1)
         dup2(fd[1], STDOUT_FILENO);
-    ft_exec_functions(vars);
+    ft_exec_functions(vars, words);
     close(fd[0]);
     exit(0);
 }
 
-char **init_process(t_variables *vars, int fd[2], char **args)
+char **init_process(t_variables *vars, int fd[2], char **args, t_words **words)
 {
     if (pipe(fd) == -1)
     {
@@ -202,7 +202,7 @@ char **init_process(t_variables *vars, int fd[2], char **args)
     vars->args = ft_split(args[vars->index], ' ');
     vars->pid = fork();
     if (vars->pid == 0)
-        process_child_pipe(vars, fd);
+        process_child_pipe(vars, fd, words);
     else if (vars->pid > 0)
     {
         waitpid(vars->pid, &vars->status_command, 0);
@@ -225,10 +225,10 @@ void function_pipe(t_variables *vars, t_words **words)
     args = init_pipe(words, vars);
     if (vars->quant == 1)
     {
-        ft_exec_functions(vars);
+        ft_exec_functions(vars, words);
         return;
     }
     while (++vars->index < vars->quant)
-        init_process(vars, fd, args);
+        init_process(vars, fd, args, words);
     free_matriz(args);
 }

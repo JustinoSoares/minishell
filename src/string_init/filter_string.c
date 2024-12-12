@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 08:36:42 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/12 12:20:01 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/12 14:30:10 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,15 +118,16 @@ int ft_empty(char *str, t_words **array, int i, t_variables *vars)
     int index = i;
     int count = 0;
 
-    while (str[index] && str[index] != '"' && str[index] != '\'' && str[index] != ' ')
+    while (str[index] && str[index] != '"'
+            && str[index] != '\'' && str[index] != ' ')
     {
         index++;
         count++;
     }
-    word = malloc(sizeof(char) * count + 1);
+    word = malloc(sizeof(char) * count + 2);
     if (!word)
         return (0);
-    ft_memset(word, 0, count + 1);
+    ft_memset(word, 0, count + 2);
     index = 0;
     while (str[i] && str[i] != '"' && str[i] != '\'' && str[i] != ' ')
     {

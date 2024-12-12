@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/12 14:11:47 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/12 17:08:51 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,12 @@ void ft_get_terminal(char **envp, t_variables *vars)
                 || is_string_space(read) == 1)
             continue;
         vars->line = filter_string(read, vars, &words);
+        while (words)
+        {
+            printf("word: %s\n", words->word);
+            words = words->next;
+        }
+        printf("line: %s\n", vars->line);
         if (!vars->line)
             return (free(vars->line));
         vars->args = ft_split(vars->line, ' ');
