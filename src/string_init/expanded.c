@@ -6,11 +6,19 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 16:38:08 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/11 13:12:46 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/12 12:50:31 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+char *get_key(char *env)
+{
+    int i = 0;
+    while (env[i] && env[i] != '=')
+        i++;
+    return (ft_substr(env, 0, i));
+}
 
 char *ft_get_env(char *key, t_env *env)
 {
@@ -18,7 +26,7 @@ char *ft_get_env(char *key, t_env *env)
     int c = 0;
     while (env->env[i])
     {
-        if (ft_strncmp(env->env[i], key, ft_strlen(key)) == 0)
+        if (ft_strcmp(get_key(env->env[i]), key) == 0)
         {
             while (env->env[i][c] && env->env[i][c] != '=')
                 c++;

@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/11 13:07:42 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/12 12:51:40 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,5 +135,8 @@ void free_words(t_words *words);
 void function_pipe(t_variables *vars, t_words **words);
 
 void set_values(t_env *ev, char *var, int i, int j);
+
+int	count_key_value(char *var, int identify);
+int ft_strcmp(char *s1, char *s2);
 
 #endif

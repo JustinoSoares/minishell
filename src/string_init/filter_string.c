@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 08:36:42 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/11 16:47:01 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/12 12:20:01 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,20 +32,18 @@ int ft_quotes_dup(char *str, t_words **array, int i, t_variables *vars)
     int index = i;
     int count = 0;
 
-    count = ft_count_quotes(str, i, '"');
-    printf("count %d\n", count);
+    count = ft_count_quotes(str, i + 1, '"');
     word = malloc(sizeof(char) * count + 1);
     if (!word)
         return (0);
     ft_memset(word, 0, count + 1);
     index = 0;
-    word[index++] = str[i++];
     while (str[i] && str[i] != '"')
         word[index++] = str[i++];
-    word[index++] = str[i++];
-    if (str[i + 1] == ' ')
+    i++;
+    if (str[i] && str[i] == ' ')
         word[index++] = ' ';
-    word[index] = '\0';
+    word[index++] = '\0';
     if (word)
     {
         expanded_word = is_expanded(word, vars);
@@ -157,7 +155,7 @@ void get_elements(char *str, t_words **array, t_variables *vars)
     while (str[i])
     {
         if (str[i] && str[i] == '"')
-            i = ft_quotes_dup(str, array, i, vars);
+            i = ft_quotes_dup(str, array, i + 1, vars);
         else if (str[i] && str[i] == '\'')
             i = ft_quotes_simples(str, array, i + 1);
         else if (str[i])
