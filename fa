@@ -1,0 +1,5 @@
+args[0] = ls  -l       
+-rw-r--r-- 1 jsoares jsoares 24 dez 13 13:57 fa
+[?2004hMinishell: ^C[?2004l
+Minishell: [?2004h[?2004l
+exit

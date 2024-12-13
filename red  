@@ -1,0 +1,11 @@
+args[0] = ls  -l          
+args[1] =  wc  -l
+29
+[?2004hMinishell: 
+[?2004l[?2004hMinishell: 
+[?2004l[?2004hMinishell: 
+[?2004l[?2004hMinishell: 
+[?2004l[?2004hMinishell:   
+[?2004l[?2004hMinishell:  
+[?2004l[?2004hMinishell: ^C[?2004l
+Minishell: [?2004hvdascsadsa d^Z[?2004l

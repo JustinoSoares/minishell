@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/13 02:41:55 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/13 15:15:16 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,27 @@ int ft_strcmp(char *s1, char *s2)
     while (s1[i] && s2[i] && s1[i] == s2[i])
         i++;
     return (s1[i] - s2[i]);
+}
+
+int type_redirect(char *str)
+{
+    while (*str)
+    {
+        if (*str == '>')
+        {
+            if (*(str + 1) == '>')
+                return (2);
+            return (1);
+        }
+        else if (*str == '<')
+        {
+            if (*(str + 1) == '<')
+                return (4);
+            return (3);
+        }
+    }
+    str++;
+    return (-1);
 }
 
 void ft_exec_functions(t_variables *vars, t_words **words)
@@ -221,7 +242,54 @@ void init_process(t_variables *vars, int fd[2], char **args, t_words **words)
         vars->prev_fd = fd[0];
     }
     else
+    {
+        waitpid(vars->pid, &vars->status_command, 0);
         perror("Error");
+    }
+}
+
+char *first_word(char *str)
+{
+    int i = 0;
+    int j = 0;
+    while (str[i] && (str[i] == ' ' || str[i] == '\t'))
+        i++;
+    while (str[j] && (str[j] != ' ' || str[j] != '\t'))
+        j++;
+    char *new = ft_substr(str, i, j);
+    return (new);
+}
+
+void operation_redir(char **args)
+{
+    int i = 0;
+    int j = 0;
+
+    while (args[i])
+    {
+        j = -1;
+        while (args[i][++j])
+        {
+            if (args[i][j] == '>')
+            {
+                args[i][j] = 32;
+                j++;
+                int fd = open(first_word(args[i] + j), O_CREAT | O_WRONLY | O_TRUNC, 0644);
+                dup2(fd, 1);
+                close(fd);
+                int size = ft_strlen(first_word(args[i] + j));
+                while (args[i][j] == ' ')
+                    j++;
+                while (size--)
+                {
+                    args[i][j] = ' ';
+                    j++;
+                }
+                break;
+            }
+        }
+        i++;
+    }
 }
 
 void function_pipe(t_variables *vars, t_words **words)
@@ -230,15 +298,17 @@ void function_pipe(t_variables *vars, t_words **words)
     char **args;
     char **get_args;
     int i;
+    int j = 0;
 
     i = 0;
     args = init_pipe(words, vars);
+    //operation_redir(args);
     if (vars->quant == 1)
     {
         ft_exec_functions(vars, words);
         if (args)
             free_matriz(args);
-        return;
+        return ;
     }
     while (++vars->index < vars->quant)
         init_process(vars, fd, args, words);
