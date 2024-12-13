@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 08:36:42 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/12 14:30:10 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/12 23:03:28 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ int ft_quotes_dup(char *str, t_words **array, int i, t_variables *vars)
         insert_str_end(array, expanded_word, 2);
     }
     free(word);
+    free(expanded_word);
     return (i + 1);
 }
 
@@ -113,13 +114,12 @@ int insert_redirect(char *str, t_words **array, int i)
 
 int ft_empty(char *str, t_words **array, int i, t_variables *vars)
 {
-    char *word;
-    char *expanded_word;
+    char *word = NULL;
+    char *expanded_word = NULL;
     int index = i;
     int count = 0;
 
-    while (str[index] && str[index] != '"'
-            && str[index] != '\'' && str[index] != ' ')
+    while (str[index] && str[index] != '"' && str[index] != '\'' && str[index] != ' ')
     {
         index++;
         count++;
@@ -143,24 +143,24 @@ int ft_empty(char *str, t_words **array, int i, t_variables *vars)
         insert_str_end(array, expanded_word, 0);
     }
     free(word);
+    free(expanded_word);
     return (i);
 }
 
-void get_elements(char *str, t_words **array, t_variables *vars)
+void get_elements(char *str, t_words **words, t_variables *vars)
 {
     int i = 0;
-    char *word;
 
     while (str[i] && str[i] == ' ')
         i++;
     while (str[i])
     {
         if (str[i] && str[i] == '"')
-            i = ft_quotes_dup(str, array, i + 1, vars);
+            i = ft_quotes_dup(str, words, i + 1, vars);
         else if (str[i] && str[i] == '\'')
-            i = ft_quotes_simples(str, array, i + 1);
+            i = ft_quotes_simples(str, words, i + 1);
         else if (str[i])
-            i = ft_empty(str, array, i, vars);
+            i = ft_empty(str, words, i, vars);
         while (str[i] && str[i] == ' ')
             i++;
     }
@@ -183,18 +183,28 @@ char *filter_string(char *str, t_variables *vars, t_words **words)
 {
     t_words *tmp;
     char *new = NULL;
+    char *final_str = NULL;
 
     get_elements(str, words, vars);
-    if (!words)
+    if (!words || !*words)
         return (NULL);
     tmp = *words;
     while (tmp != NULL)
     {
-        new = ft_strjoin(new, tmp->word);
-        // if (tmp->next && tmp->next->type == 0)
-        // new = ft_strjoin(new, " ");
+        if (tmp->word)
+        {
+            char *temp = ft_strjoin(new, tmp->word);
+            if (new)
+                free(new);
+            new = temp;
+        }
         tmp = tmp->next;
     }
-    new = ft_strjoin(new, "\0");
-    return (new);
+    if (new)
+    {
+        final_str = ft_strjoin(new, "\0");
+        free(new);
+        return (final_str);
+    }
+    return (NULL);
 }

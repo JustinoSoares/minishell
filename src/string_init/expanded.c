@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 16:38:08 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/12 12:50:31 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/13 06:41:25 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,21 @@ char *ft_get_env(char *key, t_env *env)
 {
     int i = 0;
     int c = 0;
+    char *get_env;
     while (env->env[i])
     {
-        if (ft_strcmp(get_key(env->env[i]), key) == 0)
+        get_env = get_key(env->env[i]);
+        if (ft_strcmp(get_env, key) == 0)
         {
             while (env->env[i][c] && env->env[i][c] != '=')
                 c++;
             if (env->env[i][c] == '=')
+            {
+                free(get_env);
                 return (env->env[i] + c + 1);
+            }
         }
+        free(get_env);
         i++;
     }
     return (NULL);
@@ -49,7 +55,7 @@ int size_expanded(char *str, t_variables *vars)
     {
         if (str[i] == '$' && str[i + 1] == '?')
             return (size + 1);
-        else if (str[i] == '$' && (str[i + 1] == '\0' || str[i + 1] == '$'))
+        else if (str[i] == '$' && (str[i + 1] == '\0' || !ft_isalpha(str[i + 1])))
         {
             i++;
             size++;
@@ -95,7 +101,7 @@ char *is_expanded(char *str, t_variables *vars)
             status_signal = 0;
             return (ft_itoa(vars->status_command));
         }
-        else if (str[i] && str[i] == '$' && (str[i + 1] == '\0' || str[i + 1] == '$'))
+        else if (str[i] && str[i] == '$' && (str[i + 1] == '\0' || !ft_isalpha(str[i + 1])))
             new[j++] = str[i++];
         else if (str[i] && str[i] == '$' && str[i + 1])
         {

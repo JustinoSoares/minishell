@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/12 15:33:04 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/13 02:41:55 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ void ft_exec_functions(t_variables *vars, t_words **words)
     else if (vars->args[0] && ft_strcmp(vars->args[0], "pwd") == 0)
         ft_pwd(vars);
     else if (vars->args[0] && ft_strcmp(vars->args[0], "exit") == 0)
-        ft_exit(vars);
+        ft_exit(vars, words);
     else if (vars->args[0] && ft_strcmp(vars->args[0], "unset") == 0)
         unset(vars->args[1], vars->ev);
     else if (vars->args[0] && ft_strcmp(vars->args[0], "export") == 0)
@@ -140,28 +140,40 @@ int count_pipes(t_words *words)
 
 char **split_pipe(t_words **words, char c)
 {
-    char **line = malloc(sizeof(char *) * count_pipes(*words) + 1);
+    char **line;
     char *new = NULL;
-    t_words *word = *words;
-    int i = 0;
+    char *tmp = NULL;
+    t_words *word;
+    int i;
 
+    i = 0;
+    word = *words;
+    line = malloc(sizeof(char *) * (count_pipes(*words) + 2));
+    if (!line)
+        return NULL;
     while (word)
     {
         if (word->word[0] == c)
         {
-            line[i] = new;
-            word = word->next;
-            i++;
+            line[i++] = new;
             new = NULL;
+            word = word->next;
             continue;
         }
-        new = ft_strjoin(new, word->word);
+        tmp = ft_strjoin(new, word->word);
+        if (new)
+            free(new);
+        new = tmp;
         if (word->next)
-            new = ft_strjoin(new, " ");
+        {
+            tmp = ft_strjoin(new, " ");
+            if (new)
+                free(new);
+            new = tmp;
+        }
         word = word->next;
     }
-    line[i] = new;
-    i++;
+    line[i++] = new;
     line[i] = NULL;
     return (line);
 }
@@ -174,7 +186,6 @@ char **init_pipe(t_words **words, t_variables *vars)
     vars->quant = count_pipes(*words) + 1;
     vars->prev_fd = -1;
     vars->index = -1;
-
     return (args);
 }
 
@@ -192,7 +203,7 @@ void process_child_pipe(t_variables *vars, int fd[2], t_words **words)
     exit(0);
 }
 
-char **init_process(t_variables *vars, int fd[2], char **args, t_words **words)
+void init_process(t_variables *vars, int fd[2], char **args, t_words **words)
 {
     if (pipe(fd) == -1)
     {
@@ -211,7 +222,6 @@ char **init_process(t_variables *vars, int fd[2], char **args, t_words **words)
     }
     else
         perror("Error");
-    return (args);
 }
 
 void function_pipe(t_variables *vars, t_words **words)
@@ -226,6 +236,8 @@ void function_pipe(t_variables *vars, t_words **words)
     if (vars->quant == 1)
     {
         ft_exec_functions(vars, words);
+        if (args)
+            free_matriz(args);
         return;
     }
     while (++vars->index < vars->quant)

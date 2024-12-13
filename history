@@ -1,4 +1,1 @@
-ls > vida
-ls >> vida
-ls > vida -l -a
-ls > vida -l -a
+pwd | ls

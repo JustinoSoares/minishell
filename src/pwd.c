@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/12 14:12:42 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/13 00:55:25 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,20 +25,13 @@ void    ft_pwd(t_variables *vars)
         printf("pwd: can't have argument\n");
 }
 
-static void clean_all(t_env *ev)
-{
-	free(ev->env);
-	free(ev->env_copy);
-}
-
-void    ft_exit(t_variables *vars)
+void    ft_exit(t_variables *vars, t_words **words)
 {
 	int i;
 	char *str;
 
 	i = 0;
 	str = vars->args[1];
-	clean_all(vars->ev);
 	if (str != NULL || ft_strlen(str) != 0)
 	{
 		while (str[i] != '\0')
@@ -46,16 +39,19 @@ void    ft_exit(t_variables *vars)
 			if (!ft_isdigit(str[i]))
 			{
 				printf("bash: exit: %s: numeric argument required\n", str);
+				free_words(*words);
 				exit (2);
 			}
 			i++;
 		}
 		printf("exit\n");
+		free_words(*words);
 		exit(ft_atoi(str));
 	}
 	else
 	{
 		printf("exit\n");
+		free_words(*words);
 		exit(0);
 	}
 }

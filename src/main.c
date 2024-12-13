@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/12 17:08:51 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/13 09:11:16 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,9 @@ int new_line(char *str)
 
 void fill_env(t_env *ev, char **envp)
 {
-    int i;
-    int j;
+    int i = 0;
+    int j = 0;
 
-    i = 0;
-    j = 0;
     while (envp[i] != NULL)
         i++;
     ev->len = i;
@@ -65,10 +63,19 @@ void fill_env(t_env *ev, char **envp)
         return;
     while (j < i)
     {
-        ev->env[j] = strdup(envp[j]);
+        ev->env[j] = ft_strdup(envp[j]);
+        if (!ev->env[j])
+        {
+            while (j > 0)
+            {
+                free(ev->env[--j]);
+            }
+            free(ev->env);
+            return;
+        }
         j++;
     }
-    ev->env[i] = NULL;
+    ev->env[i] = NULL; // Null-terminate the array
 }
 
 char *last_word(char *str, char limited)
@@ -138,34 +145,75 @@ void ft_get_terminal(char **envp, t_variables *vars)
     while (true)
     {
         read = ft_input(read);
-        if (aspas_error(read, true) || read[0] == '\0'
-                || is_string_space(read) == 1)
+        if (aspas_error(read, true) || read[0] == '\0' || is_string_space(read) == 1)
             continue;
         vars->line = filter_string(read, vars, &words);
-        while (words)
-        {
-            printf("word: %s\n", words->word);
-            words = words->next;
-        }
-        printf("line: %s\n", vars->line);
         if (!vars->line)
-            return (free(vars->line));
+        {
+            free_words(words);
+            free(vars->line);
+            free(read);
+            return;
+        }
         vars->args = ft_split(vars->line, ' ');
         if (!vars->args)
-            return (free(vars->args));
+        {
+            free(vars->line);
+            free(read);
+            free_matriz(vars->args);
+            free_words(words);
+            return;
+        }
         function_pipe(vars, &words);
+        free_words(words);
         words = NULL;
         write_history("history");
         free(vars->line);
+        free_matriz(vars->args);
         free(read);
     }
 }
+
+void free_env(t_env *ev)
+{
+    int i;
+
+    i = 0;
+    if (!ev)
+        return;
+    while (i < ev->len)
+    {
+        free(ev->env[i]);
+        i++;
+    }
+    free(ev->env); // Free the array itself
+    free(ev);      // Free the t_env structure
+}
+
+void init_ev(t_env *ev)
+{
+    ev->value = NULL;
+    ev->key = NULL;
+    ev->env = NULL;
+    ev->env_copy = NULL;
+    ev->len = 0;
+    ev->found = 0;
+    ev->just_var = 0;
+    ev->i = 0;
+    ev->j = 0;
+}
+
 
 int main(int argc, char **argv, char **envp)
 {
     t_variables vars;
     vars.ev = malloc(sizeof(t_env));
+    if (!vars.ev)
+        return (0);
+    init_ev(vars.ev);
     fill_env(vars.ev, envp);
     ft_get_terminal(envp, &vars);
+    free_env(vars.ev);
+    free_matriz(vars.env);
     return (0);
 }

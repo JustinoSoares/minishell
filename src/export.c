@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:56:42 by rquilami          #+#    #+#             */
-/*   Updated: 2024/12/12 17:07:22 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/13 06:20:41 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ static void sort_env(char **env)
 		i++;
 	}
 }
+
 // Essa funcao verifica se o argumento passado no Export é valido
 void verfi_arg(t_env *ev)
 {
@@ -121,7 +122,7 @@ int count_key_value(char *var, int identify)
 	int i = 0;
 	int count = 0;
 
-	while (var[i] != '=')
+	while (var[i] && var[i] != '=')
 	{
 		count++;
 		i++;
@@ -129,8 +130,11 @@ int count_key_value(char *var, int identify)
 	if (identify == 0)
 		return (count);
 	count = 0;
-	i++;
-	if (var[i] == '"')
+	if (var[i])
+		i++;
+	else
+		return (0);
+	if (var[i] && var[i] == '"')
 		i++;
 	while (var[i] != '\0')
 	{
@@ -189,8 +193,11 @@ char *ft_value(char *var)
 {
 	int pos_value = 0;
 	char *value;
-	int i = count_key_value(var, 0) + 1;
+	int i;
 
+	if (ft_strchr(var, '=') == NULL)
+		return (NULL);
+	i = count_key_value(var, 0) + 1;
 	value = malloc(sizeof(char) * count_key_value(var, 1) + 1);
 	if (value == NULL)
 		return (NULL);
@@ -200,6 +207,7 @@ char *ft_value(char *var)
 		value = ft_value_simple(var, value, i + 1);
 	else
 	{
+		printf("value: %s\n", value);
 		while (var[i] != '\0')
 		{
 			value[pos_value] = var[i];
@@ -249,32 +257,46 @@ int count_words(t_words *words)
 
 char *args_export(t_words **words)
 {
-	char *var;
-	t_words *tmp;
+	char *var = NULL;
+	t_words *tmp = *words;
 
-	tmp = *words;
-	var = NULL;
-	if (tmp && tmp->next)
-		tmp = tmp->next;
-	else
-		return (NULL);
-	if (tmp)
-		var = ft_strjoin(var, tmp->word);
-	if (tmp->next && tmp->next->type == 1)
+	if (!tmp || !tmp->next)
 	{
-		tmp = tmp->next;
-		var = ft_strjoin(var, "'");
-		var = ft_strjoin(var, tmp->word);
-		var = ft_strjoin(var, "'");
+		return NULL; // Return NULL if there are not enough words
 	}
-	else if (tmp->next && tmp->next->type == 2)
+
+	tmp = tmp->next;				  // Move to the next word
+	var = ft_strjoin(var, tmp->word); // Join first word
+
+	if (tmp->next)
 	{
-		tmp = tmp->next;
-		var = ft_strjoin(var, "\"");
-		var = ft_strjoin(var, tmp->word);
-		var = ft_strjoin(var, "\"");
+		tmp = tmp->next; // Move to the next word
+		if (tmp->type == 1)
+		{									   // Single quotes
+			char *temp = ft_strjoin(var, "'"); // Join single quote
+			free(var);						   // Free previous var before reassigning
+			var = temp;
+			temp = ft_strjoin(var, tmp->word); // Join word inside quotes
+			free(var);
+			var = temp;
+			temp = ft_strjoin(var, "'"); // Join closing single quote
+			free(var);
+			var = temp;
+		}
+		else if (tmp->type == 2)
+		{										// Double quotes
+			char *temp = ft_strjoin(var, "\""); // Join double quote
+			free(var);
+			var = temp;
+			temp = ft_strjoin(var, tmp->word); // Join word inside quotes
+			free(var);
+			var = temp;
+			temp = ft_strjoin(var, "\""); // Join closing double quote
+			free(var);
+			var = temp;
+		}
 	}
-	return (var);
+	return (var); // Return the constructed string
 }
 
 void get_variable(t_env *ev, t_words **words)
@@ -294,4 +316,7 @@ void get_variable(t_env *ev, t_words **words)
 	ev->value = ft_value(var);
 	verfi_arg(ev);
 	export(ev, ev->key, ev->value);
+	free(ev->key);
+	free(ev->value);
+	free(var);
 }

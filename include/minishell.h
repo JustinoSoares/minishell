@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/12 15:42:10 by jsoares          ###   ########.fr       */
+/*   Updated: 2024/12/13 00:39:45 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ char **ft_split_aspa(char const *s, char c);
 void env(t_env *ev, t_variables *vars);
 void unset(char *key, t_env *ev);
 void ft_pwd(t_variables *vars);
-void ft_exit(t_variables *vars);
+void ft_exit(t_variables *vars, t_words **words);
 
 void ft_cd(t_variables *vars);
 void ctrl_c(int sig);
