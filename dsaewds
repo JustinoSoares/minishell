@@ -1,6 +1,0 @@
-args[0] = ls  -l            
--rw-r--r-- 1 jsoares jsoares 29 dez 13 14:09 dsaewds
-[?2004hMinishell: ^C[?2004l
-Minishell: [?2004h^C[?2004l
-Minishell: [?2004h[?2004l
-exit

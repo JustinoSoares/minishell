@@ -1,3 +1,0 @@
-args[0] = ls  -l        
--rw-r--r-- 1 jsoares jsoares 25 dez 13 14:07 dsa
-Minishell: exit

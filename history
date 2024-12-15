@@ -1,1 +1,1 @@
-ls | pwd
+ls << of

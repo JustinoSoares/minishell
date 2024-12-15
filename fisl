@@ -1,29 +1,0 @@
-args[0] = ls  -l         
--rw-r--r-- 1 jsoares jsoares 26 dez 13 14:06 fisl
-[?2004hMinishell: 
-[?2004l[?2004hMinishell: 
-[?2004l[?2004hMinishell: c
-[?2004largs[0] = c
-[?2004hMinishell: 
-[?2004l[?2004hMinishell: ds
-[?2004largs[0] = ds
-[?2004hMinishell: d
-[?2004largs[0] = d
-[?2004hMinishell: ^C[?2004l
-Minishell: [?2004h
-[?2004l[?2004hMinishell: 
-[?2004l[?2004hMinishell: 
-[?2004l[?2004hMinishell: ds
-[?2004largs[0] = ds
-[?2004hMinishell: ad
-[?2004largs[0] = ad
-[?2004hMinishell: sd
-[?2004largs[0] = sd
-[?2004hMinishell: asd
-[?2004largs[0] = asd
-[?2004hMinishell: as
-[?2004largs[0] = as
-
-[?2004hMinishell: 
-[?2004l[?2004hMinishell: [?2004l
-exit

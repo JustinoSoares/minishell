@@ -1,0 +1,17 @@
+a.out
+cc
+history
+history-10449.tmp
+include
+jose
+libft
+log.txt
+Makefile
+minishell
+muid
+README.md
+src
+teste3.c
+teste4.c
+tester2.c
+tester.c
