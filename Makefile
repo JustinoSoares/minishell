@@ -1,5 +1,6 @@
 CC = cc 
-FLAGS = -Wall -Wextra -Werror -g3
+#-fsanitize=leak
+FLAGS =  -Wall -Wextra -Werror -g
 READLINE_FLAG = -lreadline
 NAME = minishell
 SRC = src/main.c src/utils.c src/echo.c src/functions.c src/free.c  src/redir.c\
@@ -14,7 +15,7 @@ all: $(LIBFT) $(NAME)
 $(LIBFT): 
 		@make -C $(LIBFT_PATH)
 $(NAME): $(LIBFT) $(OBJ)
-	$(CC) $(FLAGS) $(OBJ) $(READLINE_FLAG) $(LIBFT_PATH)libft.a -o $(NAME)
+	$(CC)  $(FLAGS) $(OBJ) $(READLINE_FLAG) $(LIBFT_PATH)libft.a -o $(NAME)
 
 clean : 
 		@make clean -C $(LIBFT_PATH)

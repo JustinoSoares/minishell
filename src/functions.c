@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   functions.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/03 01:24:01 by marvin           ###   ########.fr       */
+/*   Updated: 2025/01/07 06:38:52 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,15 @@ void process_child(char *command_path, t_variables *vars)
             exit(127);
         }
     }
+    if (!command_path || access(command_path, X_OK) != 0)
+    {
+        perror("Comando não encontrado");
+        vars->status_command = 127;
+        free_matriz(vars->args);
+        exit(127);
+    }
     execve(command_path, vars->args, vars->ev->env);
-    perror("\033[31mError\033[m");
+    perror("Error");
     exit(1);
 }
 
@@ -98,10 +105,6 @@ int ft_strcmp(char *s1, char *s2)
         i++;
     return (s1[i] - s2[i]);
 }
-
-
-
-
 
 void ft_exec_functions(t_variables *vars, t_words **words)
 {
@@ -202,8 +205,11 @@ void process_child_pipe(t_variables *vars, int fd[2], t_words **words)
     }
     if (vars->index < vars->quant - 1)
         dup2(fd[1], STDOUT_FILENO);
-    //ft_execute(vars, words, vars->args[vars->index]);
-    ft_exec_functions(vars, words);
+    // ft_exec_functions(vars, words);
+    if (strchr(vars->args[0], '>') != NULL || strchr(vars->args[0], '<') != NULL)
+        function_redir(vars, words);
+    else
+        ft_exec_functions(vars, words);
     close(fd[0]);
     exit(0);
 }
@@ -215,6 +221,8 @@ void init_process(t_variables *vars, int fd[2], char **args, t_words **words)
         perror("pipe");
         exit(EXIT_FAILURE);
     }
+    free_matriz(vars->args);
+    vars->args = NULL;
     vars->args = ft_split(args[vars->index], ' ');
     vars->pid = fork();
     if (vars->pid == 0)
@@ -230,7 +238,10 @@ void init_process(t_variables *vars, int fd[2], char **args, t_words **words)
         waitpid(vars->pid, &vars->status_command, 0);
         perror("Error");
     }
+    free_matriz(vars->args);
+    vars->args = NULL;
 }
+
 
 char *first_word(char *str)
 {
@@ -254,6 +265,8 @@ void function_pipe(t_variables *vars, t_words **words)
 
     i = 0;
     args = init_pipe(words, vars);
+    if (args == NULL)
+        return;
     if (vars->quant == 1)
     {
         if (strchr(args[0], '>') != NULL || strchr(args[0], '<') != NULL)

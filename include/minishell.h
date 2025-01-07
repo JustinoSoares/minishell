@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/04 13:12:12 by marvin           ###   ########.fr       */
+/*   Updated: 2025/01/07 08:43:07 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,17 @@ typedef struct s_env
     int i;
     int j;
 } t_env;
+
+typedef struct s_extented
+{
+    char *str;
+    char *macro;
+    char *word;
+    char *getter;
+    int i;
+    int j;
+    int size;
+} t_extented;
     
 
 typedef struct s_variables

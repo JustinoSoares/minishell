@@ -13,7 +13,7 @@
 
 #include "../include/minishell.h"
 
-void    other_func(t_variables *vars, char *command)
+void other_func(t_variables *vars, char *command)
 {
     int i;
 
@@ -23,15 +23,15 @@ void    other_func(t_variables *vars, char *command)
     else if (ft_strcmp(command, "env") == 0)
     {
         while (vars->ev->env[i] != NULL)
-		{
-			printf("%s\n", vars->ev->env[i]);
-			i++;
-		}
+        {
+            printf("%s\n", vars->ev->env[i]);
+            i++;
+        }
     }
-    exit (0);
+    exit(0);
 }
 
-void    execute_redir(char *command, t_variables *vars, int std)
+void execute_redir(char *command, t_variables *vars, int std)
 {
     if (dup2(vars->fd, std) == -1)
     {
@@ -40,23 +40,36 @@ void    execute_redir(char *command, t_variables *vars, int std)
         return;
     }
     vars->pid = fork();
-    if (vars->pid == 0)
+    if (vars->pid == 0) // Processo filho
     {
         vars->cmd_args[0] = find_executable(command);
         if (ft_strcmp(command, "export") == 0 || ft_strcmp(command, "env") == 0)
+        {
             other_func(vars, command);
+        }
         else
+        {
             execve(vars->cmd_args[0], vars->cmd_args, vars->env);
+            // Caso execve falhe
+            perror("Erro ao executar comando");
+            exit(EXIT_FAILURE);
+        }
     }
-    if (vars->pid > 0)
+    else if (vars->pid > 0) // Processo pai
     {
+        int status;
+        waitpid(vars->pid, &status, 0); // Espera pelo término do processo filho
+
         if (dup2(vars->saved_std, std) == -1)
         {
             perror("Erro ao restaurar o stdout original");
-            close(vars->fd);
-            close(vars->saved_std);
-            return;
         }
+        close(vars->fd);
+    }
+    else // Erro no fork
+    {
+        perror("Erro ao criar processo filho");
+        close(vars->fd);
     }
 }
 
@@ -85,7 +98,7 @@ int here_doc(const char *file)
 
 int open_file(char *file, char *redir_type)
 {
-    int     fd;
+    int fd;
 
     fd = -1;
     if (ft_strcmp(redir_type, ">") == 0)
@@ -98,7 +111,6 @@ int open_file(char *file, char *redir_type)
         fd = here_doc(file);
     return (fd);
 }
-
 
 void define_redir(t_words **words, t_variables *vars)
 {
@@ -135,7 +147,7 @@ void token_cmd_args(t_words **words, t_variables *vars)
     while (tmp != NULL)
     {
         if (ft_strcmp(tmp->word, ">") == 0 || ft_strcmp(tmp->word, ">>") == 0 ||
-        ft_strcmp(tmp->word, "<") == 0 || ft_strcmp(tmp->word, "<<") == 0)
+            ft_strcmp(tmp->word, "<") == 0 || ft_strcmp(tmp->word, "<<") == 0)
             tmp = tmp->next;
         else
         {
@@ -187,7 +199,6 @@ void token_file_in(t_words **words, t_variables *vars)
     vars->files_in[vars->count_in] = NULL;
 }
 
-
 void remove_space(char *str, char ch)
 {
     int i;
@@ -196,7 +207,9 @@ void remove_space(char *str, char ch)
 
     i = 0;
     j = 0;
-    len = ft_strlen(str);
+    if (str == NULL || str[0] == '\0')
+        return;
+    len = ft_strlen((const char *)str);
     while (i < len)
     {
         if (str[i] != ch)
@@ -206,7 +219,7 @@ void remove_space(char *str, char ch)
     str[j] = '\0';
 }
 
-void    clean_cmd(t_variables *vars)
+void clean_cmd(t_variables *vars)
 {
     int i;
 
@@ -292,17 +305,20 @@ void init_vars(t_variables *vars)
 {
     vars->last_redir_type = NULL;
     vars->saved_std = 0;
-    vars->redir_here_doc_found = 0; 
-    vars->redir_greater_found = 0;    
+    vars->redir_here_doc_found = 0;
+    vars->redir_greater_found = 0;
     vars->redir_lesser_found = 0;
     vars->redir_found = 0;
     vars->count_out = 0;
     vars->count_in = 0;
     vars->fd = 0;
+    vars->files_in[0] = NULL;
+    vars->files_out[0] = NULL;
+    vars->cmd_args[0] = NULL;
+    vars->type_redir = NULL;
 }
 
-
-void    function_redir(t_variables *vars, t_words **words)
+void function_redir(t_variables *vars, t_words **words)
 {
     int i = 0;
 
@@ -316,6 +332,6 @@ void    function_redir(t_variables *vars, t_words **words)
     clean_cmd(vars);
     if ((ft_strcmp(vars->type_redir, ">") == 0) || ft_strcmp(vars->type_redir, ">>") == 0)
         redir_out(vars, vars->cmd_args[0]);
-   else if ((ft_strcmp(vars->type_redir, "<") == 0) || ft_strcmp(vars->type_redir, "<<") == 0)
+    else if ((ft_strcmp(vars->type_redir, "<") == 0) || ft_strcmp(vars->type_redir, "<<") == 0)
         redir_in(vars, vars->cmd_args[0]);
 }

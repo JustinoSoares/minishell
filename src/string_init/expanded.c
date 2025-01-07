@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 16:38:08 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/13 06:41:25 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/07 09:31:49 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,8 @@ char *ft_get_env(char *key, t_env *env)
     return (NULL);
 }
 
-int size_expanded(char *str, t_variables *vars)
+int count_expanded(char *str, t_variables *vars, int i, int size)
 {
-    int i = 0;
-    int size = 0;
     char *macro;
     char *word;
 
@@ -55,12 +53,7 @@ int size_expanded(char *str, t_variables *vars)
     {
         if (str[i] == '$' && str[i + 1] == '?')
             return (size + 1);
-        else if (str[i] == '$' && (str[i + 1] == '\0' || !ft_isalpha(str[i + 1])))
-        {
-            i++;
-            size++;
-        }
-        else if (str[i] == '$' && str[i + 1])
+        if (str[i] == '$' && str[i + 1] && str[i + 1] != '?')
         {
             word = get_word(str, i + 1);
             macro = ft_get_env(word, vars->ev);
@@ -78,52 +71,74 @@ int size_expanded(char *str, t_variables *vars)
     return (size);
 }
 
+int size_expanded(char *str, t_variables *vars)
+{
+    int i;
+    int size;
+    char *macro;
+    char *word;
+
+    size = 0;
+    i = 0;
+    size = count_expanded(str, vars, i, size);
+    return (size);
+}
+char *alloc_getter(char *str, t_variables *vars)
+{
+    char *getter;
+
+    getter = malloc(sizeof(char) * size_expanded(str, vars) + 1);
+    getter = ft_memset(getter, 0, size_expanded(str, vars) + 1);
+    if (getter == NULL)
+        return (NULL);
+}
+char *call_status(char *str, t_variables *vars)
+{
+    if (status_signal == SIGINT)
+        vars->status_command = 130;
+    else if (status_signal == SIGQUIT)
+        vars->status_command = 131;
+    status_signal = 0;
+    return (ft_itoa(vars->status_command));
+}
+
+// char *expanded(char *str)
+// {
+    
+// }
+
 char *is_expanded(char *str, t_variables *vars)
 {
     int i = 0;
     int j = 0;
-    char *new;
+    char *getter;
     char *word;
     char *macro;
 
-    new = malloc(sizeof(char) * size_expanded(str, vars) + 1);
-    new = ft_memset(new, 0, size_expanded(str, vars) + 1);
-    if (new == NULL)
-        return (NULL);
+    getter = alloc_getter(str, vars);
     while (str[i])
     {
         if (str[i] && str[i] == '$' && str[i + 1] == '?')
-        {
-            if (status_signal == SIGINT)
-                vars->status_command = 130;
-            else if (status_signal == SIGQUIT)
-                vars->status_command = 131;
-            status_signal = 0;
-            return (ft_itoa(vars->status_command));
-        }
+            return (call_status(str, vars));
         else if (str[i] && str[i] == '$' && (str[i + 1] == '\0' || !ft_isalpha(str[i + 1])))
-            new[j++] = str[i++];
+            getter[j++] = str[i++];
         else if (str[i] && str[i] == '$' && str[i + 1])
         {
             word = get_word(str, i + 1);
             if (word == NULL)
                 return (NULL);
             macro = ft_get_env(word, vars->ev);
-            if (macro && strlen(macro) > 0)
-            {
-                strcat(new, macro);
-                j += ft_strlen(macro);
-                i += ft_strlen(word) + 1;
-            }
-            else
-                i += strlen(word) + 1;
+            if (macro && ft_strlen(macro) > 0)
+                strcat(getter, macro);
+            j += ft_strlen(macro);
+            i += ft_strlen(word) + 1;
             free(word);
         }
         else if (str[i])
-            new[j++] = str[i++];
+            getter[j++] = str[i++];
         else
             i++;
     }
-    new[j] = '\0';
-    return (new);
+    getter[j] = '\0';
+    return (getter);
 }

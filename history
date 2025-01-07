@@ -1,5 +1,4 @@
-ls > cd
-ls > justino
-ls >> justino -l
-pwd >> justino
-pwd > justino
+ls
+ls | ls
+clear
+ls | ls

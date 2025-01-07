@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 09:55:32 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/12 12:59:47 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/06 19:00:41 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,4 +46,5 @@ char *find_executable(char *command)
         i++;
     }
     free_matriz(dirs);
+    return (NULL);
 }

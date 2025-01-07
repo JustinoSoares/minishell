@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/26 10:27:39 by marvin           ###   ########.fr       */
+/*   Updated: 2025/01/06 23:40:15 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,23 +153,26 @@ void ft_get_terminal(char **envp, t_variables *vars)
             free_words(words);
             free(vars->line);
             free(read);
-            return;
+            return ;
         }
         vars->args = ft_split(vars->line, ' ');
         if (!vars->args)
         {
             free(vars->line);
             free(read);
-            free_matriz(vars->args);
             free_words(words);
-            return;
+            return ;
         }
         function_pipe(vars, &words);
+        if (vars->args)
+        {
+            free_matriz(vars->args);
+            vars->args = NULL;
+        }
         free_words(words);
         words = NULL;
         write_history("history");
         free(vars->line);
-        free_matriz(vars->args);
         free(read);
     }
 }
@@ -203,7 +206,6 @@ void init_ev(t_env *ev)
     ev->j = 0;
 }
 
-
 int main(int argc, char **argv, char **envp)
 {
     t_variables vars;
@@ -213,7 +215,6 @@ int main(int argc, char **argv, char **envp)
     init_ev(vars.ev);
     fill_env(vars.ev, envp);
     ft_get_terminal(envp, &vars);
-
     free_env(vars.ev);
     free_matriz(vars.env);
     return (0);

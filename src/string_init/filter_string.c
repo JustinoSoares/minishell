@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   filter_string.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 08:36:42 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/25 20:55:32 by marvin           ###   ########.fr       */
+/*   Updated: 2025/01/06 22:17:24 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,6 +205,6 @@ char *filter_string(char *str, t_variables *vars, t_words **words)
         final_str = ft_strjoin(new, "\0");
         free(new);
         return (final_str);
-    } 
+    }
     return (NULL);
 }
