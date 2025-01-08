@@ -1,0 +1,8 @@
+cd
+include
+libft
+log
+Makefile
+minishell
+README.md
+src

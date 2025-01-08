@@ -1,0 +1,9 @@
+total 80
+-rw-r--r-- 1 rquilami 2024_luanda    50 Jan  8 12:30 cd
+drwxr-xr-x 2 rquilami 2024_luanda  4096 Jan  8 11:04 include
+drwxr-xr-x 2 rquilami 2024_luanda  4096 Jan  8 15:44 libft
+-rw-r--r-- 1 rquilami 2024_luanda     0 Jan  8  2025 log
+-rw-r--r-- 1 rquilami 2024_luanda   952 Jan  8 15:43 Makefile
+-rwxr-xr-x 1 rquilami 2024_luanda 56272 Jan  8 15:44 minishell
+-rw-r--r-- 1 rquilami 2024_luanda   249 Jan  8 11:04 README.md
+drwxr-xr-x 4 rquilami 2024_luanda  4096 Jan  8 15:44 src
