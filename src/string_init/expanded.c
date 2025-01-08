@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 16:38:08 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/07 09:31:49 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/08 10:45:27 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,10 +102,33 @@ char *call_status(char *str, t_variables *vars)
     return (ft_itoa(vars->status_command));
 }
 
-// char *expanded(char *str)
-// {
-    
-// }
+char *aux_expanded(char *str, char *getter, t_variables *vars, int j)
+{
+    int i;
+
+    i = 0;
+    while (str[i])
+    {
+        if (str[i] && str[i] == '$' && str[i + 1] == '?')
+            return (call_status(str, vars));
+        else if (str[i] && str[i] == '$' && (str[i + 1] != '\0' && ft_isalpha(str[i + 1])))
+        {
+            vars->ext->word = get_word(str, i + 1);
+            vars->ext->macro = ft_get_env(vars->ext->word, vars->ev);
+            if (vars->ext->macro && ft_strlen(vars->ext->macro) > 0)
+                strcat(getter, vars->ext->macro);
+            j += ft_strlen(vars->ext->macro);
+            i += ft_strlen(vars->ext->word) + 1;
+            free(vars->ext->word);
+        }
+        else if (str[i])
+            getter[j++] = str[i++];
+        else
+            i++;
+    }
+    getter[j] = '\0';
+    return (getter);
+}
 
 char *is_expanded(char *str, t_variables *vars)
 {
@@ -116,29 +139,8 @@ char *is_expanded(char *str, t_variables *vars)
     char *macro;
 
     getter = alloc_getter(str, vars);
-    while (str[i])
-    {
-        if (str[i] && str[i] == '$' && str[i + 1] == '?')
-            return (call_status(str, vars));
-        else if (str[i] && str[i] == '$' && (str[i + 1] == '\0' || !ft_isalpha(str[i + 1])))
-            getter[j++] = str[i++];
-        else if (str[i] && str[i] == '$' && str[i + 1])
-        {
-            word = get_word(str, i + 1);
-            if (word == NULL)
-                return (NULL);
-            macro = ft_get_env(word, vars->ev);
-            if (macro && ft_strlen(macro) > 0)
-                strcat(getter, macro);
-            j += ft_strlen(macro);
-            i += ft_strlen(word) + 1;
-            free(word);
-        }
-        else if (str[i])
-            getter[j++] = str[i++];
-        else
-            i++;
-    }
-    getter[j] = '\0';
+    if (getter == NULL)
+        return (NULL);
+    getter = aux_expanded(str, getter, vars, j);
     return (getter);
 }

@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 09:15:58 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/07 09:30:16 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/08 08:54:13 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ void free_matriz(char **matriz)
 {
     int i = 0;
     if (!matriz)
-        return ;
-    while(matriz[i])
+        return;
+    while (matriz[i])
     {
         free(matriz[i]);
         i++;
@@ -29,7 +29,7 @@ void free_words(t_words *words)
 {
     t_words *tmp;
     if (!words)
-        return ;
+        return;
     while (words)
     {
         tmp = words;

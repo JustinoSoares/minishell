@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 09:55:32 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/06 19:00:41 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/08 08:53:31 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ char *find_executable(char *command)
     if (!path)
         return (NULL);
     dirs = ft_split(path, ':');
-    while (dirs[i])
+    while (dirs[i++])
     {
         if (ft_strlen(dirs[i]) + 1 + ft_strlen(command) < MAX_PATH)
         {
@@ -43,7 +43,6 @@ char *find_executable(char *command)
                 return (full_path);
             }
         }
-        i++;
     }
     free_matriz(dirs);
     return (NULL);

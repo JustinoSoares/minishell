@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/07 06:38:52 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/08 10:52:28 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,20 +144,30 @@ int count_pipes(t_words *words)
     }
     return (count);
 }
-
-char **split_pipe(t_words **words, char c)
+static char *form_word(t_words *word, char *new, char *tmp)
 {
-    char **line;
-    char *new = NULL;
-    char *tmp = NULL;
-    t_words *word;
+
+    tmp = ft_strjoin(new, word->word);
+    if (new)
+        free(new);
+    new = tmp;
+    if (word->next)
+    {
+        tmp = ft_strjoin(new, " ");
+        if (new)
+            free(new);
+        new = tmp;
+    }
+    return (new);
+}
+
+char **aux_split_pipe(t_words *word, char c, char **line, char *new)
+{
+    char *tmp;
     int i;
 
+    tmp = NULL;
     i = 0;
-    word = *words;
-    line = malloc(sizeof(char *) * (count_pipes(*words) + 2));
-    if (!line)
-        return NULL;
     while (word)
     {
         if (word->word[0] == c)
@@ -167,21 +177,28 @@ char **split_pipe(t_words **words, char c)
             word = word->next;
             continue;
         }
-        tmp = ft_strjoin(new, word->word);
-        if (new)
-            free(new);
-        new = tmp;
-        if (word->next)
-        {
-            tmp = ft_strjoin(new, " ");
-            if (new)
-                free(new);
-            new = tmp;
-        }
+        new = form_word(word, new, tmp);
         word = word->next;
     }
     line[i++] = new;
     line[i] = NULL;
+    return (line);
+}
+
+char **split_pipe(t_words **words, char c)
+{
+    char **line;
+    char *new;
+    t_words *word;
+    int i;
+
+    i = 0;
+    new = NULL;
+    word = *words;
+    line = malloc(sizeof(char *) * (count_pipes(*words) + 2));
+    if (!line)
+        return NULL;
+    line = aux_split_pipe(word, c, line, new);
     return (line);
 }
 
@@ -242,11 +259,11 @@ void init_process(t_variables *vars, int fd[2], char **args, t_words **words)
     vars->args = NULL;
 }
 
-
 char *first_word(char *str)
 {
     int i = 0;
     int j = 0;
+
     while (str[i] && (str[i] == ' ' || str[i] == '\t'))
         i++;
     while (str[j] && (str[j] != ' ' || str[j] != '\t'))

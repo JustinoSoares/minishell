@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 16:35:31 by jsoares           #+#    #+#             */
-/*   Updated: 2024/12/12 21:54:48 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/08 08:53:22 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void insert_str_end(t_words **word, char *str, int type)
 
     new = malloc(sizeof(t_words));
     if (!new || !str)
-        return ;
+        return;
     new->word = strdup(str);
     new->type = type;
     new->next = NULL;

@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/07 08:43:07 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/08 10:34:14 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ typedef struct s_extented
     int j;
     int size;
 } t_extented;
-    
 
 typedef struct s_variables
 {
@@ -91,16 +90,17 @@ typedef struct s_variables
     int quant;
     int count_out;
     int count_in;
-    int redir_here_doc_found; 
-    int redir_greater_found;    
-    int redir_lesser_found; 
-    int     saved_std;
+    int redir_here_doc_found;
+    int redir_greater_found;
+    int redir_lesser_found;
+    int saved_std;
     char *line;
     char *type_redir;
     char *last_redir_type;
     char **args;
     char **env;
     pid_t pid;
+    t_extented *ext;
     t_env *ev;
     t_words *words;
     struct s_variables *next;
@@ -134,7 +134,7 @@ void set_values(t_env *ev, char *var, int i, int j);
 void set_env(char *key, t_env *ev);
 void get_variable(t_env *ev, t_words **words);
 void verfi_arg(t_env *ev);
-void	export(t_env *ev, char *var, char *value);
+void export(t_env *ev, char *var, char *value);
 void copy_env(t_env *ev);
 void fill_env(t_env *ev, char **envp);
 char *ft_strcat_index(char *str, char *str2, int index);
@@ -157,12 +157,12 @@ char *filter_string(char *str, t_variables *vars, t_words **words);
 
 void free_words(t_words *words);
 
-void    function_pipe(t_variables *vars, t_words **words);
-void    function_redir(t_variables *vars, t_words **words);
+void function_pipe(t_variables *vars, t_words **words);
+void function_redir(t_variables *vars, t_words **words);
 
 void set_values(t_env *ev, char *var, int i, int j);
 
-int	count_key_value(char *var, int identify);
+int count_key_value(char *var, int identify);
 int ft_strcmp(char *s1, char *s2);
 void token_redir(t_words **words, t_variables *vars);
 

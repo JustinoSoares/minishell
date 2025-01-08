@@ -3,29 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/03 01:22:26 by marvin           ###   ########.fr       */
+/*   Updated: 2025/01/08 08:54:38 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void    ft_pwd(t_variables *vars)
+void ft_pwd(t_variables *vars)
 {
-    char pwd[1024];
-    
-    if (vars->args[1] == NULL)
-    {
-        if (getcwd(pwd, sizeof(pwd)) != NULL)
-            printf("%s\n", pwd);
-    }
-    else
-        printf("pwd: can't have argument\n");
+	char pwd[1024];
+
+	if (vars->args[1] == NULL)
+	{
+		if (getcwd(pwd, sizeof(pwd)) != NULL)
+			printf("%s\n", pwd);
+	}
+	else
+		printf("pwd: can't have argument\n");
 }
 
-void    ft_exit(t_variables *vars, t_words **words)
+void ft_exit(t_variables *vars, t_words **words)
 {
 	int i;
 	char *str;
@@ -40,7 +40,7 @@ void    ft_exit(t_variables *vars, t_words **words)
 			{
 				printf("bash: exit: %s: numeric argument required\n", str);
 				free_words(*words);
-				exit (2);
+				exit(2);
 			}
 			i++;
 		}

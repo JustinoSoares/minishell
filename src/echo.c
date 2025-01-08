@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 15:38:25 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/06 14:46:13 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/08 08:53:38 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,7 @@ void ft_echo(t_variables *vars)
     int get = 0;
     char *str;
 
-    str = vars->line + (start_write(vars->line, vars->args[0])
-            + new_line(vars->args[1]));
+    str = vars->line + (start_write(vars->line, vars->args[0]) + new_line(vars->args[1]));
     if (aspas_error(str, true))
         return;
     while (str[i] && str[i] != '|')

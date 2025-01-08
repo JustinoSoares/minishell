@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:56:42 by rquilami          #+#    #+#             */
-/*   Updated: 2024/12/26 10:22:49 by marvin           ###   ########.fr       */
+/*   Updated: 2025/01/08 08:54:04 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-// Esta func pega as env e organiza elas em ordem alfabetica baseadas no valor da tabela ASCII
 static void sort_env(char **env)
 {
 	int i;
@@ -41,7 +40,6 @@ static void sort_env(char **env)
 	}
 }
 
-// Essa funcao verifica se o argumento passado no Export é valido
 void verfi_arg(t_env *ev)
 {
 	ev->i = 0;
@@ -69,6 +67,30 @@ void verfi_arg(t_env *ev)
 	}
 }
 
+static void aux_print_env(t_env *ev)
+{
+	while (ev->env_copy[ev->i][ev->j] != '\0')
+	{
+		if (ev->env_copy[ev->i][ev->j] == '=')
+		{
+			printf("%c", ev->env_copy[ev->i][ev->j]);
+			printf("\"");
+			ev->j++;
+			while (ev->env_copy[ev->i][ev->j] != '\0')
+			{
+				printf("%c", ev->env_copy[ev->i][ev->j]);
+				ev->j++;
+			}
+			printf("\"");
+		}
+		else
+		{
+			printf("%c", ev->env_copy[ev->i][ev->j]);
+			ev->j++;
+		}
+	}
+}
+
 static void print_env(t_env *ev)
 {
 	ev->i = 0;
@@ -76,26 +98,7 @@ static void print_env(t_env *ev)
 	{
 		ev->j = 0;
 		printf("declare -x ");
-		while (ev->env_copy[ev->i][ev->j] != '\0')
-		{
-			if (ev->env_copy[ev->i][ev->j] == '=')
-			{
-				printf("%c", ev->env_copy[ev->i][ev->j]);
-				printf("\"");
-				ev->j++;
-				while (ev->env_copy[ev->i][ev->j] != '\0')
-				{
-					printf("%c", ev->env_copy[ev->i][ev->j]);
-					ev->j++;
-				}
-				printf("\"");
-			}
-			else
-			{
-				printf("%c", ev->env_copy[ev->i][ev->j]);
-				ev->j++;
-			}
-		}
+		aux_print_env(ev);
 		printf("\n");
 		ev->i++;
 	}
@@ -254,48 +257,41 @@ int count_words(t_words *words)
 	return (count);
 }
 
+char *word_with_quotes(char *var, t_words *tmp, char *quotes)
+{
+	char *temp;
+
+	temp = ft_strjoin(var, quotes);
+	free(var);
+	var = temp;
+	temp = ft_strjoin(var, tmp->word);
+	free(var);
+	var = temp;
+	temp = ft_strjoin(var, quotes);
+	free(var);
+	var = temp;
+	return (var);
+}
+
 char *args_export(t_words **words)
 {
-	char *var = NULL;
+	char *var;
 	t_words *tmp = *words;
 
+	var = NULL;
 	if (!tmp || !tmp->next)
-	{
-		return NULL; // Return NULL if there are not enough words
-	}
-
-	tmp = tmp->next;				  // Move to the next word
-	var = ft_strjoin(var, tmp->word); // Join first word
-
+		return NULL;
+	tmp = tmp->next;
+	var = ft_strjoin(var, tmp->word);
 	if (tmp->next)
 	{
-		tmp = tmp->next; // Move to the next word
+		tmp = tmp->next;
 		if (tmp->type == 1)
-		{									   // Single quotes
-			char *temp = ft_strjoin(var, "'"); // Join single quote
-			free(var);						   // Free previous var before reassigning
-			var = temp;
-			temp = ft_strjoin(var, tmp->word); // Join word inside quotes
-			free(var);
-			var = temp;
-			temp = ft_strjoin(var, "'"); // Join closing single quote
-			free(var);
-			var = temp;
-		}
+			var = word_with_quotes(var, tmp, "'");
 		else if (tmp->type == 2)
-		{										// Double quotes
-			char *temp = ft_strjoin(var, "\""); // Join double quote
-			free(var);
-			var = temp;
-			temp = ft_strjoin(var, tmp->word); // Join word inside quotes
-			free(var);
-			var = temp;
-			temp = ft_strjoin(var, "\""); // Join closing double quote
-			free(var);
-			var = temp;
-		}
+			var = word_with_quotes(var, tmp, "\"");
 	}
-	return (var); // Return the constructed string
+	return (var);
 }
 
 void get_variable(t_env *ev, t_words **words)

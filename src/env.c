@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:22:22 by rquilami          #+#    #+#             */
-/*   Updated: 2024/12/12 13:00:48 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/08 08:53:50 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 void env(t_env *ev, t_variables *vars)
 {
-    char *str;
-    int		i;
+	char *str;
+	int i;
 
-    str = vars->line + (start_write(vars->line, vars->args[0]));
+	str = vars->line + (start_write(vars->line, vars->args[0]));
 	if (str == NULL || ft_strlen(str) == 0)
 	{
 		i = 0;
@@ -31,27 +31,26 @@ void env(t_env *ev, t_variables *vars)
 		printf("env: `%s\': No such file or directory\n", str);
 }
 
-void	unset(char *key, t_env *ev)
+void unset(char *key, t_env *ev)
 {
-    int i;
+	int i;
 	int j;
 
-	
 	i = 0;
 	j = 0;
-    while (ev->env[i] != NULL)
+	while (ev->env[i] != NULL)
 	{
-        if (strncmp(ev->env[i], key, ft_strlen(key)) == 0 && ev->env[i][ft_strlen(key)] == '=')
+		if (strncmp(ev->env[i], key, ft_strlen(key)) == 0 && ev->env[i][ft_strlen(key)] == '=')
 		{
-            free(ev->env[i]);
-            while (j < ev->len)
+			free(ev->env[i]);
+			while (j < ev->len)
 			{
-                ev->env[j] = ev->env[j + 1];
+				ev->env[j] = ev->env[j + 1];
 				j++;
-            }
+			}
 		}
-        i++;
-    }
+		i++;
+	}
 	ev->env = realloc(ev->env, sizeof(char *) * i--);
 	if (ev->env == NULL && ev->len > 0)
 		return;

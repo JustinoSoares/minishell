@@ -59,7 +59,6 @@ int is_in_aspas(char *str, int index)
     return (1);
 }
 
-
 int is_contra_barra(char *str, int i)
 {
     if (str[i] == 92 && str[i + 1] == '"')
