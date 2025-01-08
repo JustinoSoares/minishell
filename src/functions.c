@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/08 10:52:28 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/08 16:50:59 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -292,7 +292,7 @@ void function_pipe(t_variables *vars, t_words **words)
             ft_exec_functions(vars, words);
         if (args)
             free_matriz(args);
-        return;
+        return ;
     }
     while (++vars->index < vars->quant)
         init_process(vars, fd, args, words);
