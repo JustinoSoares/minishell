@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/08 08:54:38 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/08 15:49:13 by rquilami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void ft_pwd(t_variables *vars)
+void	ft_pwd(t_variables *vars)
 {
-	char pwd[1024];
+	char	pwd[1024];
 
 	if (vars->args[1] == NULL)
 	{
@@ -25,10 +25,11 @@ void ft_pwd(t_variables *vars)
 		printf("pwd: can't have argument\n");
 }
 
-void ft_exit(t_variables *vars, t_words **words)
+void	ft_exit(t_variables *vars, t_words **words)
 {
-	int i;
-	char *str;
+	int		i;
+	char	*str;
+	int		out;
 
 	i = 0;
 	str = vars->args[1];
@@ -44,14 +45,11 @@ void ft_exit(t_variables *vars, t_words **words)
 			}
 			i++;
 		}
-		printf("exit\n");
-		free_words(*words);
-		exit(ft_atoi(str));
+		out = ft_atoi(str);
 	}
 	else
-	{
-		printf("exit\n");
-		free_words(*words);
-		exit(0);
-	}
+		out = 0;
+	printf("exit\n");
+	free_words(*words);
+	exit(out);
 }
