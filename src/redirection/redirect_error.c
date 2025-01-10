@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirect_error.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 08:28:20 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/09 22:21:59 by justinosoar      ###   ########.fr       */
+/*   Updated: 2025/01/10 09:24:35 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 
 void redirect_error(char *str, t_variables *vars, t_words **words)
 {
-    token_cmd_args(words, vars);
-	if (vars->cmd_args[0] == NULL)
+	if (token_cmd_error(words, vars) == 0)
 		write(2, "bash: Syntax error near unexpected token\n", 41);
     else if (ft_has_substr(str, ">>>", 3) == NULL
         && ft_has_substr(str, "<<<", 3) == NULL)

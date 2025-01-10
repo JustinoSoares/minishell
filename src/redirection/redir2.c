@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 16:21:35 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/09 21:51:05 by justinosoar      ###   ########.fr       */
+/*   Updated: 2025/01/10 09:14:58 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,32 @@ void token_cmd_args(t_words **words, t_variables *vars)
 	}
 	vars->cmd_args[i] = NULL;
 }
+
+
+int token_cmd_error(t_words **words, t_variables *vars)
+{
+	t_words *tmp;
+	int has_args;
+
+	tmp = *words;
+	has_args = 0;
+	while (tmp != NULL)
+	{
+		if (ft_strcmp(tmp->word, ">") == 0
+			|| ft_strcmp(tmp->word, ">>") == 0 
+			|| ft_strcmp(tmp->word, "<") == 0
+			|| ft_strcmp(tmp->word, "<<") == 0)
+			{
+				tmp = tmp->next;
+				continue;
+			}
+		else
+			has_args = 1;
+		tmp = tmp->next;
+	}
+	return (has_args);
+}
+
 
 void token_file_out(t_words **words, t_variables *vars)
 {

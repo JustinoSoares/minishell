@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 11:28:20 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/10 08:31:59 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/10 08:43:49 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,8 @@ int ft_quotes_simples(char *str, t_words **array, int i)
 		count++;
 	}
 	word = malloc(sizeof(char) * count + 1);
-	if (!word)
-		return (0);
+	if (!word)	
+		return (0);	
 	ft_memset(word, 0, count + 1);
 	index = 0;
 	while (str[i] && str[i] != '\'')
