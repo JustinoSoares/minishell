@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expanded.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 16:38:08 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/09 06:37:56 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/10 00:22:59 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,10 @@ char	*alloc_getter(char *str, t_variables *vars)
 	char	*getter;
 
 	getter = malloc(sizeof(char) * size_expanded(str, vars) + 1);
-	getter = ft_memset(getter, 0, size_expanded(str, vars) + 1);
 	if (getter == NULL)
 		return (NULL);
+	getter = ft_memset(getter, 0, size_expanded(str, vars) + 1);
+	return (getter);
 }
 
 char	*is_expanded(char *str, t_variables *vars)
@@ -73,7 +74,7 @@ char	*is_expanded(char *str, t_variables *vars)
 	i = 0;
 	j = 0;
 	getter = alloc_getter(str, vars);
-	if (getter == NULL)
+	if (!str || getter == NULL)
 		return (NULL);
 	getter = aux_expanded(str, getter, vars, j);
 	return (getter);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_quotes.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 11:28:20 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/09 00:21:23 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/10 00:31:55 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ void get_elements(char *str, t_words **words, t_variables *vars)
 
 	i = 0;
 	if (str == NULL || str[0] == '\0')
-		return ;
+		return;
 	while (str[i] && str[i] == ' ')
 		i++;
 	while (str[i])

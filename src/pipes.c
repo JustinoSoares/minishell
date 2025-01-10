@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:39:26 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/08 16:48:38 by rquilami         ###   ########.fr       */
+/*   Updated: 2025/01/10 01:41:37 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,8 @@ char	**init_pipe(t_words **words, t_variables *vars)
 
 	i = 0;
 	args = split_pipe(words, '|');
+	if (args == NULL)
+		return (NULL);
 	vars->quant = count_pipes(*words) + 1;
 	vars->prev_fd = -1;
 	vars->index = -1;

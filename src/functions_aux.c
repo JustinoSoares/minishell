@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   functions_aux.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:34:19 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/09 08:02:21 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/09 23:08:29 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void new_prompt(int signal)
 	if (signal == SIGINT)
 		write(1, "\n", 1);
 	else if (signal == SIGQUIT)
-		write(1, "Sair\n", 5);
+		write(1, "Good bye\n", 9);
 }
 
 void process_child(char *command_path, t_variables *vars)
@@ -28,7 +28,7 @@ void process_child(char *command_path, t_variables *vars)
 	{
 		if (access(command_path, X_OK) != 0)
 		{
-			perror("Comando não encontrado");
+			write(2, "Command not found\n", 18);
 			vars->status_command = 127;
 			free_matriz(vars->args);
 			exit(127);
@@ -40,7 +40,7 @@ void process_child(char *command_path, t_variables *vars)
 		
 		if (command_path == NULL)
 		{
-			printf("comando nao encontrado\n");
+			write(2, "Command not found\n", 18);
 			vars->status_command = 2;
 			free_matriz(vars->args);
 			exit(127);
@@ -86,11 +86,7 @@ void ft_exec_functions(t_variables *vars, t_words **words)
 	if (vars->args[0] && ft_strcmp(vars->args[0], "echo") == 0)
 	{
 		if (vars->args[1])
-		{
 			ft_echo(vars);
-			if (new_line(vars->args[1]) == 0)
-				printf("\n");
-		}
 	}
 	else if (vars->args[0] && ft_strcmp(vars->args[0], "env") == 0)
 		env(vars->ev, vars);

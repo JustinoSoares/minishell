@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/09 02:09:07 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/10 01:58:56 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,18 +23,37 @@ void	ctrl_c(int sig)
 	g_status_signal = sig;
 }
 
+int is_consecutive(char *str)
+{
+	int i = 0;
+	if (!str)
+		return (-1);
+	while (str[i])
+	{
+		if (str[i] == 32 || str[i] == '\t')
+			str[i] = 127;
+		i++;
+	}
+	if (ft_has_substr(str, "||", 2) != NULL)
+	{
+		write(1, "Syntax Error\n", 13);
+		return (0);
+	}
+	return (1);
+}
+
 int	is_string_space(char *str)
 {
 	int	i;
 
 	i = 0;
+
 	while (str[i])
 	{
 		if (str[i] != ' ' && str[i] != '\t')
 			return (0);
 		i++;
 	}
-	return (1);
 }
 
 char	*ft_input(char *read)
@@ -65,7 +84,7 @@ void	ft_get_terminal(char **envp, t_variables *vars)
 	{
 		read = ft_input(read);
 		if (aspas_error(read, true) || read[0] == '\0'
-			|| is_string_space(read) == 1)
+			|| is_string_space(read) == 1 || is_consecutive(read) == 0)
 			continue ;
 		vars->line = filter_string(read, vars, &words);
 		if (!vars->line)

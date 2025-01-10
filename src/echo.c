@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 15:38:25 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/08 20:32:17 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/09 22:49:06 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,27 +60,24 @@ char *str_delimited(char *str)
 	return (new);
 }
 
-char *get_args(char **args)
+char *get_args(char **args, int i)
 {
 	char *str;
 	int total_len;
-	int i;
+	int start;
 
-	i = 1;
 	total_len = 0;
+	start = i;
 	while (args[i])
 	{
-		total_len += strlen(args[i]) + 1;
+		total_len += ft_strlen(args[i]) + 1;
 		i++;
 	}
 	str = malloc(total_len + 1);
 	if (!str)
-	{
-		perror("Erro ao alocar memória");
 		exit(EXIT_FAILURE);
-	}
 	str[0] = '\0';
-	i = 1;
+	i = start;
 	while (args[i])
 	{
 		strcat(str, args[i]);
@@ -89,19 +86,20 @@ char *get_args(char **args)
 	}
 	if (total_len > 0 && str[total_len - 1] == ' ')
 		str[total_len - 1] = '\0';
-	return str;
+	return (str);
 }
 
 void ft_echo(t_variables *vars)
 {
 	int i;
-	int get;
+	int start;
 	char *str;
 
 	i = 0;
-	get = 0;
-
-	str = get_args(vars->args);
+	start = 1;
+	if (new_line(vars->args[1]) != 0)
+			start = 2;
+	str = get_args(vars->args, start);
 	if (aspas_error(str, true))
 		return;
 	while (str[i] && str[i] != '|')
@@ -109,5 +107,7 @@ void ft_echo(t_variables *vars)
 		printf("%c", str[i]);
 		i++;
 	}
+	if (new_line(vars->args[1]) == 0)
+			printf("\n");
 	free(str);
 }

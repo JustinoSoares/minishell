@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/08 15:49:13 by rquilami         ###   ########.fr       */
+/*   Updated: 2025/01/09 21:13:11 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	ft_pwd(t_variables *vars)
 			printf("%s\n", pwd);
 	}
 	else
-		printf("pwd: can't have argument\n");
+		write(2, "PWD : Many Args\n", 16);
 }
 
 void	ft_exit(t_variables *vars, t_words **words)
@@ -39,7 +39,8 @@ void	ft_exit(t_variables *vars, t_words **words)
 		{
 			if (!ft_isdigit(str[i]))
 			{
-				printf("bash: exit: %s: numeric argument required\n", str);
+				write(2, "bash: exit: numeric argument is required\n", 40);
+				write(2, "Command not found\n", 18);
 				free_words(*words);
 				exit(2);
 			}

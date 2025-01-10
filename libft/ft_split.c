@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 15:49:57 by rquilami          #+#    #+#             */
-/*   Updated: 2024/12/19 21:46:52 by marvin           ###   ########.fr       */
+/*   Updated: 2025/01/09 21:02:23 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ char	**ft_split(char const *s, char c)
 
 	if (!s)
 	{
-		strs = malloc(sizeof(char) * 1);
+		strs = malloc(sizeof(char *) * 1);
 		if (!strs)
 			return (NULL);
 		*strs = NULL;

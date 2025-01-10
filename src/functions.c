@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   functions.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/09 08:29:36 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/10 02:09:17 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ void process_child_pipe(t_variables *vars, int fd[2], t_words **words)
 	}
 	if (vars->index < vars->quant - 1)
 		dup2(fd[1], STDOUT_FILENO);
-	if (ft_strchr(vars->args[0], '>') != NULL || ft_strchr(vars->args[0],
-														   '<') != NULL)
+	if (ft_strchr(vars->args[0], '>') != NULL
+			|| ft_strchr(vars->args[0], '<') != NULL)
 		redirect_error(vars->args[0], vars, words);
 	else
 		ft_exec_functions(vars, words);
@@ -103,10 +103,11 @@ void function_pipe(t_variables *vars, t_words **words)
 	i = 0;
 	args = init_pipe(words, vars);
 	if (args == NULL)
-		return;
+		return ;
 	if (vars->quant == 1)
 	{
-		if (ft_strchr(args[0], '>') != NULL || ft_strchr(args[0], '<') != NULL)
+		if (ft_strchr(args[0], '>') != NULL 
+			|| ft_strchr(args[0], '<') != NULL)
 			redirect_error(args[0], vars, words);
 		else
 			ft_exec_functions(vars, words);

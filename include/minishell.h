@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/09 08:28:53 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/09 22:45:13 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,7 +219,7 @@ void					free_error(char *read, t_words *words,
 void					init_variables(t_variables *vars);
 
 char	**free_args(t_variables *vars);
-char *get_args(char **args);
+char *get_args(char **args, int i);
 char *ft_has_substr(char *str, char *substr, int n);
 void	redirect_error(char *str, t_variables *vars, t_words **words);
 

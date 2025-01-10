@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:22:22 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/08 19:11:16 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/09 23:22:18 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	env(t_env *ev, t_variables *vars)
 	char	*str;
 	int		i;
 
-	str = get_args(vars->args);
+	str = get_args(vars->args, 1);
 	if (str == NULL || ft_strlen(str) == 0)
 	{
 		i = 0;
@@ -56,7 +56,7 @@ void	env(t_env *ev, t_variables *vars)
 		}
 	}
 	else
-		printf("env: `%s\': No such file or directory\n", str);
+		write(2, "env:': No such file or directory\n", 34);
 }
 
 void	unset(char *key, t_env *ev)

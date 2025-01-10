@@ -3,20 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   redirect_error.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 08:28:20 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/09 08:28:41 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/09 22:21:59 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void	redirect_error(char *str, t_variables *vars, t_words **words)
+void redirect_error(char *str, t_variables *vars, t_words **words)
 {
-    if (ft_has_substr(str, ">>>", 3) == NULL
+    token_cmd_args(words, vars);
+	if (vars->cmd_args[0] == NULL)
+		write(2, "bash: Syntax error near unexpected token\n", 41);
+    else if (ft_has_substr(str, ">>>", 3) == NULL
         && ft_has_substr(str, "<<<", 3) == NULL)
         function_redir(vars, words);
     else
-        printf("bash: syntax error near unexpected token `newline'\n");
+        write(2, "bash: syntax error near unexpected token\n", 41);
 }

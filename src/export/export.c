@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
+/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:56:42 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/08 19:15:51 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/09 21:17:26 by justinosoar      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,12 @@ static void	verfi_arg(t_env *ev)
 			|| ev->key[ev->i] == '^' || ev->key[ev->i] == '~'
 			|| ev->key[ev->i] == '/' || ev->key[ev->i] == '-')
 		{
-			printf("export: `%s\' not a valid identifier\n", ev->key);
+			write(2, "export: not a valid identifier\n", 31);
 			return ;
 		}
 		if (ev->key[ev->i] == '(' || ev->key[ev->i] == ')')
 		{
-			printf("syntax error near unexpected token `%c\'\n",
-				ev->key[ev->i]);
+			write(2, "syntax error near unexpected token\n", 35);
 			return ;
 		}
 		ev->i++;
