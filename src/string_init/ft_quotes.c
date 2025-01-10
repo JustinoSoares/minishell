@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_quotes.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 11:28:20 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/10 00:31:55 by justinosoar      ###   ########.fr       */
+/*   Updated: 2025/01/10 08:31:59 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,15 +33,15 @@ int ft_quotes_dup(char *str, t_words **array, int i, t_variables *vars)
 	index = i;
 	count = 0;
 	count = ft_count_quotes(str, i + 1, '"');
-	vars->ext->word = malloc(sizeof(char) * count + 1);
+	vars->ext->word = malloc(sizeof(char) * (count + 1));
 	if (!vars->ext->word)
-		return (0);
+		return (i);
 	ft_memset(vars->ext->word, 0, count + 1);
 	index = 0;
-	while (str[i] && str[i] != '"')
+	while (str[i] && str[i] != '"' && index < count)
 		vars->ext->word[index++] = str[i++];
 	i++;
-	if (str[i] && str[i] == ' ')
+	if (str[i] && str[i] == ' ' && index < count)
 		vars->ext->word[index++] = ' ';
 	vars->ext->word[index++] = '\0';
 	if (vars->ext->word)
@@ -49,7 +49,8 @@ int ft_quotes_dup(char *str, t_words **array, int i, t_variables *vars)
 		vars->ext->expanded_word = is_expanded(vars->ext->word, vars);
 		insert_str_end(array, vars->ext->expanded_word, 2);
 	}
-	free(vars->ext->expanded_word);
+	if (vars->ext->expanded_word)
+		free(vars->ext->expanded_word);
 	return (i);
 }
 
