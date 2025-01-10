@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   functions_aux.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:34:19 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/09 23:08:29 by justinosoar      ###   ########.fr       */
+/*   Updated: 2025/01/10 15:02:53 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void process_child(char *command_path, t_variables *vars)
 	}
 	else
 	{
-		command_path = find_executable(vars->args[0]);
+		command_path = find_executable(vars->args[0], vars);
 		
 		if (command_path == NULL)
 		{
@@ -79,6 +79,18 @@ void function_no_built(t_variables *vars)
 		vars->status_command = 1;
 		perror("Error");
 	}
+}
+
+char    *get_path(t_variables *vars)
+{
+    int i;    i = 0;
+    while (vars->ev->env[i] != NULL)
+    {
+        if (ft_strncmp(vars->ev->env[i], "PATH=", 5) == 0)
+            return (vars->ev->env[i]);
+        i++;
+    }
+    return (NULL);
 }
 
 void ft_exec_functions(t_variables *vars, t_words **words)

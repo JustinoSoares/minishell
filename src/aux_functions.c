@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 09:55:32 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/10 08:22:34 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/10 13:10:34 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void cat_path(char *full_path, char *dirs, char *command)
 	ft_strlcat(full_path, command, MAX_PATH);
 }
 
-char *find_executable(char *command)
+char *find_executable(char *command, t_variables *vars)
 {
 	char *path;
 	static char full_path[MAX_PATH];
@@ -73,7 +73,7 @@ char *find_executable(char *command)
 	int i;
 
 	i = 0;
-	path = getenv("PATH");
+	path = get_path(vars);
 	if (!path)
 		return (NULL);
 	dirs = ft_split(path, ':');

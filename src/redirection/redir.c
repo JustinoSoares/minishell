@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 08:34:50 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/09 22:24:01 by justinosoar      ###   ########.fr       */
+/*   Updated: 2025/01/10 13:11:36 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void execute_redir(char *command, t_variables *vars, int std)
 			other_func(vars, command);
 		else
 		{
-			vars->cmd_args[0] = find_executable(command);
+			vars->cmd_args[0] = find_executable(command, vars);
 			if (vars->cmd_args[0] == NULL)
 				exit(127);
 			execve(vars->cmd_args[0], vars->cmd_args, vars->env);

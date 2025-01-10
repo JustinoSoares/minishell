@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/10 08:16:57 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/10 16:39:50 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,9 @@ void ctrl_c(int sig)
 
 int is_consecutive(char *str)
 {
-	int i = 0;
+	int i;
+
+	i = 0;
 	if (!str)
 		return (-1);
 	while (str[i])
@@ -55,7 +57,6 @@ int is_string_space(char *str)
 	int i;
 
 	i = 0;
-
 	while (str[i])
 	{
 		if (str[i] != ' ' && str[i] != '\t')
@@ -92,19 +93,54 @@ void ft_get_terminal(char **envp, t_variables *vars)
 	{
 		read = ft_input(read);
 		if (aspas_error(read, true) || read[0] == '\0' 
-				|| is_string_space(read) == 1 || is_consecutive(read) == 0)
+				|| is_string_space(read) == 1
+				|| is_consecutive(read) == 0)
 			continue;
 		vars->line = filter_string(read, vars, &words);
-		if (!vars->line)
+		printf("line: %s\n", vars->line);
+		if (vars->line == NULL)
 			free_error(read, words, vars);
+		if (vars->line == NULL)
+			continue ;
 		vars->args = ft_split(vars->line, ' ');
-		if (!vars->args)
+		if (vars->args == NULL)
 			free_error(read, words, vars);
+		if (vars->args == NULL)
+			continue ;
 		function_pipe(vars, &words);
 		vars->args = free_args(vars);
 		free_error(read, words, vars);
 		words = NULL;
 	}
+}
+
+void free_generate(t_variables *vars)
+{
+	if (vars->line != NULL)
+		free(vars->line);
+	if (vars->args != NULL)
+		free_matriz(vars->args);
+	if (vars->ext != NULL)
+		free(vars->ext);
+	if (vars->ev != NULL)
+		free_env(vars->ev);
+	if (vars->words != NULL)
+		free_words(vars->words);
+	if (vars->next != NULL)
+		free_generate(vars->next);
+	
+}
+
+void free_init_ev(t_env *ev)
+{
+	if (ev->env != NULL)
+		free_matriz(ev->env);
+	if (ev->env_copy != NULL)
+		free_matriz(ev->env_copy);
+	if (ev->key != NULL)
+		free(ev->key);
+	if (ev->value != NULL)
+		free(ev->value);
 }
 
 int main(int argc, char **argv, char **envp)
@@ -117,5 +153,7 @@ int main(int argc, char **argv, char **envp)
 	ft_get_terminal(envp, &vars);
 	free_env(vars.ev);
 	free_matriz(vars.env);
+	free_init_ev(vars.ev);
+	free_generate(&vars);
 	return (0);
 }

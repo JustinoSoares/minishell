@@ -25,5 +25,8 @@ clean :
 fclean : clean
 		@make fclean -C $(LIBFT_PATH)
 		rm -rf $(NAME)
+leak : re
+		clear;
+		valgrind --leak-check=full --show-leak-kinds=all --suppressions=./leak_supression.supp ./minishell
 re : fclean all
 .PHONY : all clean fclean re

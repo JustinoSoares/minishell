@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/10 09:16:09 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/10 16:36:25 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ int						new_line(char *str);
 void					ft_exec_functions(t_variables *vars, t_words **words);
 void					free_matriz(char **matriz);
 int						aspas_error(char *str, int show_error);
-char					*find_executable(char *command);
+char *find_executable(char *command, t_variables *vars);
 int						print_var(char *str, int i);
 char					**ft_split_aspa(char const *s, char c);
 
@@ -223,5 +223,7 @@ char *get_args(char **args, int i);
 char *ft_has_substr(char *str, char *substr, int n);
 void	redirect_error(char *str, t_variables *vars, t_words **words);
 int token_cmd_error(t_words **words, t_variables *vars);
+char    *get_path(t_variables *vars);
+void free_generate(t_variables *vars);
 
 #endif

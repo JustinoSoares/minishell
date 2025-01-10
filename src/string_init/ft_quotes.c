@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 11:28:20 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/10 08:43:49 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/10 16:45:56 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,18 @@ int ft_count_quotes(char *str, int index, char c)
 	return (count + 1);
 }
 
+void print_num(char *str)
+{
+	int i;
+
+	i = 0;
+	while (str[i])
+	{
+		printf("%d\n", str[i]);
+		i++;
+	}
+}
+
 int ft_quotes_dup(char *str, t_words **array, int i, t_variables *vars)
 {
 	int index;
@@ -33,15 +45,14 @@ int ft_quotes_dup(char *str, t_words **array, int i, t_variables *vars)
 	index = i;
 	count = 0;
 	count = ft_count_quotes(str, i + 1, '"');
-	vars->ext->word = malloc(sizeof(char) * (count + 1));
+	vars->ext->word = ft_calloc(sizeof(char), (count + 5));
 	if (!vars->ext->word)
 		return (i);
-	ft_memset(vars->ext->word, 0, count + 1);
 	index = 0;
 	while (str[i] && str[i] != '"' && index < count)
 		vars->ext->word[index++] = str[i++];
 	i++;
-	if (str[i] && str[i] == ' ' && index < count)
+	if (str[i] && str[i] == ' ')
 		vars->ext->word[index++] = ' ';
 	vars->ext->word[index++] = '\0';
 	if (vars->ext->word)
@@ -51,6 +62,8 @@ int ft_quotes_dup(char *str, t_words **array, int i, t_variables *vars)
 	}
 	if (vars->ext->expanded_word)
 		free(vars->ext->expanded_word);
+	if (vars->ext->word)
+		free(vars->ext->word);
 	return (i);
 }
 

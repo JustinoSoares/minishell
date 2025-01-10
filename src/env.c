@@ -3,28 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:22:22 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/09 23:22:18 by justinosoar      ###   ########.fr       */
+/*   Updated: 2025/01/10 16:32:34 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	fill_env(t_env *ev, char **envp)
+void fill_env(t_env *ev, char **envp)
 {
-	int	i;
-	int	j;
+	int i;
+	int j;
 
 	i = 0;
 	j = 0;
 	while (envp[i] != NULL)
 		i++;
 	ev->len = i;
-	ev->env = malloc((i + 1) * sizeof(char *));
+	ev->env = ft_calloc((i + 1), sizeof(char *));
 	if (!ev->env)
-		return ;
+		return;
 	while (j < i)
 	{
 		ev->env[j] = ft_strdup(envp[j]);
@@ -33,17 +33,16 @@ void	fill_env(t_env *ev, char **envp)
 			while (j > 0)
 				free(ev->env[--j]);
 			free(ev->env);
-			return ;
+			return;
 		}
 		j++;
 	}
-	ev->env[i] = NULL;
 }
 
-void	env(t_env *ev, t_variables *vars)
+void env(t_env *ev, t_variables *vars)
 {
-	char	*str;
-	int		i;
+	char *str;
+	int i;
 
 	str = get_args(vars->args, 1);
 	if (str == NULL || ft_strlen(str) == 0)
@@ -59,28 +58,28 @@ void	env(t_env *ev, t_variables *vars)
 		write(2, "env:': No such file or directory\n", 34);
 }
 
-void	unset(char *key, t_env *ev)
+void unset(char *key, t_env *ev)
 {
-	int	i;
-	int	j;
+	int i;
+	int j;
 
 	i = 0;
 	j = 0;
+	if (key == NULL || ft_strlen(key) == 0)
+		return;
 	while (ev->env[i] != NULL)
 	{
-		if (strncmp(ev->env[i], key, ft_strlen(key)) == 0
-			&& ev->env[i][ft_strlen(key)] == '=')
+		if (ft_strncmp(ev->env[i], key, ft_strlen(key)) == 0)
 		{
-			free(ev->env[i]);
-			while (j < ev->len)
-			{
-				ev->env[j] = ev->env[j + 1];
-				j++;
-			}
+			(free(ev->env[i]), j = i);
+			while (ev->env[j] != NULL)
+				(ev->env[j] = ev->env[j + 1], j++);
+			ev->len--;
 		}
-		i++;
+		else
+			i++;
 	}
-	ev->env = realloc(ev->env, sizeof(char *) * i--);
-	if (ev->env == NULL && ev->len > 0)
-		return ;
+	ev->env = realloc(ev->env, sizeof(char *) * (ev->len + 1));
+	if (ev->env == NULL)
+		return;
 }

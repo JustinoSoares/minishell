@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 09:15:58 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/08 16:53:49 by rquilami         ###   ########.fr       */
+/*   Updated: 2025/01/10 10:34:37 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,15 @@ void	free_words(t_words *words)
 
 void	free_error(char *read, t_words *words, t_variables *vars)
 {
-	free_words(words);
-	free(vars->line);
-	free(read);
+	if (words != NULL)
+		free_words(words);
+	words = NULL;
+	if (vars->line != NULL)
+		free(vars->line);
+	vars->line = NULL;
+	if (read != NULL)
+		free(read);
+	read = NULL;
 	return ;
 }
 

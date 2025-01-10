@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   filter_string.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 08:36:42 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/10 00:01:32 by justinosoar      ###   ########.fr       */
+/*   Updated: 2025/01/10 16:09:18 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ int form_word_empty(char *str, t_variables *vars, t_words **array, int i)
 	return (i);
 }
 
+
 char *end_filter(char *new, char *final_str)
 {
 	if (new)
@@ -101,11 +102,9 @@ char *filter_string(char *str, t_variables *vars, t_words **words)
 {
 	t_words *tmp;
 	char *new;
-	char *final_str;
 	char *temp;
 
 	new = NULL;
-	final_str = NULL;
 	if (str == NULL || *str == '\0')
 		return (NULL);
 	get_elements(str, words, vars);
@@ -123,5 +122,5 @@ char *filter_string(char *str, t_variables *vars, t_words **words)
 		}
 		tmp = tmp->next;
 	}
-	return (end_filter(new, final_str));
+	return (end_filter(new, NULL));
 }
