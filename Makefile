@@ -1,6 +1,7 @@
-CC = cc 
+CC = gcc -g
 #-fsanitize=leak
-FLAGS =  -Wall -Wextra -Werror -g
+#-fsanitize=address 
+FLAGS = -Wall -Wextra -Werror
 READLINE_FLAG = -lreadline
 NAME = minishell
 SRC = src/main.c src/utils.c src/echo.c src/functions.c src/free.c  src/redirection/redir.c src/redirection/redir2.c\
@@ -27,6 +28,6 @@ fclean : clean
 		rm -rf $(NAME)
 leak : re
 		clear;
-		valgrind --leak-check=full --show-leak-kinds=all --suppressions=./leak_supression.supp ./minishell
+		valgrind -s --leak-check=full --show-leak-kinds=all --suppressions=./leak_supression.supp ./minishell
 re : fclean all
 .PHONY : all clean fclean re

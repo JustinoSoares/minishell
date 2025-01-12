@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/10 16:39:50 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/12 07:24:39 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,21 +92,19 @@ void ft_get_terminal(char **envp, t_variables *vars)
 	while (true)
 	{
 		read = ft_input(read);
-		if (aspas_error(read, true) || read[0] == '\0' 
-				|| is_string_space(read) == 1
-				|| is_consecutive(read) == 0)
+		if (aspas_error(read, true) || read[0] == '\0' || is_string_space(read) == 1 || is_consecutive(read) == 0)
 			continue;
 		vars->line = filter_string(read, vars, &words);
-		printf("line: %s\n", vars->line);
 		if (vars->line == NULL)
+		{
 			free_error(read, words, vars);
-		if (vars->line == NULL)
-			continue ;
+			continue;
+		}
 		vars->args = ft_split(vars->line, ' ');
 		if (vars->args == NULL)
 			free_error(read, words, vars);
 		if (vars->args == NULL)
-			continue ;
+			continue;
 		function_pipe(vars, &words);
 		vars->args = free_args(vars);
 		free_error(read, words, vars);
@@ -124,11 +122,6 @@ void free_generate(t_variables *vars)
 		free(vars->ext);
 	if (vars->ev != NULL)
 		free_env(vars->ev);
-	if (vars->words != NULL)
-		free_words(vars->words);
-	if (vars->next != NULL)
-		free_generate(vars->next);
-	
 }
 
 void free_init_ev(t_env *ev)

@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 09:49:11 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/08 10:51:41 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/12 10:14:09 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ size_t	ft_strlen(const	char *str)
 	size_t	i;
 
 	i = 0;
-	if (!str)
+	if (str == NULL)
 		return (0);
 	while (str[i] != '\0')
 		i++;

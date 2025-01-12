@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/10 16:36:54 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/11 22:43:11 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ void	ft_exit(t_variables *vars, t_words **words)
 			if (!ft_isdigit(str[i]))
 			{
 				write(2, "bash: exit: numeric argument is required\n", 40);
-				write(2, "Command not found\n", 18);
 				free_generate(vars);
 				//free_words(*words);
 				exit(2);
@@ -53,6 +52,6 @@ void	ft_exit(t_variables *vars, t_words **words)
 		out = 0;
 	printf("exit\n");
 	free_generate(vars);
-	//free_words(*words);
+	free_words(*words);
 	exit(out);
 }

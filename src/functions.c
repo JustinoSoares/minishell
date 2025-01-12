@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/10 11:59:26 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/12 06:18:30 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,10 @@ void function_pipe(t_variables *vars, t_words **words)
 	i = 0;
 	args = init_pipe(words, vars);
 	if (args == NULL)
+	{
+		args = NULL;
 		return ;
+	}
 	if (vars->quant == 1)
 	{
 		if (ft_strchr(args[0], '>') != NULL 
@@ -117,6 +120,9 @@ void function_pipe(t_variables *vars, t_words **words)
 	}
 	while (++vars->index < vars->quant)
 		init_process(vars, fd, args, words);
-	free_matriz(args);
-	args = NULL;
+	if (args)
+	{
+		free_matriz(args);
+		args = NULL;
+	}
 }

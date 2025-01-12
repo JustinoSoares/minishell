@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_string.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rquilami <rquilami@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 16:32:47 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/08 12:57:04 by rquilami         ###   ########.fr       */
+/*   Updated: 2025/01/12 12:18:34 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ char	*get_word_s(char *str, int start)
 	}
 	new[i] = '\0';
 	return (new);
-	printf("get2: %s \n", new);
 }
 
 char	*main_word(char *str, int len, int start, int i)
@@ -45,7 +44,7 @@ char	*main_word(char *str, int len, int start, int i)
 	new = malloc(sizeof(char) * (len + 1));
 	if (!new)
 		return (NULL);
-	while (str[start] && str[start] != 32)
+	while (str[start] && str[start] != 32 && i < len)
 	{
 		if (ft_isalnum(str[start]) || str[start] == '_')
 			new[i++] = str[start];
@@ -95,7 +94,7 @@ char	*get_word_d(char *str, int start)
 		size++;
 		len++;
 	}
-	new = malloc(sizeof(char) * (len + 1));
+	new = ft_calloc(sizeof(char), (len + 1));
 	if (!new)
 		return (NULL);
 	while (str[start] && str[start] != '"')

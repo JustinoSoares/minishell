@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:10:00 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/10 16:36:25 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/11 22:43:26 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ typedef struct s_variables
 	t_extented			*ext;
 	t_env				*ev;
 	t_words				*words;
-	struct s_variables	*next;
+	// struct s_variables	*next;
 }						t_variables;
 
 int						count_elements(char *str, char c);
