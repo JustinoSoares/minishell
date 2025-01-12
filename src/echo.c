@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 15:38:25 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/09 22:49:06 by justinosoar      ###   ########.fr       */
+/*   Updated: 2025/01/12 18:14:43 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int get_last_in(char *str, char c, int index)
+int	get_last_in(char *str, char c, int index)
 {
-	int i;
-	int last;
-	int back;
+	int	i;
+	int	last;
+	int	back;
 
 	i = 0;
 	last = 0;
@@ -33,12 +33,12 @@ int get_last_in(char *str, char c, int index)
 	return (-1);
 }
 
-char *str_delimited(char *str)
+char	*str_delimited(char *str)
 {
-	int i;
-	int j;
-	int len;
-	char *new;
+	int		i;
+	int		j;
+	int		len;
+	char	*new;
 
 	i = 0;
 	j = 0;
@@ -60,11 +60,11 @@ char *str_delimited(char *str)
 	return (new);
 }
 
-char *get_args(char **args, int i)
+char	*get_args(char **args, int i)
 {
-	char *str;
-	int total_len;
-	int start;
+	char	*str;
+	int		total_len;
+	int		start;
 
 	total_len = 0;
 	start = i;
@@ -89,25 +89,47 @@ char *get_args(char **args, int i)
 	return (str);
 }
 
-void ft_echo(t_variables *vars)
+bool	is_within_quotes(const char *str, int index)
 {
-	int i;
-	int start;
-	char *str;
+	bool	single_quote;
+	bool	double_quote;
+	int		i;
+
+	single_quote = false;
+	double_quote = false;
+	i = 0;
+	while (str[i] && i <= index)
+	{
+		if (str[i] == '\'' && !double_quote)
+			// Alternar aspas simples se não estiver em aspas duplas
+			single_quote = !single_quote;
+		else if (str[i] == '"' && !single_quote)
+			// Alternar aspas duplas se não estiver em aspas simples
+			double_quote = !double_quote;
+		i++;
+	}
+	return (single_quote || double_quote);
+}
+
+void	ft_echo(t_variables *vars)
+{
+	int		i;
+	int		start;
+	char	*str;
 
 	i = 0;
 	start = 1;
 	if (new_line(vars->args[1]) != 0)
-			start = 2;
+		start = 2;
 	str = get_args(vars->args, start);
 	if (aspas_error(str, true))
-		return;
-	while (str[i] && str[i] != '|')
+		return ;
+	while (str[i])
 	{
 		printf("%c", str[i]);
 		i++;
 	}
 	if (new_line(vars->args[1]) == 0)
-			printf("\n");
+		printf("\n");
 	free(str);
 }

@@ -6,15 +6,15 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 11:28:20 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/12 14:36:05 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/12 18:14:24 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int ft_count_quotes(char *str, int index, char c)
+int	ft_count_quotes(char *str, int index, char c)
 {
-	int count;
+	int	count;
 
 	count = 0;
 	while (str[index] && str[index] != c)
@@ -25,9 +25,9 @@ int ft_count_quotes(char *str, int index, char c)
 	return (count + 1);
 }
 
-void print_num(char *str)
+void	print_num(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i])
@@ -37,10 +37,10 @@ void print_num(char *str)
 	}
 }
 
-int ft_quotes_dup(char *str, t_words **array, int i, t_variables *vars)
+int	ft_quotes_dup(char *str, t_words **array, int i, t_variables *vars)
 {
-	int index;
-	int count;
+	int	index;
+	int	count;
 
 	index = i;
 	count = 0;
@@ -50,8 +50,8 @@ int ft_quotes_dup(char *str, t_words **array, int i, t_variables *vars)
 		count++;
 	}
 	vars->ext->word = calloc(sizeof(char), count + 1);
-	if (vars->ext->word == NULL)	
-		return (i);	
+	if (vars->ext->word == NULL)
+		return (i);
 	index = 0;
 	while (str[i] && str[i] != '"')
 		vars->ext->word[index++] = str[i++];
@@ -64,15 +64,15 @@ int ft_quotes_dup(char *str, t_words **array, int i, t_variables *vars)
 		insert_str_end(array, vars->ext->expanded_word, 2);
 	}
 	if (vars->ext->expanded_word)
-	 	free(vars->ext->expanded_word);
+		free(vars->ext->expanded_word);
 	return (i);
 }
 
-int ft_quotes_simples(char *str, t_words **array, int i)
+int	ft_quotes_simples(char *str, t_words **array, int i)
 {
-	char *word;
-	int index;
-	int count;
+	char	*word;
+	int		index;
+	int		count;
 
 	index = i;
 	count = 0;
@@ -82,8 +82,8 @@ int ft_quotes_simples(char *str, t_words **array, int i)
 		count++;
 	}
 	word = malloc(sizeof(char) * count + 1);
-	if (!word)	
-		return (0);	
+	if (!word)
+		return (0);
 	ft_memset(word, 0, count + 1);
 	index = 0;
 	while (str[i] && str[i] != '\'')
@@ -97,15 +97,16 @@ int ft_quotes_simples(char *str, t_words **array, int i)
 	return (i + 1);
 }
 
-int ft_empty(char *str, t_words **array, int i, t_variables *vars)
+int	ft_empty(char *str, t_words **array, int i, t_variables *vars)
 {
-	int index;
-	int count;
+	int	index;
+	int	count;
 
 	index = i;
 	count = 0;
 	vars->ext->word_empty = NULL;
-	while (str[index] && str[index] != '"' && str[index] != '\'' && str[index] != ' ')
+	while (str[index] && str[index] != '"' && str[index] != '\''
+		&& str[index] != ' ')
 	{
 		index++;
 		count++;
@@ -117,13 +118,13 @@ int ft_empty(char *str, t_words **array, int i, t_variables *vars)
 	return (i);
 }
 
-void get_elements(char *str, t_words **words, t_variables *vars)
+void	get_elements(char *str, t_words **words, t_variables *vars)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (str == NULL || str[0] == '\0')
-		return;
+		return ;
 	while (str[i] && str[i] == ' ')
 		i++;
 	while (str[i])

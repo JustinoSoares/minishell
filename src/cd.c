@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 19:54:14 by justinosoar       #+#    #+#             */
-/*   Updated: 2025/01/09 23:34:29 by justinosoar      ###   ########.fr       */
+/*   Updated: 2025/01/12 18:14:41 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void ft_cd(t_variables *vars)
+void	ft_cd(t_variables *vars)
 {
-	char *path;
+	char	*path;
 
 	if (vars->args[1] == NULL || ft_strlen(vars->args[1]) == 0)
 		write(2, "cd: no such file or directory\n", 31);

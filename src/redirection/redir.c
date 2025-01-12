@@ -1,20 +1,20 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   redir.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/23 08:34:50 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/10 13:11:36 by jsoares          ###   ########.fr       */
-/*                                                                            */
+/* */
+/* ::: :::::::: */
+/* redir.c :+: :+: :+: */
+/* +:+ +:+ +:+ */
+/* By: jsoares <jsoares@student.42.fr> +#+ +:+ +#+ */
+/* +#+#+#+#+#+ +#+ */
+/* Created: 2024/11/23 08:34:50 by rquilami #+# #+# */
+/* Updated: 2025/01/12 18:10:52 by jsoares ### ########.fr */
+/* */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void execute_redir(char *command, t_variables *vars, int std)
+void	execute_redir(char *command, t_variables *vars, int std)
 {
-	int status;
+	int	status;
 
 	dup2(vars->fd, std);
 	vars->pid = fork();
@@ -40,11 +40,11 @@ void execute_redir(char *command, t_variables *vars, int std)
 	}
 }
 
-int here_doc(const char *file)
+int	here_doc(const char *file)
 {
-	int pipe_fd[2];
-	char *line;
-	int fd;
+	int		pipe_fd[2];
+	char	*line;
+	int		fd;
 
 	if (file == NULL || file[0] == '\0')
 		write(2, "bash: syntax error near unexpected token\n", 41);
@@ -56,7 +56,7 @@ int here_doc(const char *file)
 	{
 		line = readline("> ");
 		if (line == NULL || strcmp(line, file) == 0)
-			break;
+			break ;
 		write(pipe_fd[1], line, strlen(line));
 		write(pipe_fd[1], "\n", 1);
 		free(line);
@@ -67,9 +67,9 @@ int here_doc(const char *file)
 	return (fd);
 }
 
-void define_redir(t_words **words, t_variables *vars)
+void	define_redir(t_words **words, t_variables *vars)
 {
-	t_words *tmp;
+	t_words	*tmp;
 
 	tmp = *words;
 	while (tmp != NULL)
@@ -80,7 +80,7 @@ void define_redir(t_words **words, t_variables *vars)
 			vars->redir_here_doc_found = 1;
 		}
 		else if (ft_strcmp(tmp->word, ">") == 0 || ft_strcmp(tmp->word,
-															 ">>") == 0)
+				">>") == 0)
 		{
 			if (!vars->redir_here_doc_found)
 				vars->type_redir = tmp->word;
@@ -96,25 +96,27 @@ void define_redir(t_words **words, t_variables *vars)
 	}
 }
 
-void function_redir(t_variables *vars, t_words **words)
+void	function_redir(t_variables *vars, t_words **words)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	init_vars(vars);
 	token_cmd_args(words, vars);
 	define_redir(words, vars);
-	if (ft_strcmp(vars->type_redir, ">") == 0 
-			|| ft_strcmp(vars->type_redir, ">>") == 0)
+	if (ft_strcmp(vars->type_redir, ">") == 0 || ft_strcmp(vars->type_redir,
+			">>") == 0)
 		token_file_out(words, vars);
-	else if (ft_strcmp(vars->type_redir, "<") == 0 
-			|| ft_strcmp(vars->type_redir, "<<") == 0)
+	else if (ft_strcmp(vars->type_redir, "<") == 0
+		|| ft_strcmp(vars->type_redir, "<<") == 0)
 		token_file_in(words, vars);
 	clean_cmd(vars);
-	if ((ft_strcmp(vars->type_redir, ">") == 0)
-			|| ft_strcmp(vars->type_redir, ">>") == 0)
+	if ((ft_strcmp(vars->type_redir, ">") == 0) || ft_strcmp(vars->type_redir,
+			">>") == 0)
 		redir_out(vars, vars->cmd_args[0]);
 	else if ((ft_strcmp(vars->type_redir, "<") == 0)
-			|| ft_strcmp(vars->type_redir, "<<") == 0)
+		|| ft_strcmp(vars->type_redir, "<<") == 0)
 		redir_in(vars, vars->cmd_args[0]);
+	else
+		ft_exec_functions(vars, words);
 }

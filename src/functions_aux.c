@@ -6,13 +6,13 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:34:19 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/10 15:02:53 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/12 18:14:54 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void new_prompt(int signal)
+void	new_prompt(int signal)
 {
 	if (signal == SIGINT)
 		write(1, "\n", 1);
@@ -20,7 +20,7 @@ void new_prompt(int signal)
 		write(1, "Good bye\n", 9);
 }
 
-void process_child(char *command_path, t_variables *vars)
+void	process_child(char *command_path, t_variables *vars)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
@@ -37,7 +37,6 @@ void process_child(char *command_path, t_variables *vars)
 	else
 	{
 		command_path = find_executable(vars->args[0], vars);
-		
 		if (command_path == NULL)
 		{
 			write(2, "Command not found\n", 18);
@@ -51,7 +50,7 @@ void process_child(char *command_path, t_variables *vars)
 	exit(1);
 }
 
-void process_parent(t_variables *vars)
+void	process_parent(t_variables *vars)
 {
 	signal(SIGINT, new_prompt);
 	signal(SIGQUIT, new_prompt);
@@ -62,13 +61,13 @@ void process_parent(t_variables *vars)
 		vars->status_command = 128 + WTERMSIG(vars->status_command);
 }
 
-void function_no_built(t_variables *vars)
+void	function_no_built(t_variables *vars)
 {
-	char *command_path;
+	char	*command_path;
 
 	command_path = vars->args[0];
 	if (command_path == NULL)
-		return;
+		return ;
 	vars->pid = fork();
 	if (vars->pid == 0)
 		process_child(command_path, vars);
@@ -81,19 +80,21 @@ void function_no_built(t_variables *vars)
 	}
 }
 
-char    *get_path(t_variables *vars)
+char	*get_path(t_variables *vars)
 {
-    int i;    i = 0;
-    while (vars->ev->env[i] != NULL)
-    {
-        if (ft_strncmp(vars->ev->env[i], "PATH=", 5) == 0)
-            return (vars->ev->env[i]);
-        i++;
-    }
-    return (NULL);
+	int	i;
+
+	i = 0;
+	while (vars->ev->env[i] != NULL)
+	{
+		if (ft_strncmp(vars->ev->env[i], "PATH=", 5) == 0)
+			return (vars->ev->env[i]);
+		i++;
+	}
+	return (NULL);
 }
 
-void ft_exec_functions(t_variables *vars, t_words **words)
+void	ft_exec_functions(t_variables *vars, t_words **words)
 {
 	if (vars->args[0] && ft_strcmp(vars->args[0], "echo") == 0)
 	{

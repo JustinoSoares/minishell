@@ -6,25 +6,25 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 16:21:35 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/10 09:14:58 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/12 18:14:09 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void token_cmd_args(t_words **words, t_variables *vars)
+void	token_cmd_args(t_words **words, t_variables *vars)
 {
-	t_words *tmp;
-	int i;
+	t_words	*tmp;
+	int		i;
 
 	tmp = *words;
 	i = 0;
 	while (tmp != NULL)
 	{
-		if (ft_strcmp(tmp->word, ">") == 0
-			|| ft_strcmp(tmp->word, ">>") == 0 
-			|| ft_strcmp(tmp->word, "<") == 0
-			|| ft_strcmp(tmp->word, "<<") == 0)
+		if ((ft_strcmp(tmp->word, ">") == 0 && tmp->type == 0)
+			|| (ft_strcmp(tmp->word, ">>") == 0 && tmp->type == 0)
+			|| (ft_strcmp(tmp->word, "<") == 0 && tmp->type == 0)
+			|| (ft_strcmp(tmp->word, "<<") == 0 && tmp->type == 0))
 			tmp = tmp->next;
 		else
 		{
@@ -36,24 +36,23 @@ void token_cmd_args(t_words **words, t_variables *vars)
 	vars->cmd_args[i] = NULL;
 }
 
-
-int token_cmd_error(t_words **words, t_variables *vars)
+int	token_cmd_error(t_words **words, t_variables *vars)
 {
-	t_words *tmp;
-	int has_args;
+	t_words	*tmp;
+	int		has_args;
 
 	tmp = *words;
 	has_args = 0;
 	while (tmp != NULL)
 	{
-		if (ft_strcmp(tmp->word, ">") == 0
-			|| ft_strcmp(tmp->word, ">>") == 0 
-			|| ft_strcmp(tmp->word, "<") == 0
-			|| ft_strcmp(tmp->word, "<<") == 0)
-			{
-				tmp = tmp->next;
-				continue;
-			}
+		if ((ft_strcmp(tmp->word, ">") == 0 && tmp->type == 0)
+			|| (ft_strcmp(tmp->word, ">>") == 0 && tmp->type == 0)
+			|| (ft_strcmp(tmp->word, "<") == 0 && tmp->type == 0)
+			|| (ft_strcmp(tmp->word, "<<") == 0 && tmp->type == 0))
+		{
+			tmp = tmp->next;
+			continue ;
+		}
 		else
 			has_args = 1;
 		tmp = tmp->next;
@@ -61,10 +60,9 @@ int token_cmd_error(t_words **words, t_variables *vars)
 	return (has_args);
 }
 
-
-void token_file_out(t_words **words, t_variables *vars)
+void	token_file_out(t_words **words, t_variables *vars)
 {
-	t_words *tmp;
+	t_words	*tmp;
 
 	tmp = *words;
 	while (tmp != NULL)
@@ -72,7 +70,8 @@ void token_file_out(t_words **words, t_variables *vars)
 		if (ft_strcmp(tmp->word, ">") == 0 || ft_strcmp(tmp->word, ">>") == 0)
 		{
 			tmp = tmp->next;
-			if (tmp != NULL && (ft_strcmp(tmp->word, ">") != 0 && ft_strcmp(tmp->word, ">>") != 0))
+			if (tmp != NULL && (ft_strcmp(tmp->word, ">") != 0
+					&& ft_strcmp(tmp->word, ">>") != 0))
 			{
 				vars->files_out[vars->count_out] = tmp->word;
 				vars->count_out++;
@@ -83,9 +82,9 @@ void token_file_out(t_words **words, t_variables *vars)
 	vars->files_out[vars->count_out] = NULL;
 }
 
-void token_file_in(t_words **words, t_variables *vars)
+void	token_file_in(t_words **words, t_variables *vars)
 {
-	t_words *tmp;
+	t_words	*tmp;
 
 	tmp = *words;
 	while (tmp != NULL)
@@ -93,7 +92,8 @@ void token_file_in(t_words **words, t_variables *vars)
 		if (ft_strcmp(tmp->word, "<") == 0 || ft_strcmp(tmp->word, "<<") == 0)
 		{
 			tmp = tmp->next;
-			if (tmp != NULL && (ft_strcmp(tmp->word, "<") != 0 && ft_strcmp(tmp->word, "<<") != 0))
+			if (tmp != NULL && (ft_strcmp(tmp->word, "<") != 0
+					&& ft_strcmp(tmp->word, "<<") != 0))
 			{
 				vars->files_in[vars->count_in] = tmp->word;
 				vars->count_in++;
@@ -104,9 +104,9 @@ void token_file_in(t_words **words, t_variables *vars)
 	vars->files_in[vars->count_in] = NULL;
 }
 
-void redir_out(t_variables *vars, char *command)
+void	redir_out(t_variables *vars, char *command)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	vars->saved_std = dup(STDOUT_FILENO);
@@ -122,7 +122,7 @@ void redir_out(t_variables *vars, char *command)
 			else
 			{
 				vars->fd = open(vars->files_out[i],
-								O_CREAT | O_WRONLY | O_TRUNC, 0644);
+						O_CREAT | O_WRONLY | O_TRUNC, 0644);
 				if (vars->fd != -1)
 					close(vars->fd);
 			}
@@ -133,9 +133,9 @@ void redir_out(t_variables *vars, char *command)
 	close(vars->saved_std);
 }
 
-void redir_in(t_variables *vars, char *command)
+void	redir_in(t_variables *vars, char *command)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	vars->saved_std = dup(STDIN_FILENO);
@@ -151,7 +151,7 @@ void redir_in(t_variables *vars, char *command)
 			else
 			{
 				vars->fd = open(vars->files_in[i], O_CREAT | O_WRONLY | O_TRUNC,
-								0644);
+						0644);
 				if (vars->fd != -1)
 					close(vars->fd);
 			}

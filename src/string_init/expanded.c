@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 16:38:08 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/12 15:11:11 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/12 18:14:18 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ int	count_expanded(char *str, t_variables *vars, int i, int size)
 	{
 		if (str[i] && str[i] == '$' && str[i + 1] == '?')
 			return (size + 1);
-		else if (str[i] && str[i] == '$' && str[i + 1] && ft_isalnum(str[i + 1]))
+		else if (str[i] && str[i] == '$' && str[i + 1] && ft_isalnum(str[i
+				+ 1]))
 		{
 			word = get_word(str, i + 1);
 			macro = ft_get_env(word, vars->ev);
@@ -30,7 +31,7 @@ int	count_expanded(char *str, t_variables *vars, int i, int size)
 				size += ft_strlen(macro);
 				i += ft_strlen(word);
 				free(word);
-				return(size);
+				return (size);
 			}
 			i++;
 			free(word);
@@ -55,7 +56,6 @@ int	size_expanded(char *str, t_variables *vars)
 	size = count_expanded(str, vars, 0, size);
 	return (size);
 }
-
 
 char	*is_expanded(char *str, t_variables *vars)
 {

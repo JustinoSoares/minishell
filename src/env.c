@@ -6,16 +6,16 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:22:22 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/10 16:32:34 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/12 18:14:46 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void fill_env(t_env *ev, char **envp)
+void	fill_env(t_env *ev, char **envp)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = 0;
 	j = 0;
@@ -24,7 +24,7 @@ void fill_env(t_env *ev, char **envp)
 	ev->len = i;
 	ev->env = ft_calloc((i + 1), sizeof(char *));
 	if (!ev->env)
-		return;
+		return ;
 	while (j < i)
 	{
 		ev->env[j] = ft_strdup(envp[j]);
@@ -33,16 +33,16 @@ void fill_env(t_env *ev, char **envp)
 			while (j > 0)
 				free(ev->env[--j]);
 			free(ev->env);
-			return;
+			return ;
 		}
 		j++;
 	}
 }
 
-void env(t_env *ev, t_variables *vars)
+void	env(t_env *ev, t_variables *vars)
 {
-	char *str;
-	int i;
+	char	*str;
+	int		i;
 
 	str = get_args(vars->args, 1);
 	if (str == NULL || ft_strlen(str) == 0)
@@ -58,15 +58,15 @@ void env(t_env *ev, t_variables *vars)
 		write(2, "env:': No such file or directory\n", 34);
 }
 
-void unset(char *key, t_env *ev)
+void	unset(char *key, t_env *ev)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = 0;
 	j = 0;
 	if (key == NULL || ft_strlen(key) == 0)
-		return;
+		return ;
 	while (ev->env[i] != NULL)
 	{
 		if (ft_strncmp(ev->env[i], key, ft_strlen(key)) == 0)
@@ -81,5 +81,5 @@ void unset(char *key, t_env *ev)
 	}
 	ev->env = realloc(ev->env, sizeof(char *) * (ev->len + 1));
 	if (ev->env == NULL)
-		return;
+		return ;
 }

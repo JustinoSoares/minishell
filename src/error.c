@@ -6,13 +6,13 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:39:22 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/09 07:42:20 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/12 18:14:48 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int error_as(char *str, int i, int is_valid)
+int	error_as(char *str, int i, int is_valid)
 {
 	if (str[i] == '"')
 	{
@@ -36,10 +36,10 @@ int error_as(char *str, int i, int is_valid)
 	return (i);
 }
 
-int aspas_error(char *str, int show_error)
+int	aspas_error(char *str, int show_error)
 {
-	int i;
-	int is_valid;
+	int	i;
+	int	is_valid;
 
 	is_valid = 1;
 	i = 0;
@@ -56,11 +56,11 @@ int aspas_error(char *str, int show_error)
 	return (0);
 }
 
-int error_pipe(char *str)
+int	error_pipe(char *str)
 {
-	int i;
-	int mutex;
-	int pipes;
+	int	i;
+	int	mutex;
+	int	pipes;
 
 	i = 0;
 	mutex = 0;

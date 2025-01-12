@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/11 22:43:11 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/12 18:15:10 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ void	ft_exit(t_variables *vars, t_words **words)
 			{
 				write(2, "bash: exit: numeric argument is required\n", 40);
 				free_generate(vars);
-				//free_words(*words);
 				exit(2);
 			}
 			i++;

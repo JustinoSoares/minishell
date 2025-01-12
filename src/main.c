@@ -6,15 +6,15 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 15:59:09 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/12 07:24:39 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/12 18:14:59 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int g_status_signal = 0;
+int		g_status_signal = 0;
 
-void ctrl_c(int sig)
+void	ctrl_c(int sig)
 {
 	write(1, "\n", 1);
 	rl_on_new_line();
@@ -23,9 +23,9 @@ void ctrl_c(int sig)
 	g_status_signal = sig;
 }
 
-int is_consecutive(char *str)
+int	is_consecutive(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (!str)
@@ -38,7 +38,7 @@ int is_consecutive(char *str)
 			while (str[i])
 			{
 				if (str[i] != '|' && str[i] != ' ' && str[i] != '\t')
-					break;
+					break ;
 				else if (str[i] == '|')
 				{
 					write(2, "Syntax Error\n", 13);
@@ -52,9 +52,9 @@ int is_consecutive(char *str)
 	return (1);
 }
 
-int is_string_space(char *str)
+int	is_string_space(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i])
@@ -65,7 +65,7 @@ int is_string_space(char *str)
 	}
 }
 
-char *ft_input(char *read)
+char	*ft_input(char *read)
 {
 	signal(SIGINT, ctrl_c);
 	signal(SIGQUIT, SIG_IGN);
@@ -80,11 +80,11 @@ char *ft_input(char *read)
 	return (read);
 }
 
-void ft_get_terminal(char **envp, t_variables *vars)
+void	ft_get_terminal(char **envp, t_variables *vars)
 {
-	char *line;
-	char *read;
-	t_words *words;
+	char	*line;
+	char	*read;
+	t_words	*words;
 
 	words = NULL;
 	vars->status_command = 0;
@@ -92,19 +92,20 @@ void ft_get_terminal(char **envp, t_variables *vars)
 	while (true)
 	{
 		read = ft_input(read);
-		if (aspas_error(read, true) || read[0] == '\0' || is_string_space(read) == 1 || is_consecutive(read) == 0)
-			continue;
+		if (aspas_error(read, true) || read[0] == '\0'
+			|| is_string_space(read) == 1 || is_consecutive(read) == 0)
+			continue ;
 		vars->line = filter_string(read, vars, &words);
 		if (vars->line == NULL)
 		{
 			free_error(read, words, vars);
-			continue;
+			continue ;
 		}
 		vars->args = ft_split(vars->line, ' ');
 		if (vars->args == NULL)
 			free_error(read, words, vars);
 		if (vars->args == NULL)
-			continue;
+			continue ;
 		function_pipe(vars, &words);
 		vars->args = free_args(vars);
 		free_error(read, words, vars);
@@ -112,7 +113,7 @@ void ft_get_terminal(char **envp, t_variables *vars)
 	}
 }
 
-void free_generate(t_variables *vars)
+void	free_generate(t_variables *vars)
 {
 	if (vars->line != NULL)
 		free(vars->line);
@@ -124,7 +125,7 @@ void free_generate(t_variables *vars)
 		free_env(vars->ev);
 }
 
-void free_init_ev(t_env *ev)
+void	free_init_ev(t_env *ev)
 {
 	if (ev->env != NULL)
 		free_matriz(ev->env);
@@ -136,9 +137,9 @@ void free_init_ev(t_env *ev)
 		free(ev->value);
 }
 
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
-	t_variables vars;
+	t_variables	vars;
 
 	init_variables(&vars);
 	init_ev(vars.ev);

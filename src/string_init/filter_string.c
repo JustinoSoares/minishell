@@ -6,13 +6,13 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 08:36:42 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/12 07:25:23 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/12 18:14:21 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-int redirect_right(char *str, int i, t_words **array)
+int	redirect_right(char *str, int i, t_words **array)
 {
 	if (str[i + 1] && str[i + 1] == '>')
 	{
@@ -25,9 +25,9 @@ int redirect_right(char *str, int i, t_words **array)
 	return (i);
 }
 
-void free_wordss(t_words *word)
+void	free_wordss(t_words *word)
 {
-	t_words *tmp;
+	t_words	*tmp;
 
 	while (word)
 	{
@@ -38,7 +38,7 @@ void free_wordss(t_words *word)
 	}
 }
 
-int insert_redirect(char *str, t_words **array, int i)
+int	insert_redirect(char *str, t_words **array, int i)
 {
 	if (str[i] && (str[i] == '|'))
 	{
@@ -61,10 +61,10 @@ int insert_redirect(char *str, t_words **array, int i)
 	return (i);
 }
 
-int form_word_empty(char *str, t_variables *vars, t_words **array, int i)
+int	form_word_empty(char *str, t_variables *vars, t_words **array, int i)
 {
-	char *expanded_word;
-	int index;
+	char	*expanded_word;
+	int		index;
 
 	expanded_word = NULL;
 	index = 0;
@@ -86,8 +86,7 @@ int form_word_empty(char *str, t_variables *vars, t_words **array, int i)
 	return (i);
 }
 
-
-char *end_filter(char *new, char *final_str)
+char	*end_filter(char *new, char *final_str)
 {
 	if (new)
 	{
@@ -98,11 +97,11 @@ char *end_filter(char *new, char *final_str)
 	return (NULL);
 }
 
-char *filter_string(char *str, t_variables *vars, t_words **words)
+char	*filter_string(char *str, t_variables *vars, t_words **words)
 {
-	t_words *tmp;
-	char *new;
-	char *temp;
+	t_words	*tmp;
+	char	*new;
+	char	*temp;
 
 	new = NULL;
 	if (str == NULL || *str == '\0')

@@ -6,15 +6,15 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 11:15:23 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/12 15:58:04 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/12 18:32:37 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-char *get_key(char *env)
+char	*get_key(char *env)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (env[i] && env[i] != '=')
@@ -22,11 +22,11 @@ char *get_key(char *env)
 	return (ft_substr(env, 0, i));
 }
 
-char *ft_get_env(char *key, t_env *env)
+char	*ft_get_env(char *key, t_env *env)
 {
-	int i;
-	int c;
-	char *get_env;
+	int		i;
+	int		c;
+	char	*get_env;
 
 	i = 0;
 	c = 0;
@@ -49,7 +49,7 @@ char *ft_get_env(char *key, t_env *env)
 	return (NULL);
 }
 
-char *call_status(char *str, t_variables *vars)
+char	*call_status(char *str, t_variables *vars)
 {
 	if (g_status_signal == SIGINT)
 		vars->status_command = 130;
@@ -59,26 +59,26 @@ char *call_status(char *str, t_variables *vars)
 	return (ft_itoa(vars->status_command));
 }
 
-char *aux_expanded(char *str, char *getter, t_variables *vars, int j)
+char	*aux_expanded(char *str, char *getter, t_variables *vars, int j)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i] != '\0')
 	{
 		if (str[i] && str[i] == '$' && str[i + 1] == '?')
 			return (call_status(str, vars));
-		else if (str[i] && str[i] == '$' && str[i + 1] && ft_isalnum(str[i + 1]))
+		else if (str[i] && str[i] == '$' && str[i + 1] && ft_isalnum(str[i
+				+ 1]))
 		{
 			vars->ext->word = get_word(str, i + 1);
 			vars->ext->macro = ft_get_env(vars->ext->word, vars->ev);
 			if (vars->ext->macro && ft_strlen(vars->ext->macro) > 0)
 			{
-				strncat(getter, vars->ext->macro, ft_strlen(vars->ext->macro));
+				strcat(getter, vars->ext->macro);
 				j += ft_strlen(vars->ext->macro);
-				i += ft_strlen(vars->ext->word);
 			}
-			i++;
+			i += ft_strlen(vars->ext->word) + 1;
 			if (vars->ext->word)
 				free(vars->ext->word);
 		}

@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: justinosoares <justinosoares@student.42    +#+  +:+       +#+        */
+/*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 22:52:35 by justinosoar       #+#    #+#             */
-/*   Updated: 2025/01/10 02:01:36 by justinosoar      ###   ########.fr       */
+/*   Updated: 2025/01/12 18:36:14 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int index_of(char *str, char *word)
+int	index_of(char *str, char *word)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i])
@@ -26,9 +26,9 @@ int index_of(char *str, char *word)
 	return (-1);
 }
 
-int start_write(char *str, char *command)
+int	start_write(char *str, char *command)
 {
-	int start;
+	int	start;
 
 	start = 0;
 	start = index_of(str, command) + 1;
@@ -37,9 +37,9 @@ int start_write(char *str, char *command)
 	return (start);
 }
 
-int ft_strcmp(char *s1, char *s2)
+int	ft_strcmp(char *s1, char *s2)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (!s1 || !s2)
@@ -49,16 +49,16 @@ int ft_strcmp(char *s1, char *s2)
 	return (s1[i] - s2[i]);
 }
 
-void remove_space(char *str, char ch)
+void	remove_space(char *str, char ch)
 {
-	int i;
-	int j;
-	int len;
+	int	i;
+	int	j;
+	int	len;
 
 	i = 0;
 	j = 0;
 	if (str == NULL || str[0] == '\0')
-		return;
+		return ;
 	len = ft_strlen((const char *)str);
 	while (i < len)
 	{
@@ -69,9 +69,9 @@ void remove_space(char *str, char ch)
 	str[j] = '\0';
 }
 
-int new_line(char *str)
+int	new_line(char *str)
 {
-	int i;
+	int	i;
 
 	i = 1;
 	while (str[i])
@@ -85,11 +85,11 @@ int new_line(char *str)
 	return (0);
 }
 
-char *ft_has_substr(char *str, char *substr, int n)
+char	*ft_has_substr(char *str, char *substr, int n)
 {
-	int i;
-	int j;
-	int count;
+	int	i;
+	int	j;
+	int	count;
 
 	if (!str || !substr)
 		return (NULL);
@@ -112,4 +112,21 @@ char *ft_has_substr(char *str, char *substr, int n)
 		i++;
 	}
 	return (NULL);
+}
+
+char	*ft_strcat(char *dest, const char *src)
+{
+	char *ptr = dest;
+	while (*ptr != '\0')
+	{
+		ptr++;
+	}
+	while (*src != '\0')
+	{
+		*ptr = *src;
+		ptr++;
+		src++;
+	}
+	*ptr = '\0';
+	return (dest);
 }

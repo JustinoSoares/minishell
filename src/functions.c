@@ -6,13 +6,13 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 12:34:08 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/12 06:18:30 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/12 18:14:57 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-char *form_word(t_words *word, char *new, char *tmp)
+char	*form_word(t_words *word, char *new, char *tmp)
 {
 	tmp = ft_strjoin(new, word->word);
 	if (new)
@@ -28,7 +28,7 @@ char *form_word(t_words *word, char *new, char *tmp)
 	return (new);
 }
 
-void process_child_pipe(t_variables *vars, int fd[2], t_words **words)
+void	process_child_pipe(t_variables *vars, int fd[2], t_words **words)
 {
 	if (vars->prev_fd != -1)
 	{
@@ -37,8 +37,8 @@ void process_child_pipe(t_variables *vars, int fd[2], t_words **words)
 	}
 	if (vars->index < vars->quant - 1)
 		dup2(fd[1], STDOUT_FILENO);
-	if (ft_strchr(vars->args[0], '>') != NULL
-			|| ft_strchr(vars->args[0], '<') != NULL)
+	if (ft_strchr(vars->args[0], '>') != NULL || ft_strchr(vars->args[0],
+			'<') != NULL)
 		redirect_error(vars->args[0], vars, words);
 	else
 		ft_exec_functions(vars, words);
@@ -46,7 +46,7 @@ void process_child_pipe(t_variables *vars, int fd[2], t_words **words)
 	exit(0);
 }
 
-void init_process(t_variables *vars, int fd[2], char **args, t_words **words)
+void	init_process(t_variables *vars, int fd[2], char **args, t_words **words)
 {
 	if (pipe(fd) == -1)
 	{
@@ -57,7 +57,7 @@ void init_process(t_variables *vars, int fd[2], char **args, t_words **words)
 	vars->args = NULL;
 	vars->args = ft_split(args[vars->index], ' ');
 	if (vars->args == NULL)
-		return;
+		return ;
 	vars->pid = fork();
 	if (vars->pid == 0)
 		process_child_pipe(vars, fd, words);
@@ -76,11 +76,11 @@ void init_process(t_variables *vars, int fd[2], char **args, t_words **words)
 	vars->args = NULL;
 }
 
-char *first_word(char *str)
+char	*first_word(char *str)
 {
-	int i;
-	int j;
-	char *new;
+	int		i;
+	int		j;
+	char	*new;
 
 	i = 0;
 	j = 0;
@@ -92,14 +92,15 @@ char *first_word(char *str)
 	return (new);
 }
 
-void function_pipe(t_variables *vars, t_words **words)
+void	function_pipe(t_variables *vars, t_words **words)
 {
-	int fd[2];
-	char **args;
-	char **get_args;
-	int i;
-	int j = 0;
+	int		fd[2];
+	char	**args;
+	char	**get_args;
+	int		i;
+	int		j;
 
+	j = 0;
 	i = 0;
 	args = init_pipe(words, vars);
 	if (args == NULL)
@@ -109,14 +110,13 @@ void function_pipe(t_variables *vars, t_words **words)
 	}
 	if (vars->quant == 1)
 	{
-		if (ft_strchr(args[0], '>') != NULL 
-			|| ft_strchr(args[0], '<') != NULL)
+		if (ft_strchr(args[0], '>') != NULL || ft_strchr(args[0], '<') != NULL)
 			redirect_error(args[0], vars, words);
 		else
 			ft_exec_functions(vars, words);
 		free_matriz(args);
 		args = NULL;
-		return;
+		return ;
 	}
 	while (++vars->index < vars->quant)
 		init_process(vars, fd, args, words);
