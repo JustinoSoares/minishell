@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 09:55:32 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/12 18:14:38 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/13 08:56:45 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,9 @@ void	init_variables(t_variables *vars)
 	vars->args = NULL;
 	vars->env = NULL;
 	vars->pid = 0;
-	vars->ext = malloc(sizeof(t_extented));
-	vars->ev = malloc(sizeof(t_env));
+	vars->ext = ft_calloc(sizeof(t_extented), 1);
+	vars->ext->word = NULL;
+	vars->ev = ft_calloc(sizeof(t_env), 1);
 	vars->words = NULL;
 }
 

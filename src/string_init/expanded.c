@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 16:38:08 by jsoares           #+#    #+#             */
-/*   Updated: 2025/01/12 18:14:18 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/13 09:18:18 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	count_expanded(char *str, t_variables *vars, int i, int size)
 	char	*macro;
 	char	*word;
 
-	while (str[i] != '\0')
+	while (i < ft_strlen(str) && str[i] != '\0')
 	{
 		if (str[i] && str[i] == '$' && str[i + 1] == '?')
 			return (size + 1);
@@ -46,17 +46,6 @@ int	count_expanded(char *str, t_variables *vars, int i, int size)
 	return (size);
 }
 
-int	size_expanded(char *str, t_variables *vars)
-{
-	int		size;
-	char	*macro;
-	char	*word;
-
-	size = 0;
-	size = count_expanded(str, vars, 0, size);
-	return (size);
-}
-
 char	*is_expanded(char *str, t_variables *vars)
 {
 	int		i;
@@ -69,7 +58,7 @@ char	*is_expanded(char *str, t_variables *vars)
 	j = 0;
 	if (str == NULL)
 		return (NULL);
-	getter = ft_calloc(sizeof(char), size_expanded(str, vars) + 1);
+	getter = ft_calloc(sizeof(char), count_expanded(str, vars, 0, 0) + 5);
 	if (getter == NULL)
 		return (NULL);
 	return (aux_expanded(str, getter, vars, j));

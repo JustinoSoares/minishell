@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 11:28:20 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/12 18:14:24 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/13 09:18:23 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,17 +39,14 @@ void	print_num(char *str)
 
 int	ft_quotes_dup(char *str, t_words **array, int i, t_variables *vars)
 {
-	int	index;
-	int	count;
+	int		index;
+	int		count;
 
 	index = i;
 	count = 0;
 	while (str[index] && str[index] != '\"')
-	{
-		index++;
-		count++;
-	}
-	vars->ext->word = calloc(sizeof(char), count + 1);
+		(index++, count++);
+	vars->ext->word = ft_calloc(sizeof(char), count + 5);
 	if (vars->ext->word == NULL)
 		return (i);
 	index = 0;
@@ -63,8 +60,10 @@ int	ft_quotes_dup(char *str, t_words **array, int i, t_variables *vars)
 		vars->ext->expanded_word = is_expanded(vars->ext->word, vars);
 		insert_str_end(array, vars->ext->expanded_word, 2);
 	}
-	if (vars->ext->expanded_word)
+	if (vars->ext->expanded_word != NULL)
 		free(vars->ext->expanded_word);
+	if (vars->ext->word != NULL)
+		free(vars->ext->word);
 	return (i);
 }
 

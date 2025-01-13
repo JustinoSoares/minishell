@@ -6,7 +6,7 @@
 /*   By: jsoares <jsoares@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 11:15:23 by rquilami          #+#    #+#             */
-/*   Updated: 2025/01/12 18:32:37 by jsoares          ###   ########.fr       */
+/*   Updated: 2025/01/13 08:38:01 by jsoares          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ char	*call_status(char *str, t_variables *vars)
 
 char	*aux_expanded(char *str, char *getter, t_variables *vars, int j)
 {
-	int	i;
+	int		i;
+	char	*tmp;
 
 	i = 0;
 	while (str[i] != '\0')
@@ -71,16 +72,16 @@ char	*aux_expanded(char *str, char *getter, t_variables *vars, int j)
 		else if (str[i] && str[i] == '$' && str[i + 1] && ft_isalnum(str[i
 				+ 1]))
 		{
-			vars->ext->word = get_word(str, i + 1);
-			vars->ext->macro = ft_get_env(vars->ext->word, vars->ev);
+			tmp = get_word(str, i + 1);
+			vars->ext->macro = ft_get_env(tmp, vars->ev);
 			if (vars->ext->macro && ft_strlen(vars->ext->macro) > 0)
 			{
-				strcat(getter, vars->ext->macro);
+				ft_strcat(getter, vars->ext->macro);
 				j += ft_strlen(vars->ext->macro);
 			}
-			i += ft_strlen(vars->ext->word) + 1;
-			if (vars->ext->word)
-				free(vars->ext->word);
+			i += ft_strlen(tmp) + 1;
+			if (tmp)
+				free(tmp);
 		}
 		else if (str[i])
 			getter[j++] = str[i++];
